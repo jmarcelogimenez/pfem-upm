@@ -402,16 +402,16 @@ It was simulated using $\Delta t = 0.02$. Final simulation time $t_{final} = 50[
 
 \begin{figure}[htbp]
   \begin{center}
-      \includegraphics[width=.85\linewidth]{images/Re_1000_Ux_v2.pdf}
-      \includegraphics[width=.85\linewidth]{images/Re_1000_Ux_v2_zoom.pdf}
+      \includegraphics[width=.85\linewidth]{images/Re_1000_Ux.pdf}
+      \includegraphics[width=.85\linewidth]{images/Re_1000_Ux_zoom.pdf}
   \end{center}
   \caption{\label{fg:Re1000u} Comparison with Ghia References at $Re=1000$. $u$ velocities at x-centerline.}
 \end{figure}
 
 \begin{figure}[htbp]
   \begin{center}
-      \includegraphics[width=.85\linewidth]{images/Re_1000_Uy_v2.pdf}
-      \includegraphics[width=.85\linewidth]{images/Re_1000_Uy_v2_zoom.pdf}
+      \includegraphics[width=.85\linewidth]{images/Re_1000_Uy.pdf}
+      \includegraphics[width=.85\linewidth]{images/Re_1000_Uy_zoom.pdf}
   \end{center}
   \caption{\label{fg:Re1000v} Comparison with Ghia References at $Re=1000$. $v$ velocities at y-centerline.}
 \end{figure}
@@ -452,8 +452,8 @@ It was simulated using $\Delta t = 0.01$. Final simulation time $t_{final} = 100
 
 \begin{figure}[htbp]
   \begin{center}
-      \includegraphics[width=.85\linewidth]{images/Re_3200_Ux_v2.pdf}
-      \includegraphics[width=.85\linewidth]{images/Re_3200_Ux_v2_zoom.pdf}
+      \includegraphics[width=.85\linewidth]{images/Re_3200_Ux.pdf}
+      \includegraphics[width=.85\linewidth]{images/Re_3200_Ux_zoom.pdf}
   \end{center}
   \caption{\label{fg:Re3200} Comparison with Ghia References at $Re=3200$. $u$ velocities at x-centerline.}
 \end{figure}
@@ -857,6 +857,48 @@ In the reference work, the analysis is focused on peaks events. It can be notice
     }
    \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} and numerical results with PFEM-2. Locations $P_1$, $P_2$, $P_3$, $P_4$ area presented in Figures \ref{fg:dambreak-p1},\ref{fg:dambreak-p2},\ref{fg:dambreak-p3},\ref{fg:dambreak-p4} respectively. Experimental results shows the median and percentiles $2.5$ and $97.5$.}
    \label{fg:dambreak-p}                %% Etiqueta para la figura entera
+\end{figure}
+
+  \begin{figure}[H]
+  \centering
+    \subfloat[]{
+	  \label{fg:dambreak-1}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_1.jpg}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:dambreak-2}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_2.jpg}
+    } \\ 
+    \subfloat[]{
+	  \label{fg:dambreak-3}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_3.jpg}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:dambreak-4}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_4.jpg}
+    }\\
+        \subfloat[]{
+	  \label{fg:dambreak-5}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_5.jpg}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:dambreak-6}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_6.jpg}
+    } \\ 
+    \subfloat[]{
+	  \label{fg:dambreak-7}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_7.jpg}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:dambreak-8}
+	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_8.jpg}
+    }
+   \caption{Snapshots of the dam-break at times $t=0,0.25,0.5,0.75,1,1.25,1.5,1.75[s]$.}
+   \label{fg:dambreak-screenshots}
 \end{figure}
 
 \subsection{Shear layer flow.}
