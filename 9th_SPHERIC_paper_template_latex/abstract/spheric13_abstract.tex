@@ -30,7 +30,7 @@ Universidad Nacional del Litoral (UNL). Santa Fe, Argentina.}
 \author{P. Gal\'{a}n del Sastre,}
 \author{L.M. Gonz\'{a}lez\corauthref{cor}}
 \corauth[cor]{Corresponding author.} \ead{leo.gonzalez@upm.es}
-\address{Technical University of Madrid (UPM). 28040 Madrid, Spain.}
+\address{Universidad Polit\'{e}cnica de Madrid (UPM). Madrid, Spain.}
 % \address{Naval Architecture Department (ETSIN),
 % Technical University of Madrid (UPM). 28040 Madrid, Spain.}%
 \vspace{-0.8cm}
@@ -45,7 +45,7 @@ This work presents an alternative technology that combines a Lagrangian particle
   \item Boundary conditions are implemented in the mesh nodes similarly to finite element methodology.
 \end{itemize}
 
-Particle-Finite element method (PFEM)\cite{onate04} has been widely used as a useful numerical technique in different applications. In the first versions of the PFEM, mesh nodes moved like particle transporting the fluid properties, and re-meshing was necessary. An improved version of this method, known as PFEM-2 was developed, see \cite{idelsohn_etal_13}, where the mesh remains fixed and particles transport information following the fluid streamlines and interact with the mesh nodes via interpolation. Based on this second version, an efficient numerical algorithm is presented and tested for a wide number of problems involving free surface flows with different aspect ratio between the densities and viscosities of the fluids involved. Most of the problems selected have either reference numerical solutions or experimental results in order to compare the accuracy given by PFEM-2. This method has been used in typical free surface problems as: sloshing, standing waves, Rayleigh-Taylor instabilities and violent dam-break problems. In Figure \ref{foto} 
+Particle-Finite element method (PFEM)\cite{onate04} has been widely used as a useful numerical technique in different applications. In the first versions of the PFEM, mesh nodes moved like particle transporting the fluid properties, and re-meshing was necessary. An improved version of this method, known as PFEM-2 was developed, see \cite{idelsohn_etal_13}, where the mesh remains fixed and particles transport information following the fluid streamlines and interact with the mesh nodes via interpolation. Based on this second version, an efficient numerical algorithm is presented and tested for a wide number of problems involving free surface flows with different aspect ratio between the densities and viscosities of the fluids involved. Most of the problems selected have either reference numerical solutions or experimental results in order to compare the accuracy given by PFEM-2. This method has been used in typical free surface problems as: sloshing, standing waves, Rayleigh-Taylor instabilities and violent dam-break problems. In Figure \ref{foto}
 two different results are shown, first a typical and well studied flow around a circular cylinder is solved to confirm that this method is also valid when there is just one fluid involved in the computation. Second, a Rayleigh-Taylor instability with a low density ratio is studied, the evolution of the interface between both fluids was successfully compared with other numerical methodologies. The treatment of the interface has been simulated using a well known technique as Level-Set method \cite{sussman1994}, but the implementation of this methodology has been highly improved adding different levels of completeness to the original enrichment idea \cite{Coppola} in order to improve the free-surface computation.
 \end{abstract}
 
