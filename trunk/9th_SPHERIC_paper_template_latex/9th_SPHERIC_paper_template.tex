@@ -722,9 +722,9 @@ For the studied cases, the sloshing phenomenon is produced by a horizontal harmo
 with different densities $\rho_{II} = 1.3, 50, 200, 800 [kg/m^3]$, depending on the case studied\cite{Goni13}. The dimensions of the
 tank are $a$(width) by $b$(height) and the initial free surface is at height $h$ from the bottom of the tank, see Figure \ref{fg:ansari-config}. The free surface starts the simulation as a horizontal line and is subsequently deformed by the tank excitation and the flow dynamics.
    
-\begin{figure}[htbp]
+\begin{figure}[H]
   \begin{center}
-      \includegraphics[width=.6\columnwidth]{images/ansari_config.pdf}
+      \includegraphics[width=.7\columnwidth]{images/ansari_config.pdf}
   \end{center}
   \caption{\label{fg:ansari-config} Configuration scheme of the Non-linear sloshing in a rectangular container case. Initial condition is represented by dotted lines.}
 \end{figure}
@@ -734,25 +734,25 @@ flow as laminar and non-viscous, hence no turbulence model was used and slip bou
 
 Reference results for this case are taken from \cite{Goni13} which uses the codes STARCCM+ and \OF to obtain numerical solutions and reports the free surface displacement on the left wall of the container. Those simulations use the same grid as presented above, but, in order to avoid numerical instabilities, they limit the $CFL$ number to $CFL_{max}=0.5$. In PFEM-2 simulations do not exist that restriction then $\Delta t$ is fixed to $0.1$, reaching $CFL_{max}\approx5$.
 
-  \begin{figure}[H]
+  \begin{figure}[h]
   \centering
     \subfloat[]{
 	  \label{fg:ansari-1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.7\columnwidth]{images/ansari_1.pdf}
+	  \includegraphics[width=.8\columnwidth]{images/ansari_1.pdf}
     } \\ 
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.7\columnwidth]{images/ansari_2.pdf}
+	  \includegraphics[width=.8\columnwidth]{images/ansari_2.pdf}
     } \\ 
     \subfloat[]{
 	  \label{fg:ansari-3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.7\columnwidth]{images/ansari_3.pdf}
+	  \includegraphics[width=.8\columnwidth]{images/ansari_3.pdf}
     } \\ 
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.7\columnwidth]{images/ansari_4.pdf}
+	  \includegraphics[width=.8\columnwidth]{images/ansari_4.pdf}
     }
    \caption{Sloshing comparison for a two phase flow for different density ratios. Figure \ref{fg:ansari-1}: $\sigma=0.0013$, Figure \ref{fg:ansari-2}: $\sigma=0.05$, Figure \ref{fg:ansari-3}: $\sigma=0.2$ and Figure \ref{fg:ansari-4}: $\sigma=0.8$.
 }
@@ -761,7 +761,40 @@ Reference results for this case are taken from \cite{Goni13} which uses the code
 
 Figure \ref{fg:ansari-results} presents results with different density ratios. For each one of them, PFEM-2 simulations shows a good agreement with reference solutions, further more considering that the time step used is around five to ten times bigger.
 
-\subsection{Standing wave.}%Re=250,2500.
+\subsection{Viscous standing waves}%Re=250,2500.
+
+Computing the dissipation due to wave-breaking remains a challenging problem in the computational fluid mechanics context. In order to analyze the solution with PFEM-2 of two-phase viscous incompressible flows, the evolution of a viscous standing wave has been chosen. This is a classical problem in the scientific literature for which an approximate analytical solution is available for small amplitude perturbations\cite{Lighthill01} and it is of practical interest since it is related to the propagation of gravity waves.
+
+The chosen standing wave configuration consists in a rectangular tank with length $L$ and a water filling height of $H = L/2$. This setup is taken from \cite{Colagrossi12}, and in the Figure \ref{fg:standing-wave-config} a sketch of this configuration is displayed. The wave length is $\lambda = L$, $k$ is the corresponding wave number (i.e. $k = 2\pi/\lambda$), $A$ is the wave amplitude and denotes the ratio $\epsilon=2A/H$.
+   
+\begin{figure}[H]
+  \begin{center}
+      \includegraphics[width=.9\columnwidth]{images/standing_wave.pdf}
+  \end{center}
+  \caption{\label{fg:standing-wave-config} Configuration scheme of standing wave case. Initial condition is represented by dotted lines. In continuous line is presented an intermediate state where the maximum amplitude $A$ is reached.}
+\end{figure}
+
+If the fluid is viscous, the dissipation due to the solid boundary layers is neglected, small-amplitude waves (i.e small $\epsilon$) and small wave steepness (i.e $2A/\lambda \ll 0.1$) are used; an approximate analytical solution of the standing wave evolution can be obtained through the linearization of Navier-Stokes equations for traveling waves:
+\begin{align}
+ \varphi(x,y,t) & = \varphi_0(x,y)\cos(\omega t) \\
+ \varphi_0(x,y) & =-\epsilon\frac{Hg}{2\omega}\frac{\cosh\left[k(y+H)\right]}{\cosh(kH)}\cos(kx)
+\end{align}
+
+where the circular frequency $\omega$ is given by the dispersion relation of gravity waves, that is, $\omega^2 = g k \tanh(kH)$ where $g$ is the acceleration of gravity. At time $t = 0$ the free surface is horizontal while the initial fluid velocity is given by $\varphi_0$.
+
+It can be demonstrated that the approximate solution is well posed only for $Re\gg1$ and for $Re^{-1}\ll k \ll Re^{2/3}$, where $Re=H\sqrt{gH}/\nu$ is the Reynolds number for this problem. From that solution, it is possible to obtain the formula that gives the approximate decay of the kinetic energy\cite{Lighthill01}:
+
+\begin{equation}
+ \varepsilon_K(t) = \epsilon^2g\frac{\lambda H^2}{32}e^{-4\nu k^2t}\left[1+\cos(2\omega t)\right]
+ \label{kin-eq}
+\end{equation}
+
+The kinetic attenuation is governed by the coefficient of the exponential $\beta_l = 4\nu k^2$, which depends on the wave number and on the kinematic viscosity $\nu = \mu/\rho_{I}$. Lately work\cite{Antuono13} has demonstrated that generally, the Equation \ref{kin-eq} overestimates the dissipations, especially when the Reynolds number is not very large. Then an improved damping rate is proposed in that paper $\beta = 4\nu k^2 -  2\sqrt{2}k^{11/4}Re^{-3/2}+O(Re^{-2})$, which is next used for comparisons.
+
+To accomplish the linear solution hypothesis, the PFEM-2 simulations have been implemented by using a free-slip condition for the velocity and a Neumann condition for the pressure along each boundary of the tank. Also, the parameters $L=2$, $A=0.05$ and $g=1$ have been selected. 
+
+Several Reynolds number have been selected to compare with the approximate analytic dissipation, solving into a grid with $H/\Delta x=50$ or $H/\Delta x=100$. Figure bla bla ....
+
 
 \subsection{Rayleigh-Taylor Instability}
 
@@ -806,7 +839,7 @@ Computational configuration of the tank used in experimental cases is presented 
 \end{figure}
 
 Figure \ref{fg:dambreak-h} shows the comparison between experimental and numerical results for each water-level measurement. A good agreement can be observed, moreover taken into account the capture of the back wave and splashing start events.
-  \begin{figure}[H]
+  \begin{figure}[h]
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-h1}         %% Etiqueta para la primera subfigura
@@ -835,7 +868,7 @@ the opening of the dam gate and the occurrence of the impact, is presented in Fi
 
 In the reference work, the analysis is focused on peaks events. It can be noticed that the highest peak is recorded by sensor number 1 which is the sensor receiving the full impact, whilst the pressure of the other sensors is given by the run up of the flow. It can also be observed that sensor number 4, i.e. the sensor located at the highest position, does not show a pure impact event, see Figure \ref{fg:dambreak-p4}, and actually the maximum for this sensor is obtained later in time, when the water falls back after running along the wall. Numerical solution behavior follows the mentioned conclusions, but the pressure values are not between the statistical limits of experimental data. Also, a discrepancy can be observed with the peaks times for sensors $1$ to $3$. This difference can be assigned to the numerical simplification which does not model the gate movement.
 
-  \begin{figure}[H]
+  \begin{figure}[h]
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-p1}         %% Etiqueta para la primera subfigura
@@ -944,6 +977,14 @@ J.L. Guermond and L. Quartapelle, \emph{A Projection FEM for Variable Density In
 
 \bibitem{Tryggvason88}
 G. Tryggvason, \emph{Numerical Simulations of the Rayleigh-Taylor Instability}, Journal of Computational Physics 75, 253-282, 1988.
+
+\bibitem{Lighthill01}
+J. Lighthill, \emph{Waves in fluids}, Cambridge University Press, 2001.
+
+\bibitem{Colagrossi12}
+A. Colagrossi, A. Souto-Iglesias, M. Antuono and S. Marrone, \emph{Modeling of gravity wave viscous attenuation}, 7th international SPHERIC workshop, Prato-Italy, 2012.
+
+
 
 \end{thebibliography}
 
