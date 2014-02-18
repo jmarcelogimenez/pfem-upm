@@ -307,35 +307,32 @@ This electronic document is a ``live'' template. The various components of your 
 
 \section{Introduction}
 
-Las formulaciones estándar para la solución de las ecuaciones de fenómenos de transporte pueden ser agrupadas en dos categorías, dependiendo del enfoque seleccionado para describir los términos inerciales. En el enfoque Euleriano la aceleración es descripta como la suma de una derivada espacial de la velocidad más un término convectivo. El segundo grupo pertenece a las formulaciones Lagrangianas en dónde la aceleración es simplemente descripta como una derivada total (o derivada material) de la velocidad.
+%Las formulaciones estándar para la solución de las ecuaciones de fenómenos de transporte pueden ser agrupadas en dos categorías, dependiendo del enfoque seleccionado para describir los términos inerciales. En el enfoque Euleriano la aceleración es descripta como la suma de una derivada espacial de la velocidad más un término convectivo. El segundo grupo pertenece a las formulaciones Lagrangianas en dónde la aceleración es simplemente descripta como una derivada total (o derivada material) de la velocidad.
 
-Durante los últimos treinta años, la simulación de flujo de fluidos incompresibles ha sido principalmente basada en la formulación Euleriana de las ecuaciones fluido-dinámicas sobre dominios fijos\cite{Donea03}. Por otro lado, las formulaciones Lagrangianas justifican su popularidad resolviendo flujos de superficie libre o complicados flujos de fluidos de diferentes propiedades intensivas (multi-fluídos), en los cuales el enfoque Euleriano estándar es impreciso o, en ciertos casos, imposible de usar.
+%Durante los últimos treinta años, la simulación de flujo de fluidos incompresibles ha sido principalmente basada en la formulación Euleriana de las ecuaciones fluido-dinámicas sobre dominios fijos\cite{Donea03}. Por otro lado, las formulaciones Lagrangianas justifican su popularidad resolviendo flujos de superficie libre o complicados flujos de fluidos de diferentes propiedades intensivas (multi-fluídos), en los cuales el enfoque Euleriano estándar es impreciso o, en ciertos casos, imposible de usar.
 
-Los métodos basados en partículas, en los cuales cada partícula fluída es transportada de forma Lagrangiana, han sido utilizados desde que Monaghan\cite{Mon77} propuso las primeras ideas en este enfoque para el tratamiento de problemas de hidrodinámica astrofísica con el método conocido como Smoothed Particle Hydrodynamics Method (SPH). Más tarde, esa estrategia fue generalizada para resolver problemas de la mecánica de fluidos\cite{Monaghan88}. Una idea similar a SPH fue desarrollada por Koshizuka y otros\cite{Koshizuka95} para la solución numérica de flujos incompresibles y recibió el nombre de Moving Particle Simulation method(MPS). SPH y MPS pertenecen a la familia de los métodos denominados sin malla (meshless). Estas innovadoras ideas de romper con lo concebido hasta el momento y no utilizar mallas tradicionales, fueron generalizadas por el Meshless Finite Element Method (MFEM)\cite{Ide03b}. Este método, que utiliza la Extended Delaunay Tessellation\cite{Ide03} para reconstruir la malla en tiempo de 
-simulación, toma en cuenta aproximaciones del tipo de elementos finitos para obtener soluciones más precisas.
+Particle methods have started to combine the Lagrangian part with a grid that fixed or re-meshed every k time steps supports part of the pressure and velocity calculation. The original idea given by Monaghan \cite{Mon77} or later works applied to fluid mechanics \cite{Monaghan88} where a pure Lagrangian perspective was used during the whole meshless computation has been in some cases completed using other well known discretization methods as FVM \cite{Quinlan} or FEM \cite{Calvo}. We could try to find the first combination of Lagrangian methods and FEM methods in the paper \cite{Ide03b} where a extended Delaunay Tesellation is used to reconstruct the mesh while the fluid evolves. In this method known as MFEM, the construction of the shape functions inside each polyhedron is based on a non-Sibsonian interpolation.
 
-Una evolución natural de MFEM fue el Particle Finite Element Method (PFEM)\cite{Idelsohn04}. PFEM combina la idea de las partículas Lagrangianas con las funciones de forma del Finite Element Method (FEM) utilizando una malla de elementos finitos auxiliar. PFEM ha sido satifactoriamente utlizado para resolver las ecuaciones de Navier-Stokes con superficies libres\cite{Aubry05}\cite{Idelsohn02}\cite{Larese08}, problemas de interacción fluido-estructura\cite{Idelsohn06}, y problemas de flujos de multi-fluidos\cite{Idelsohn09}. 
+The next step in this evolution was the first version of the PFEM method \cite{Idelsohn04}, which was a robust method designed to solve fluid�structure interaction problems including free surface, breaking waves, flow separations, etc...where lagrangian particles and meshing processes are alternated with the advantage of having a FEM structure that supports the differential equation solvers. An interesting difference between the PFEM and other particle methods as SPH or MPM \cite{Wieckowsky04} is that the mesh particles do not transport mass and consequently have a volume, in contrast PFEM uses non material points that transport fluid properties with fixed density. 
 
-La idea de combinar mallas y partículas móviles fue también utilizada por el denominado Material Point Method (MPM)\cite{Wieckowsky04}.  Sin embargo, la diferencia más importante entre ambos es que, en PFEM, las partículas no representan una cantidad fija de masa, sino que son solo puntos inmateriales que transportan sólo propiedades intrínsecas. Esto último permite incluír una cantidad variable de partículas, lo que simplifica el refinamiento de la malla debido a la posibilidad de utilizar tamaños flexibles de elementos.
+Other methods that also combine both Eulerian and Lagrangian perpectives are the arbitary Eulerian-Lagrangian (ALE)\cite{Donea} methods or the semi-Lagrangian methods \cite{Bermejo}. The Lagrangian perspective makes possible to use a material derivative formulation where the absence of the non linear convective terms transform the Navier-Stokes system into a transformed linear coupled problem. Methodologies like the backward Characteristics method \cite{Bermejo} gives also this possibility but if the process is done in a fixed mesh without any distortion, a diffusion process appears due to the interpolation of the feet of characteristics.
 
-Más allá de la evolución presentada en los párrafos anteriores, sólo pueden nombrarse unos pocos intentos de resolver flujos de fluidos homogéneos con formulación Lagrangiana. Quizá el trabajo más relevante fue realizado por Joe Stam\cite{Stam99}\cite{Stam10}, quien resolvió las ecuaciones de Navier-Stokes en el contexto de los videojuegos dejando el mensaje de que es posible diseñar métodos numéricos simples que puedan ser aplicados en un contexto donde la eficiencia es el punto clave.
+Donea J. Arbitrary Lagrangian-Eulerian ?nite element methods.
+InComputational Methods for Transient Analysis, Belytschko T
+and Hughes TJR (eds). North-Holland: Amsterdam, 1983;
+474�516.
 
-Una de las razones de porqué los métodos Lagrangianos no son directamente aplicables en la solución numérica de flujos homogéneos podría ser el importante costo computacional involucrado en la generación y modificación de mallas, grillas o vecindades. Como fue mencionado, los resolvedores Lagrangianos están principalmente basados en mover partículas, y luego de eso algún tipo de malla debe ser construída dependiendo de las especificaciones de cada método. Por ejemplo, en PFEM se necesita deformar la malla acorde al movimiento de partículas, pero esto es posible sólo hacia cierto límite, más allá del cual hay que remallar. Más allá de que el método ha evolucionado gracias al mallado en paralelo, aparecen otras limitaciones como la impuesta por las no linealidades y otras propias de los esquemas explícitos, se confluye a que obtener eficiencia con el método PFEM original rara vez sea posible.
+Most of the methods cited before including PFEM have a uncomfortable drawback which is the necessity of constructing or controlling the mesh quality during the simulation if an accuracy of the solution has to be maintained. The evaluation of the mesh distortions or the re-meshing processes are always computationally expensive and it would be interesting exploring the possibility of avoiding that step. Consequently a new generation of the PFEM methodology could be developed in such a way that no re-meshing is necessary.
+In contrast to the backward characteristic method where the feet of the characteristic line was searched and located in a mesh element based on the known velocity fields at past time steps, a new strategy known as X-IVAS (Explicit Integration following the Velocity and Acceleration Streamlines)\cite{Idelsohn12}. This methodology uses the streamlines at the present time step instead of the the particle trajectories to convect the fluid particles. The use of this strategy on a fixed mesh and interpolate the particle information to the mesh nodes gives a new improved method known as PFEM-2\cite{Idelsohn12b}. The use of particles give the possibility of solving complex accurate flows with large time steps, while the fixed mesh allows accurate solutions of the fractional step method without any remeshing process. Mesh nodes and moving particles interchange information using interpolation processes using different strategies. A detailed explanation of the PFEM-2 method is given in Section \ref{PFEM_Algorithm}.
 
-Más allá de las limitaciones arriba mencionadas, los esquemas Lagrangianos cuentan con ciertas características que muestran ciertas ventajas respecto a esquemas Eulerianos. La principal es la ausencia del término convectivo en las ecuaciones de balance, lo que convierte las ecuaciones de no simétricas a simétricas y definidas positivas. Para las ecuaciones de Navier-Stokes este hecho es aún mas relevante, debido a que se convierte en lineal la ecuación de conservación de momento. Estas ventajas permiten evitar el uso de términos de estabilización con la fuerte consecuencia de no agregar la típica difusión numérica que se sufre en esos casos, si es que las ecuaciones lineales que quedan son integradas de forma precisa. Es este último punto es dónde se ha hecho énfasis para el desarrollo de la nueva generación de métodos PFEM.
+In this work the PFEM-2 has been used to solve free surface flows in different problems starting from classical benchmark problems as the lid driven cavity and finishing with problems of industrial interest. As in most of the FEM derived methodologies the introduction of a complex geometry is not a problem. The treatment of the free surface has been done simulating both fluids that share the interface and using a scalar function to identify each fluid. To improve the pressure calculation along the free surface different versions of the enrichment technique \cite{Coppola} has been used. The computation of the free surface at different positions has been performed and compared to other well reputed and commercial Eulerian codes with good results but using larger time steps with any loss of numerical stability. 
 
-Recientemente fue desarrollada una nueva estrategia para la integración de las ecuaciones, la cual es llamada eXplicit Integration following the Velocity and Acceleration Streamlines (X-IVAS)\cite{Idelsohn12}. Esta forma de integración, que está basada en seguir las lineas de corriente del flujo congeladas en el presente paso de tiempo, es una forma precisa de resolver las no linealidades de la ecuaciones del flujo. Sumando esta estrategia al método original PFEM, se converge en una nueva metodología llamada PFEM-2\cite{Idelsohn12b}. Este método es capaz de resolver flujos complejos pero permitiendo extender de forma significativa el paso de tiempo. Mas aún, preservando la característica de transportar información en las partículas y utilizar la malla para cálculos secundarios, se confiere al método gran precisión.
-
-La discretización espacial híbrida utilizada por PFEM-2 permite seleccionar la estrategia óptima para el cálculo de cada término de las ecuaciones. Como se explicó más arriba, los términos convectivos son resueltos con partículas utilizando el método X-IVAS. Por otro lado, los términos difusivos encuentran mejores resultados al resolverse en una malla, por lo que para estos se utiliza un esquema FEM clásico.
-
-La mencionada dualidad entre malla y partículas requiere enviar información entre cada tipo de discretización. Para ello se han diseñado tres tipos de estrategias, denominadas \textit{Malla Móvil Partícula Móvil} (MMPM), \textit{Malla Fija Partícula Móvil} (MFPM) y \textit{Malla Fija Partícula Fija} (MFPF) respectivamente. A modo de breve resumen, se puede decir que el primer enfoque, siguiendo la idea original de PFEM, genera una nueva malla a cada paso de tiempo con la posición actualizada de las partículas. El segundo  utiliza una malla fija de fondo e interpola los estados desde/hacia la nube de partículas viajeras. Finalemente, el tercer enfoque también utiliza una malla fija de fondo, pero las partículas son dispuestas en posiciones fijadas con antelación, sin dejarlas que viajen libremente como en los anteriores casos.
-
-Uno de los principales principal objetivos del método PFEM-2 es el de resolver problemas de interés industrial, los cuales usualmente requieren geometrías arbitraria con mallado no estructurado y modelado de la turbulencia, alcanzando números de Reynolds extremos y en dónde es necesario obtener buena precisión en el cálculo de las fuerzas que el fluido ejerce sobre cuerpos sólidos. En este marco, se ha probado que PFEM-2, aún para flujos homogéneos sin superficies libres, es capaz de obtener soluciones precisas y de ser comparativamente rápido cuando es comparado con otros softwares Eulerianos ampliamente utilizados por ingenieros y científicos en la actualidad, con lo cual el método se transforma en una alternativa real para dichos desarrollos.
+  
 
 
 
 
-\section{PFEM Algorithm}
+\section{PFEM Algorithm}\label{PFEM_Algorithm}
 
 Everything is known at time $n$. Subindexes $()_j$ y $()_p$ represents all nodes and particles respectively. Let $\phi$ and $\psi$ the pressure and velocity basis functions.
 
@@ -364,7 +361,7 @@ Multifluids $\theta=1$ y $p^n=0$
 \end{equation}
 
 \begin{equation}\label{Step2b}
-\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \int_{n}^{n+1} \mathbf{a}^{n}(\mathbf{x}^{\alpha}_{p}) + \mathbf{f}^{\alpha} (\mathbf{x}^{\alpha}_{p})  \ d\alpha 
+\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \int_{n}^{n+1} \mathbf{a}^{n}(\mathbf{x}^{\alpha}_{p}) + \mathbf{f}^{\alpha} (\mathbf{x}^{\alpha}_{p})  \ d\alpha
 \end{equation}
 
   \item Projection Stage: Project velocity and level set function from particles to the mesh:
@@ -377,19 +374,19 @@ Multifluids $\theta=1$ y $p^n=0$
 \end{equation}
 
   \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion with FEM:
-  
+
  \begin{equation}\label{Step4a}
 \displaystyle \widehat{\mathbf{v}}^{n+1}_{j}=\widehat{\widehat{\mathbf{v}}}^{n+1}_{j} + \theta \Delta t \mathbf{a}^{n+1}_{\tau}
 \end{equation}
 
- \item Poisson Stage: Search the pressure value solving the Poisson equation system with FEM: 
+ \item Poisson Stage: Search the pressure value solving the Poisson equation system with FEM:
  \begin{equation}\label{Step5a}
   \ \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] = \nabla \cdot \widehat{\mathbf{v}}_j^{n+1}
  \end{equation}
 
  \item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections:
  \begin{equation}\label{Step6a}
-  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ d\Omega\ - \int_{\Omega} \Delta t \ (\mathbf{a}_j^{n+1} - \mathbf{a}_j^{n})\ d\Omega 
+  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ d\Omega\ - \int_{\Omega} \Delta t \ (\mathbf{a}_j^{n+1} - \mathbf{a}_j^{n})\ d\Omega
  \end{equation}
   \begin{equation}\label{Step6b}
   \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p})
@@ -404,8 +401,8 @@ Multifluids $\theta=1$ y $p^n=0$
 \section{Second order improvements.}
 
 
-The well known \textit{Brezzi-Babüska} condition (also called \textit{inf-sup} condition) determinates the interpolation families for the velocity and pressure to ensure stability and convergence in the Stokes problem. Originally, the PFEM-2 method uses the family P1/P1 (linear triangular elements) to approximate the variables $\mathbf{u}$ and $p$ on the mesh\cite{Idelsohn12b}. % because is a computationally cheap approach. 
-However, this family does not satisfy the \textit{inf-sup} condition, then it is unstable, so it requires to use stabilization at the Poisson step. Maybe carrying on the extra cost of the stabilization is possible, but using linear elements does not provided good accuracy with coarser meshes. Using finer meshes in PFEM-2 introduce another extra cost due to the necessity for use more particles to approximate the fields and update nodal values. 
+The well known \textit{Brezzi-Babüska} condition (also called \textit{inf-sup} condition) determinates the interpolation families for the velocity and pressure to ensure stability and convergence in the Stokes problem. Originally, the PFEM-2 method uses the family P1/P1 (linear triangular elements) to approximate the variables $\mathbf{u}$ and $p$ on the mesh\cite{Idelsohn12b}. % because is a computationally cheap approach.
+However, this family does not satisfy the \textit{inf-sup} condition, then it is unstable, so it requires to use stabilization at the Poisson step. Maybe carrying on the extra cost of the stabilization is possible, but using linear elements does not provided good accuracy with coarser meshes. Using finer meshes in PFEM-2 introduce another extra cost due to the necessity for use more particles to approximate the fields and update nodal values.
 
 An alternative proposal is presented in this report. The idea is using the called Taylor-Hood finite elements\cite{HoodTaylor73}, which are presented in Figure \ref{fg:taylor-hood}. They consist on a quadratic approximation for the velocity and continuous linear approximation for pressure (family P2/P1). It is demonstrated that this family is stable because it satisfies the \textit{inf-sup} condition. However, that advantage could not be useful if the cpu-time required to reach some accuracy is larger than using P1/P1 elements.
 
@@ -425,7 +422,7 @@ Cartesian meshes were used for all cases. The name of the meshes indicates how m
 
 \subsubsection{Re1000}
 
-It was simulated using $\Delta t = 0.02$. Final simulation time $t_{final} = 50[s]$. 
+It was simulated using $\Delta t = 0.02$. Final simulation time $t_{final} = 50[s]$.
 
 \begin{figure}[htbp]
   \begin{center}
@@ -557,45 +554,45 @@ It was simulated using $\Delta t = 0.01$. Final simulation time $t_{final} = 75[
 \subsection{Summary}
 
   \begin{itemize}
-   \item With the same number of nodes, second order achieve better accuracy than first order. 
+   \item With the same number of nodes, second order achieve better accuracy than first order.
    \item With the same number of nodes, second order might be more efficient (it requires less elements and, then, less particles).
    \item The conclusion about the efficiency is only applicable to incompressible homogeneous flows with constant parameters (viscosity, density, etc). However, that asseveration can be modified when problems with non-constant diffusion-matrices will be required (turbulence modeling, multi-fluids. etc). Also several tests have demonstrated that the matrix storage is only useful for small or medium problems, but it is not applicable to large problems (more than 1M elements) because in those cases, it is slower than the traditional elemental assemble at each time step.
   \end{itemize}
-  
-\section{Free surface flows improvements}. 
+
+\section{Free surface flows improvements}.
 
 Most of the details presented in this section have been reported in \cite{Idelsohn13c}. However, other relevant points are explained here. There are several, but not large, differences between the pfem-2 algorithm for homogeneous flows and the multi-fluids version. The main difference is that a density jump appears and it is necessary to include strategies to capture correctly the interface between the fluids.
 	
 	\subsection{Streamline Integration Stage}
 
     When multi-fluid flows present a large jump in the density properties, for instance water ($\rho \approx 1000 [Kg/m^3]$) and air ($\rho \approx 1 [Kg/m^3]$), it is a necessary to introduce a special strategy in the iterative algorithm to obtain acceptable convergence rates. For instance, the strategy to introduce the last time step pressure field as the initial value for the first iteration of the next time step is not the best one. This is caused by the fact that the particles can move across several elements and through the interface during a time step (Figure 5.1) and, therefore, the pressure gradient of the previous time step would introduce a poor and even unstable approximation of the pressure forces.
-       
+
     Therefore, at each time-state, the value of the pressure is set to zero in order to avoid large errors in the evaluation of the pressure gradients in the initial value of the iterative process. As consequence of that, the acceleration over the particle only is due to viscous force and gravity force (pressure gradient is considered null) for this step.
-       
-    We are following the most similar path to the real trajectory of the particle. For the case of a water particle on water zones, we consider that the water streamlines are the best option. But on air zones, if the particle follows the air streamlines, poor approximations to the real trajectory will be obtained. Therefore, in the last situation, the water particle leaves the streamline and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model. 
+
+    We are following the most similar path to the real trajectory of the particle. For the case of a water particle on water zones, we consider that the water streamlines are the best option. But on air zones, if the particle follows the air streamlines, poor approximations to the real trajectory will be obtained. Therefore, in the last situation, the water particle leaves the streamline and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
 \subsection{Projection Stage}
-      
+
     In the current implementation, the element shape functions are used as weighting functions to transfer information to the nodes, which provides a natural approach in the finite element space. For the velocity we use the strategy used also on pfem2 for homogeneous flows:
-    
+
     \begin{equation}
       \hat{\hat{\vv}}_j^{n+1} = \boldsymbol{\pi}(\hat{\hat{\vv}}_p^{n+1}) = \dfrac{\sum_{p=1}^P N_j(\xx_p^{n+1}) \hat{\hat{\vv}}_p^{n+1} }{\sum_{p=1}^P N_j(\xx_p^{n+1})}
     \end{equation}
 
     A major challenge in the simulation of multi fluids is the accurate description of the evolution of the internal interface. The location of the interface is in general unknown and coupled to the local flow field. It is essential that the interface remains sharp and can fold, break and merge. Large jumps of fluid density and viscosity across the interface need to be properly taken into account in order to satisfy the momentum balance at the vicinity of the interface.
-    
-    In the case of PFEM with fixed mesh, the interfaces are inside the elements sharing particles with different properties. The distribution of particles inside each element can define complicated curves that become impossible to manage with simple shape functions. For this reason the instantaneous local interface inside each element is defined by a line (a plane in 3D) using the following strategy: over the nodes is defined a \textit{distance} function $\varphi(\xx)$, which is based on level set approaches\cite{Osher01}. On the interface $\varphi(\xx)=0$, on water zones $\varphi(\xx)>0$, and $\varphi(\xx)<0$ on air zones. 
-    
+
+    In the case of PFEM with fixed mesh, the interfaces are inside the elements sharing particles with different properties. The distribution of particles inside each element can define complicated curves that become impossible to manage with simple shape functions. For this reason the instantaneous local interface inside each element is defined by a line (a plane in 3D) using the following strategy: over the nodes is defined a \textit{distance} function $\varphi(\xx)$, which is based on level set approaches\cite{Osher01}. On the interface $\varphi(\xx)=0$, on water zones $\varphi(\xx)>0$, and $\varphi(\xx)<0$ on air zones.
+
     To project the values of this \textit{distance} function from particles to the nodes, also the element shape functions are used:
-    
+
     \begin{equation}
       {\psi}_j^{n+1} = \dfrac{\sum_{p=1}^P N_j(\xx_p^{n+1}) {\psi}_p^{n+1} }{\sum_{p=1}^P N_j(\xx_p^{n+1})}
     \end{equation}
-    
+
     where ${\psi}_p^{n+1} = 1$ for water particles and  ${\psi}_p^{n+1} = -1$ for air particles.
-    
-    It must be noted that the instantaneous definition of the interface does not affect the physical properties of the particles, which are preserved at all times. This means, for instance, that even if an air particle is momentarily on a water regime, it will remain as an air particle for further determination of the interface position. 
-    
+
+    It must be noted that the instantaneous definition of the interface does not affect the physical properties of the particles, which are preserved at all times. This means, for instance, that even if an air particle is momentarily on a water regime, it will remain as an air particle for further determination of the interface position.
+
     The strategy for the interface definition is derived from the level set method. But, because the function $\psi$ is transported following a Lagrangian strategy with the particles, it does not suffer of numerical problems transporting sharp interfaces, therefore it must not be reinitialized.
 
 \subsection{Enrichment for pressure gradient discontinuity capturing}
@@ -603,8 +600,8 @@ Most of the details presented in this section have been reported in \cite{Idelso
   In order to capture properly the jump of the pressure gradient on the interface between the fluids, the enrichment proposed by Coppola-Owen and Codina\cite{Coppola05} is used.
 
   Briefly, the main idea is to enrich the finite element space for the pressure in the elements cut by the interface. This is done including a new shape function $N^*$ that has a constant gradient on each side of the interface, its value is zero at the element nodes and is $C^0$ continuous in the element. Figure \ref{fg:enrichment} presents a graphical description of this new shape function.
-  
-      
+
+
   \begin{figure}[H]
   \centering
     \subfloat[]{
@@ -621,13 +618,13 @@ Most of the details presented in this section have been reported in \cite{Idelso
 \end{figure}
 
    Therefore, the pressure is now interpolated in the cut element following:
-   
+
    \begin{equation}
       p_h(\xx) = \sum_{i=1}^{nnodes} (N_i(\xx) \ p_i) + N^*(\xx) \ p^*
    \end{equation}
 
-   where $N_i$ are the traditional linear shape functions, and $N^*$ is defined as a linear combination of them (Equations \ref{N_enrichment-2} and \ref{N_enrichment-1}), 
-   
+   where $N_i$ are the traditional linear shape functions, and $N^*$ is defined as a linear combination of them (Equations \ref{N_enrichment-2} and \ref{N_enrichment-1}),
+
    \begin{align}
     N^*|_{\Omega_2} = & \ k_1 N_1 \label{N_enrichment-2}\\
     N^*|_{\Omega_1} = & \ k_2 N_2 + k_3 N_3 \label{N_enrichment-1}
@@ -644,23 +641,23 @@ Most of the details presented in this section have been reported in \cite{Idelso
     \vv^{n+1}\  = \ \hat \vv^{n+1} - \dfrac{\Delta t}{\rho} \ [\nabla (\delta p)]^{n+1}
     \label{correction_cont}
   \end{equation}
-  
+
   which remains
   \begin{equation}
    \dfrac{\Delta t}{\rho} \ \nabla \cdot [\nabla(\delta p^{n+1})] = \nabla \cdot \hat \vv_j^{n+1}
   \end{equation}
-  
+
   integrating, weighting with local shape functions and weakening, we can obtain the elemental contribution
   \begin{equation}
    [\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla N^T \nabla N \ d\Omega] \delta p^{n+1} = [\int_{\Omega^e} \nabla N^T \phi \ d\Omega] \hat \vv_j^{n+1}
   \end{equation}
-  
+
   The main advantage of the above proposed enrichment shape functions is that the added degree of freedom is local to the element cut by the interface and can therefore be condensed after the element matrix has been computed and before assembly.
-  
+
   Therefore, if the element is not cut by the interface, the traditional lineal shape functions are used for weighting and the variables are approximated in terms of that space: $\delta p^{n+1}(\xx) = \sum_i N_i(\xx) \delta p^{n+1}_i$ and $\hat{\vv}^{n+1}(\xx) = \sum_i \phi_i(\xx) \hat{\vv}^{n+1}_i$, being $\phi_i = N_i$.
-  
+
   On the other hand, if the element is cut by the interface, we choose $N = [N_1; N_2; N_3; N^*]$ as weight shape functions and to approximate the pressure field (keeping only the traditional shape functions $\phi = [N_1; N_2; N_3]$ to approximate the velocity field). Then, for the split elements, the system before the condensation is:
-  
+
   \begin{equation*}
    \begin{pmatrix}
       L_{std} & L_{std}^*\\
@@ -674,7 +671,7 @@ Most of the details presented in this section have been reported in \cite{Idelso
       D_{std}\\
       D^*
    \end{pmatrix}\;
-   (\hat{\vv}^{n+1})   
+   (\hat{\vv}^{n+1})
    \label{poisson}
 \end{equation*}
 
@@ -686,33 +683,33 @@ where
  \item ${(D_{std})}_{ij} = \int_{\Omega^e} \nabla N_i^T \phi_j \ d\Omega$ with $[i,j] = 1,2,3$ (size [$3$x$3$])
  \item ${(D^*)}_{j} = \int_{\Omega^e}  \nabla {N^*}^ \phi_j \ d\Omega$ with $j = 1,2,3$ (size [$1$x$3$])
 \end{itemize}
-  
+
   Therefore, the system is statically condensed obtaining:
-  
+
   \begin{equation}
    [L_{std} - L_{std}^*\frac{1}{L^*}{L_{std}^*}^T](\delta p^{n+1}) = [D_{std}- L_{std}^*\frac{1}{L^*}D^*](\hat{\vv}^{n+1})
    \label{condensing}
   \end{equation}
-  
+
   If we are interested in solving the system in absolute pressure terms, the final system is
-  
+
   \begin{equation}
   [L_{std} - L_{std}^*\frac{1}{L^*}{L_{std}^*}^T](p^{n+1}) = [D_{std}- L_{std}^*\frac{1}{L^*}D^*](\hat{\vv}^{n+1}) + [L_{std} - L_{std}^*\frac{1}{L^*}{L_{std}^*}^T] (p^n)
    \label{condensing-abs}
   \end{equation}
-  
-  
+
+
 \subsection{Correction Stage}
 
  This stage is typical from fractional steps. However, the new degree of freedom for the pressure, which was condensed previously, must be taken into account in this step to calculate the correct pressure gradient. Therefore, we must \textit{recover} $p^*$ doing:
- 
+
   \begin{equation}
   {p^*}^{n+1} = \frac{1}{L^*}[D^* \hat{\vv}^{n+1} - {L_{std}^*}^Tp^{n+1} + {L_{std}^*}^Tp^{n} + L^*{p^*}^n]
   \label{recovering}
   \end{equation}
-  
+
  Finally, the equation system presented in Equation \ref{correction} must be solved.
- 
+
  \begin{equation}
   \int_{\Omega} N \rho \vv^{n+1} d\Omega = \int_{\Omega} N \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ [\int_{\Omega} N_{std} \nabla p^{n+1} d\Omega + \int_{\Omega} N^* \nabla p* d\Omega]
   \label{correction}
@@ -726,7 +723,7 @@ where
   \end{equation}
   where $\delta \vv_j^{n+1} = \vv_j^{n+1} - \hat \hat \vv_j^{n+1}$.
 
-  
+
 \subsection{Iterations to improve the pressure-velocity coupling}
 
 The initial value of the pressure iterations is set to zero in order to avoid large errors in the evaluation of the pressure gradients in the initial value of the iterative process. It must be noticed that despite this first iteration of the pressure calculation is
@@ -748,7 +745,7 @@ Free surface oscillations of a liquid confined in a closed container (sloshing p
 For the studied cases, the sloshing phenomenon is produced by a horizontal harmonic excitation $x = a_h (\sin \omega_h t)$, where $a_h$ is the excitation amplitude and $\omega_h$ is the excitation frequency of the rectangular tank where the two fluid phases are contained. The tank is divided in two parts, the bottom part is water with a density of $\rho_{I} = 1000 [kg/m^3]$ and the top part contains a fluid
 with different densities $\rho_{II} = 1.3, 50, 200, 800 [kg/m^3]$, depending on the case studied\cite{Goni13}. The dimensions of the
 tank are $a$(width) by $b$(height) and the initial free surface is at height $h$ from the bottom of the tank, see Figure \ref{fg:ansari-config}. The free surface starts the simulation as a horizontal line and is subsequently deformed by the tank excitation and the flow dynamics.
-   
+
 \begin{figure}[H]
   \begin{center}
       \includegraphics[width=.7\columnwidth]{images/ansari_config.pdf}
@@ -757,7 +754,7 @@ tank are $a$(width) by $b$(height) and the initial free surface is at height $h$
 \end{figure}
 
 For the different cases in this report, a 2D rectangular tank $a=1.0[m]$ width by $b=1.0[m]$ height is used. The initial height of the interface is $h=0.5[m]$ and the lateral excitation applied is $x=0.05\sin(3t)$. The simulations were performed considering the
-flow as laminar and non-viscous, hence no turbulence model was used and slip boundary conditions are taken. Density was modified according to the considered ratios $\sigma=\frac{\rho{II}}{\rho{I}}$. A two dimensional Cartesian mesh of $450\times225$, splitted into triangles, has been used in all cases. 
+flow as laminar and non-viscous, hence no turbulence model was used and slip boundary conditions are taken. Density was modified according to the considered ratios $\sigma=\frac{\rho{II}}{\rho{I}}$. A two dimensional Cartesian mesh of $450\times225$, splitted into triangles, has been used in all cases.
 
 Reference results for this case are taken from \cite{Goni13} which uses the codes STARCCM+ and \OF to obtain numerical solutions and reports the free surface displacement on the left wall of the container. Those simulations use the same grid as presented above, but, in order to avoid numerical instabilities, they limit the $CFL$ number to $CFL_{max}=0.5$. In PFEM-2 simulations do not exist that restriction then $\Delta t$ is fixed to $0.1$, reaching $CFL_{max}\approx5$.
 
@@ -766,16 +763,16 @@ Reference results for this case are taken from \cite{Goni13} which uses the code
     \subfloat[]{
 	  \label{fg:ansari-1}         %% Etiqueta para la primera subfigura
 	  \includegraphics[width=.8\columnwidth]{images/ansari_1.pdf}
-    } \\ 
+    } \\
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-2}         %% Etiqueta para la segunda subfigura
 	  \includegraphics[width=.8\columnwidth]{images/ansari_2.pdf}
-    } \\ 
+    } \\
     \subfloat[]{
 	  \label{fg:ansari-3}         %% Etiqueta para la primera subfigura
 	  \includegraphics[width=.8\columnwidth]{images/ansari_3.pdf}
-    } \\ 
+    } \\
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-4}         %% Etiqueta para la segunda subfigura
@@ -793,7 +790,7 @@ Figure \ref{fg:ansari-results} presents results with different density ratios. F
 Computing the dissipation due to wave-breaking remains a challenging problem in the computational fluid mechanics context. In order to analyze the solution with PFEM-2 of two-phase viscous incompressible flows, the evolution of a viscous standing wave has been chosen. This is a classical problem in the scientific literature for which an approximate analytical solution is available for small amplitude perturbations\cite{Lighthill01} and it is of practical interest since it is related to the propagation of gravity waves.
 
 The chosen standing wave configuration consists in a rectangular tank with length $L$ and a water filling height of $H = L/2$. This setup is taken from \cite{Colagrossi12}, and in the Figure \ref{fg:standing-wave-config} a sketch of this configuration is displayed. The wave length is $\lambda = L$, $k$ is the corresponding wave number (i.e. $k = 2\pi/\lambda$), $A$ is the wave amplitude and denotes the ratio $\epsilon=2A/H$.
-   
+
 \begin{figure}[H]
   \begin{center}
       \includegraphics[width=.9\columnwidth]{images/standing_wave.pdf}
@@ -818,7 +815,7 @@ It can be demonstrated that the approximate solution is well posed only for $Re\
 
 The kinetic attenuation is governed by the coefficient of the exponential $\beta_l = 4\nu k^2$, which depends on the wave number and on the kinematic viscosity $\nu = \mu/\rho_{I}$. Lately work\cite{Antuono13} has demonstrated that generally, the Equation \ref{kin-eq} overestimates the dissipations, especially when the Reynolds number is not very large. Then an improved damping rate is proposed in that paper $\beta = 4\nu k^2 -  2\sqrt{2}k^{11/4}Re^{-3/2}+O(Re^{-2})$, which is next used for comparisons.
 
-To accomplish the linear solution hypothesis, the PFEM-2 simulations have been implemented by using a free-slip condition for the velocity and a Neumann condition for the pressure along each boundary of the tank. Also, the parameters $L=2$, $A=0.05$ and $g=1$ have been selected. 
+To accomplish the linear solution hypothesis, the PFEM-2 simulations have been implemented by using a free-slip condition for the velocity and a Neumann condition for the pressure along each boundary of the tank. Also, the parameters $L=2$, $A=0.05$ and $g=1$ have been selected.
 
 Several Reynolds number have been selected to compare with the approximate analytic dissipation, solving into a grid with $H/\Delta x=50$ or $H/\Delta x=100$. Figure bla bla ....
 
@@ -856,7 +853,7 @@ On the other hand, the evolution of the instability is shown in Figure \ref{fg:r
 
 The objectives of this section are to compare experimental measurements on dam-break flow over a dry horizontal bed with the numerical approximation carried out with the pfem algorithm. The extensive set of experimental data is extracted from \cite{Lobovsky13}, where the dynamics of the dam break wave impacting a vertical wall downstream the dam, with emphasis on the pressure loads and surface evolution after the dam burst, are presented.
 
-Computational configuration of the tank used in experimental cases is presented in Figure \ref{fg:dambreak-config}. There, the locations of water level measuring points and pressure sensors are shown. In this report only the case with $H=300[mm]$ is analyzed. Two-phase non-viscous flow simulation is carried on, with $\rho_{water}=1000[kg/m^3]$ and $\rho_{air}=1[kg/m^3]$ with a gravity force $\mathbf{g}=-10\ \hat{j} [m/s^2]$. The 2D computational grid used has $322\times120$ nodes, conforming a mesh with around $80000$ triangles. Boundary conditions are slip on all walls, and $\Delta t$ is fixed to $0.1$, which allows to reach $CFL_{max}\approx20$ when free surface impacts the downstream wall. 
+Computational configuration of the tank used in experimental cases is presented in Figure \ref{fg:dambreak-config}. There, the locations of water level measuring points and pressure sensors are shown. In this report only the case with $H=300[mm]$ is analyzed. Two-phase non-viscous flow simulation is carried on, with $\rho_{water}=1000[kg/m^3]$ and $\rho_{air}=1[kg/m^3]$ with a gravity force $\mathbf{g}=-10\ \hat{j} [m/s^2]$. The 2D computational grid used has $322\times120$ nodes, conforming a mesh with around $80000$ triangles. Boundary conditions are slip on all walls, and $\Delta t$ is fixed to $0.1$, which allows to reach $CFL_{max}\approx20$ when free surface impacts the downstream wall.
 
 \begin{figure}[htbp]
   \begin{center}
@@ -876,7 +873,7 @@ Figure \ref{fg:dambreak-h} shows the comparison between experimental and numeric
     \subfloat[]{
 	  \label{fg:dambreak-h2}         %% Etiqueta para la segunda subfigura
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_h2.pdf}
-    } \\ 
+    } \\
     \subfloat[]{
 	  \label{fg:dambreak-h3}         %% Etiqueta para la primera subfigura
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_h3.pdf}
@@ -891,7 +888,7 @@ Figure \ref{fg:dambreak-h} shows the comparison between experimental and numeric
 \end{figure}
 
 The impact pressure was measured with four sensors at the vertical wall at the end of the downstream flume, as described in Figure \ref{fg:dambreak-config}. The statistical analysis of the pressure peaks, rise times and the occurrence time, i.e. the time between
-the opening of the dam gate and the occurrence of the impact, is presented in Figure \ref{fg:dambreak-p}. The shown pressure $P$ is non-dimensionalized with regards to the hydrostatic pressure at the bottom of the reservoir and denoted as $P^∗$. 
+the opening of the dam gate and the occurrence of the impact, is presented in Figure \ref{fg:dambreak-p}. The shown pressure $P$ is non-dimensionalized with regards to the hydrostatic pressure at the bottom of the reservoir and denoted as $P^∗$.
 
 In the reference work, the analysis is focused on peaks events. It can be noticed that the highest peak is recorded by sensor number 1 which is the sensor receiving the full impact, whilst the pressure of the other sensors is given by the run up of the flow. It can also be observed that sensor number 4, i.e. the sensor located at the highest position, does not show a pure impact event, see Figure \ref{fg:dambreak-p4}, and actually the maximum for this sensor is obtained later in time, when the water falls back after running along the wall. Numerical solution behavior follows the mentioned conclusions, but the pressure values are not between the statistical limits of experimental data. Also, a discrepancy can be observed with the peaks times for sensors $1$ to $3$. This difference can be assigned to the numerical simplification which does not model the gate movement.
 
@@ -905,7 +902,7 @@ In the reference work, the analysis is focused on peaks events. It can be notice
     \subfloat[]{
 	  \label{fg:dambreak-p2}         %% Etiqueta para la segunda subfigura
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_p3.pdf}
-    } \\ 
+    } \\
     \subfloat[]{
 	  \label{fg:dambreak-p3}         %% Etiqueta para la primera subfigura
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_p2.pdf}
@@ -929,7 +926,7 @@ In the reference work, the analysis is focused on peaks events. It can be notice
     \subfloat[]{
 	  \label{fg:dambreak-2}
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_2.jpg}
-    } \\ 
+    } \\
     \subfloat[]{
 	  \label{fg:dambreak-3}
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_3.jpg}
@@ -947,7 +944,7 @@ In the reference work, the analysis is focused on peaks events. It can be notice
     \subfloat[]{
 	  \label{fg:dambreak-6}
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_6.jpg}
-    } \\ 
+    } \\
     \subfloat[]{
 	  \label{fg:dambreak-7}
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_7.jpg}
@@ -982,40 +979,40 @@ All the authors want to thank Mr. Hugo Gee for proof-reading the paper.
 \bibliography{mybib}
 
 % \begin{thebibliography}{99}
-% 
+%
 % \bibitem{HoodTaylor73}
 % P.~Hood and C.~Taylor, \emph{Numerical solution of the Navier–Stokes equations using the finite
 % element technique}, Comput. Fluids, 1:1–28, 1973.
-% 
+%
 % \bibitem{Idelsohn12b}
 % S.R. Idelsohn, N.M. Nigro, J.M. Gimenez, R. Rossi and J. Marti, \emph{A fast and accurate method to solve the incompressible Navier-Stokes equations}, Engineering Computations, 30-Iss:2:197-222, 2013.
-% 
+%
 % \bibitem{Lobovsky13}
 % L. Lobovsky, E. Botia-Vera, F. Castellana, J. Mas-Soler and A. Souto-Iglesias , \emph{Experimental investigation of dynamic pressure loads during dam break}, Journal of Fluids and Structures, submitted, 2013.
-% 
+%
 % % \bibitem{Strubelj11}
 % % L. Strubelj and I. Tiselj, \emph{Two-fluid model with interface sharpening}, Int. J. Numer. Meth. Engng, 85:575–590, 2011
-% 
+%
 % \bibitem{Osher01}
 % S.J. Osher and R.P. Fedkiw, \emph{Level set methods: an overview and some recent results}, Journal of Computational Physics, 169:463–502, 2001
-% 
+%
 % \bibitem{Goni13}
 % Jes\'us G\'omez-Go\~ni, Carlos A. Garrido-Mendoza, Jos\'e Luis Cerc\'os and Leo Gonz\'alez, \emph{Two phase analysis of sloshing in a rectangular container with Volume of Fluid (VOF) methods}, Ocean Engineering 73:208–212, 2013
-% 
+%
 % \bibitem{Guermond00}
 % J.L. Guermond and L. Quartapelle, \emph{A Projection FEM for Variable Density Incompressible Flows}, Journal of Computational Physics 165, 167–188, 2000.
-% 
+%
 % \bibitem{Tryggvason88}
 % G. Tryggvason, \emph{Numerical Simulations of the Rayleigh-Taylor Instability}, Journal of Computational Physics 75, 253-282, 1988.
-% 
+%
 % \bibitem{Lighthill01}
 % J. Lighthill, \emph{Waves in fluids}, Cambridge University Press, 2001.
-% 
+%
 % \bibitem{Colagrossi12}
 % A. Colagrossi, A. Souto-Iglesias, M. Antuono and S. Marrone, \emph{Modeling of gravity wave viscous attenuation}, 7th international SPHERIC workshop, Prato-Italy, 2012.
-% 
-% 
-% 
+%
+%
+%
 % \end{thebibliography}
 
 
