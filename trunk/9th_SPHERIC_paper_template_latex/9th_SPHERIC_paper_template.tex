@@ -569,17 +569,15 @@ The last means, for instance, that even if a water particle is momentarily on an
  
 After \textit{Projection Stage}, each node $j$ has a distance function-like value $\lambda_j$ which is used to determinate the instantaneous local interface inside each element. That zone is defined by an iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$
 
+%%HASTA ACA ESTA CHEQUEADO EL CAPITULO DE PFEM MULTIFLUIDS
 \subsection{Shape function enrichments for pressure gradient discontinuity capturing}
 
 In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
 
-In order to improve the approximation, an enriched space has been used for the pressure gradients based on the one presented by Coppola [36]. This new degree of freedom is statically condensed within each element in the pressure equation and then recovered in the correction step. In this manner, the number of unknowns remains constant in time and, therefore, the system matrix does not have to be rebuilt at each time step, which is an expensive task due to memory allocation.  The gradient enrichment is illustrated in Fig. 5.3a.
-On the other hand, a new enrichment function has been developed to account for pressure discontinuities. The function (Figure 5.3b) ensures a constant jump across the interface, which allows us to account for the effect of surface tension. Despite that has not been employed in the examples presented in this work, the effectiveness of combining the two enrichments functions has been validated for scalar diffusion and Stokes problems with discontinuities by comparing the results against conforming meshes [41]
+Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $N^*$ is ensuring that $N^*(\xx_A)=1$ and $N^*(\xx_1)=N^*(\xx_2)=N^*(\xx_3)=0$. 
 
-  In order to capture properly the jump of the pressure gradient on the interface between the fluids, the enrichment proposed by Coppola-Owen and Codina\cite{Coppola05} is used.
-
-  Briefly, the main idea is to enrich the finite element space for the pressure in the elements cut by the interface. This is done including a new shape function $N^*$ that has a constant gradient on each side of the interface, its value is zero at the element nodes and is $C^0$ continuous in the element. Figure \ref{fg:enrichment} presents a graphical description of this new shape function.
-
+Another set of enrichment functions is presented in Figure \ref{fg:enrichment2}, where, as in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space it is possible to ensure continuity between elements, but paying the cost of having to rebuild the system matrix at each time step, which is an expensive task due to memory allocation.
+This enrichment space is constructed following $N_A^*(\xx_A)=1$, $N_B^*(\xx_B)=1$ and $N_A^*(\xx_1)=N_A^*(\xx_2)=N_A^*(\xx_3)=N_A^*(\xx_B)=0$ and $N_B^*(\xx_1)=N_B^*(\xx_2)=N_B^*(\xx_3)=N_B^*(\xx_A)=0$ .
 
   \begin{figure}[H]
   \centering
@@ -592,7 +590,7 @@ On the other hand, a new enrichment function has been developed to account for p
 	  \label{fg:enrichment2}         %% Etiqueta para la segunda subfigura
 	  \includegraphics[width=.49\columnwidth]{images/enrichment2.pdf}
     }
-   \caption{2D Enrichment functions. Figure \ref{fg:enrichment1} shows an enrichment using only one enrichment function $N^*$ which $N^*(\xx_A)=1$ and $N^*(\xx_1)=N^*(\xx_2)=N^*(\xx_3)=0$. Figure \ref{fg:enrichment2} presents the enrichment functions which are constructed following $N_A^*(\xx_A)=1$,$N_B^*(\xx_B)=1$ and $N_A^*(\xx_1)=N_A^*(\xx_2)=N_A^*(\xx_3)=N_A^*(\xx_B)=N_B^*(\xx_1)=N_B^*(\xx_2)=N_B^*(\xx_3)=N_B^*(\xx_A)=0$ .}
+   \caption{2D Enrichment functions. Figure \ref{fg:enrichment1} the enrichment proposed by Coppola and Figure \ref{fg:enrichment2} presents an enrichment space that can be used to ensure continuity between elements.}
    \label{fg:enrichment}                %% Etiqueta para la figura entera
 \end{figure}
 
@@ -622,7 +620,6 @@ Therefore, at each time-state, the value of the pressure is set to zero in order
     We are following the most similar path to the real trajectory of the particle. For the case of a water particle on water zones, we consider that the water streamlines are the best option. But on air zones, if the particle follows the air streamlines, poor approximations to the real trajectory will be obtained. Therefore, in the last situation, the water particle leaves the streamline and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
     
-\subsection{Enrichment for pressure gradient discontinuity capturing}
 
 \subsection{Pressure Stage}
 
