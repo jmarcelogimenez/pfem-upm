@@ -1,0 +1,63 @@
+Everything is known at time $n$. Subindexes $()_j$ y $()_p$ represents all nodes and particles respectively. Let $\phi$ and $\psi$ the pressure and velocity basis functions.
+
+\begin{enumerate}
+  \item Acceleration Stage: Calculate acceleration on the mesh nodes.
+
+
+  \begin{equation}\label{Step1a}
+\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v} \psi_j d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v} \nabla \psi_j d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v} \psi_j d\Omega
+\end{equation}
+
+\begin{equation}\label{Step1b}
+\int_{\Omega}\mathbf{a}^{n}_{p}\psi_j d\Omega=-\int_{\Omega}\nabla p \psi_j d\Omega=\int_{\Omega} p \nabla \psi_j d\Omega - \int_{\Gamma} p \psi_j d\Omega
+\end{equation}
+
+\begin{equation}\label{Step1c}
+\mathbf{a}^{n}=\mathbf{a}^{n}_{p} + (1-\theta)\mathbf{a}^{n}_{\tau}
+\end{equation}
+
+Multifluids $\theta=1$ y $p^n=0$
+
+  \item X-IVAS Stage: Evaluate new particle position and intermediate velocity following frozen fields
+
+  \begin{equation}\label{Step2a}
+\mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{n}^{n+1} \mathbf{v}^{n}(\mathbf{x}^{\alpha}_{p}) \ d\alpha
+\end{equation}
+
+\begin{equation}\label{Step2b}
+\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \int_{n}^{n+1} \mathbf{a}^{n}(\mathbf{x}^{\alpha}_{p}) + \mathbf{f}^{\alpha} (\mathbf{x}^{\alpha}_{p})  \ d\alpha
+\end{equation}
+
+  \item Projection Stage: Project velocity and level set function from particles to the mesh:
+  \begin{equation}\label{Step3a}
+\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \mathbf{v}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
+\end{equation}
+
+\begin{equation}\label{Step3b}
+\displaystyle \lambda^{n+1}_{j}=\frac{\sum_{p} \lambda^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
+\end{equation}
+
+  \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion with FEM:
+
+ \begin{equation}\label{Step4a}
+\displaystyle \widehat{\mathbf{v}}^{n+1}_{j}=\widehat{\widehat{\mathbf{v}}}^{n+1}_{j} + \theta \Delta t \mathbf{a}^{n+1}_{\tau}
+\end{equation}
+
+ \item Poisson Stage: Search the pressure value solving the Poisson equation system with FEM:
+ \begin{equation}\label{Step5a}
+  \ \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] = \nabla \cdot \widehat{\mathbf{v}}_j^{n+1}
+ \end{equation}
+
+ \item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections:
+ \begin{equation}\label{Step6a}
+  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ d\Omega\ - \int_{\Omega} \Delta t \ (\mathbf{a}_j^{n+1} - \mathbf{a}_j^{n})\ d\Omega
+ \end{equation}
+  \begin{equation}\label{Step6b}
+  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p})
+  \end{equation}
+  where $\delta \mathbf{v}_j^{n+1} = \mathbf{v}_j^{n+1}-\widehat{\widehat{\mathbf{v}}}_j^{n+1}$.
+
+%  \item 
+%  \item 
+%  \item 
+\end{enumerate}

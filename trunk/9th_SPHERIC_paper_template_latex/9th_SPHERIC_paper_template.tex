@@ -243,6 +243,7 @@
 \hyphenation{op-tical net-works semi-conduc-tor IEEEtran}
 
 
+
 \usepackage{fancyheadings}
 \usepackage{float}
 \usepackage{afterpage}
@@ -269,29 +270,29 @@
 \begin{document}
 
 % paper title
-\title{p-FEM }
+\title{Applications and improvements of the PFEM (particles + finite elements) methodology to free surface flows.}
 
 
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Authors Name/s per 1st Affil.}
-\IEEEauthorblockA{line 1 (of Affiliation): dept. name of organization\\
-line 2: name of organization, acronyms acceptable\\
-line 3: City, Country\\
-line 4: e-mail address if desired}
+\author{\IEEEauthorblockN{Juan M. Gimenez}
+\IEEEauthorblockA{CIMEC\\
+Universidad Nacional del Litoral (UNL)\\
+Santa Fe, Argentina\\
+jmarcelogimenez@gmail.com}
 \and
-\IEEEauthorblockN{Authors Name/s per 2nd Affil.}
-\IEEEauthorblockA{dept. name of organization\\
-name of organization\\
-City, Country\\
-e-mail address if desired}
+\IEEEauthorblockN{Leo M. Gonz\'{a}lez}
+\IEEEauthorblockA{ETSIN\\
+Universidad Polit\'{e}cnica de Madrid (UPM)\\
+Madrid, Spain\\
+leo.gonzalez@upm.es}
 \and
-\IEEEauthorblockN{Authors Name/s per 3rd Affil.}
-\IEEEauthorblockA{dept. name of organization\\
-name of organization\\
-City, Country\\
-e-mail address if desired}}
+\IEEEauthorblockN{Pedro Gal\'{a}n del Sastre}
+\IEEEauthorblockA{ETSAM\\
+Universidad Polit\'{e}cnica de Madrid (UPM)\\
+Madrid, Spain\\
+pedro.galan@upm.es}}
 
 % use only for invited papers
 %\specialpapernotice{(Invited Paper)}
@@ -314,16 +315,16 @@ This electronic document is a ``live'' template. The various components of your 
 
 Particle methods have started to combine the Lagrangian part with a grid that fixed or re-meshed every k time steps supports part of the pressure and velocity calculation. The original idea given by Monaghan \cite{Mon77} or later works applied to fluid mechanics \cite{Monaghan88} where a pure Lagrangian perspective was used during the whole meshless computation has been in some cases completed using other well known discretization methods as FVM \cite{Quinlan} or FEM \cite{Calvo}. We could try to find the first combination of Lagrangian methods and FEM methods in the paper \cite{Ide03b} where a extended Delaunay Tesellation is used to reconstruct the mesh while the fluid evolves. In this method known as MFEM, the construction of the shape functions inside each polyhedron is based on a non-Sibsonian interpolation.
 
-The next step in this evolution was the first version of the PFEM method \cite{Idelsohn04}, which was a robust method designed to solve fluidstructure interaction problems including free surface, breaking waves, flow separations, etc...where lagrangian particles and meshing processes are alternated with the advantage of having a FEM structure that supports the differential equation solvers. An interesting difference between the PFEM and other particle methods as SPH or MPM \cite{Wieckowsky04} is that the mesh particles do not transport mass and consequently have a volume, in contrast PFEM uses non material points that transport fluid properties with fixed density. 
+The next step in this evolution was the first version of the PFEM method \cite{Idelsohn04}, which was a robust method designed to solve fluidstructure interaction problems including free surface, breaking waves, flow separations, etc...where lagrangian particles and meshing processes are alternated with the advantage of having a FEM structure that supports the differential equation solvers. An interesting difference between the PFEM and other particle methods as SPH or MPM \cite{Wieckowsky04} is that the mesh particles do not transport mass and consequently have a volume, in contrast PFEM uses non material points that transport fluid properties with fixed density.
 
 Other methods that also combine both Eulerian and Lagrangian perspectives are the arbitrary Eulerian-Lagrangian (ALE)\cite{Donea83} methods or the semi-Lagrangian methods \cite{Bermejo}. The Lagrangian perspective makes possible to use a material derivative formulation where the absence of the non linear convective terms transform the Navier-Stokes system into a transformed linear coupled problem. Methodologies like the backward Characteristics method \cite{Bermejo} gives also this possibility but if the process is done in a fixed mesh without any distortion, a diffusion process appears due to the interpolation of the feet of characteristics.
 
 Most of the methods cited before including PFEM have a uncomfortable drawback which is the necessity of constructing or controlling the mesh quality during the simulation if an accuracy of the solution has to be maintained. The evaluation of the mesh distortions or the re-meshing processes are always computationally expensive and it would be interesting exploring the possibility of avoiding that step. Consequently a new generation of the PFEM methodology could be developed in such a way that no re-meshing is necessary.
 In contrast to the backward characteristic method where the feet of the characteristic line was searched and located in a mesh element based on the known velocity fields at past time steps, a new strategy known as X-IVAS (eXplicit Integration following the Velocity and Acceleration Streamlines)\cite{Idelsohn12}. This methodology uses the streamlines at the present time step instead of the the particle trajectories to convect the fluid particles. The use of this strategy on a fixed mesh and interpolate the particle information to the mesh nodes gives a new improved method known as PFEM-2\cite{Idelsohn12b}. The use of particles give the possibility of solving complex accurate flows with large time steps, while the fixed mesh allows accurate solutions of the fractional step method without any remeshing process. Mesh nodes and moving particles interchange information using interpolation processes using different strategies. A detailed explanation of the PFEM-2 method is given in Section \ref{PFEM_Algorithm}.
 
-In this work the PFEM-2 has been used to solve free surface flows in different problems starting from classical benchmark problems as the lid driven cavity and finishing with problems of industrial interest. As in most of the FEM derived methodologies the introduction of a complex geometry is not a problem. The treatment of the free surface has been done simulating both fluids that share the interface and using a scalar function to identify each fluid. To improve the pressure calculation along the free surface different versions of the enrichment technique \cite{Coppola} has been used. The computation of the free surface at different positions has been performed and compared to other well reputed and commercial Eulerian codes with good results but using larger time steps with any loss of numerical stability. 
+In this work the PFEM-2 has been used to solve free surface flows in different problems starting from classical benchmark problems as the lid driven cavity and finishing with problems of industrial interest. As in most of the FEM derived methodologies the introduction of a complex geometry is not a problem. The treatment of the free surface has been done simulating both fluids that share the interface and using a scalar function to identify each fluid. To improve the pressure calculation along the free surface different versions of the enrichment technique \cite{Coppola} has been used. The computation of the free surface at different positions has been performed and compared to other well reputed and commercial Eulerian codes with good results but using larger time steps with any loss of numerical stability.
 
-  
+
 \section{PFEM Algorithm}\label{PFEM_Algorithm}
 
 Everything is known at time $n$. Subindexes $()_j$ y $()_p$ represents all nodes and particles respectively. Let $\phi$ and $\psi$ the pressure and velocity basis functions.
@@ -555,18 +556,18 @@ It was simulated using $\Delta t = 0.01$. Final simulation time $t_{final} = 75[
 
 There are several, but no large, differences between the PFEM-2 algorithm for homogeneous flows and the multi-fluids version. Those differences are due to a density jump appears and it is necessary to include strategies to capture correctly the interface between the fluids. Most of the details presented in this section have been reported in \cite{Idelsohn13c}, however we consider the reinforcement of those issues is relevant.
 
-Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, next are considerations to manage and improve each one of the stages for the particular case of multifluids problems. 
+Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, next are considerations to manage and improve each one of the stages for the particular case of multifluids problems.
 
 \subsection{Internal interfaces tracking}
 
-The accurate and efficient simulation of interface evolution is of fundamental importance in the simulation of multiphase flows. It is essential that the interface remains sharp and can fold, break and merge. Large jumps of fluid density and viscosity across the interface need to be properly taken into account in order to satisfy the momentum balance at the vicinity of the interface. 
+The accurate and efficient simulation of interface evolution is of fundamental importance in the simulation of multiphase flows. It is essential that the interface remains sharp and can fold, break and merge. Large jumps of fluid density and viscosity across the interface need to be properly taken into account in order to satisfy the momentum balance at the vicinity of the interface.
 
 Methods used to describe the evolution of interfaces can be clustered in two classes, namely: interface capturing and interface tracking methods. While in the former the interface is determined by an implicit function that is advected in a Eulerian frame (see Volume of Fluid \cite{VoF} and Level Set\cite{Osher01}), in the latter the interface evolution equation is solved in a Lagrangian fashion, for example by evolving marker particles.
 
-The spatial domain discretization using mesh and particles allows PFEM2 to select an appropriate combination of those approaches. Each high-density (e.g. water) particle is marked as positive ($\lambda_p=1$) and each low-density (e.g. air) is colored as negative ($\lambda_p=-1$). This value is advected adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$,i.e. each particle only keeps its marker value during the entire simulation. 
+The spatial domain discretization using mesh and particles allows PFEM2 to select an appropriate combination of those approaches. Each high-density (e.g. water) particle is marked as positive ($\lambda_p=1$) and each low-density (e.g. air) is colored as negative ($\lambda_p=-1$). This value is advected adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$,i.e. each particle only keeps its marker value during the entire simulation.
 
 The last means, for instance, that even if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
- 
+
 After \textit{Projection Stage}, each node $j$ has a distance function-like value $\lambda_j$ which is used to determinate the instantaneous local interface inside each element. That zone is defined by an iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$
 
 %%HASTA ACA ESTA CHEQUEADO EL CAPITULO DE PFEM MULTIFLUIDS
@@ -574,7 +575,7 @@ After \textit{Projection Stage}, each node $j$ has a distance function-like valu
 
 In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
 
-Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $N^*$ is ensuring that $N^*(\xx_A)=1$ and $N^*(\xx_1)=N^*(\xx_2)=N^*(\xx_3)=0$. 
+Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $N^*$ is ensuring that $N^*(\xx_A)=1$ and $N^*(\xx_1)=N^*(\xx_2)=N^*(\xx_3)=0$.
 
 Another set of enrichment functions is presented in Figure \ref{fg:enrichment2}, where, as in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space it is possible to ensure continuity between elements, but paying the cost of having to rebuild the system matrix at each time step, which is an expensive task due to memory allocation.
 This enrichment space is constructed following $N_A^*(\xx_A)=1$, $N_B^*(\xx_B)=1$ and $N_A^*(\xx_1)=N_A^*(\xx_2)=N_A^*(\xx_3)=N_A^*(\xx_B)=0$ and $N_B^*(\xx_1)=N_B^*(\xx_2)=N_B^*(\xx_3)=N_B^*(\xx_A)=0$ .
@@ -619,7 +620,7 @@ Therefore, at each time-state, the value of the pressure is set to zero in order
 
     We are following the most similar path to the real trajectory of the particle. For the case of a water particle on water zones, we consider that the water streamlines are the best option. But on air zones, if the particle follows the air streamlines, poor approximations to the real trajectory will be obtained. Therefore, in the last situation, the water particle leaves the streamline and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
-    
+
 
 \subsection{Pressure Stage}
 
