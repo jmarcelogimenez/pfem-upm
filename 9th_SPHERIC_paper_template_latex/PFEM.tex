@@ -1,5 +1,5 @@
-
-We wish to compute the approximate solution of a dynamic flow that contains two immiscible fluids. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, we proceed considering the case with two fluids. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma$ the boundary of $\Omega$. The governing equations written in a Lagrangian framework are:
+\subsection{General formulation}\label{GeneralFor}
+We wish to compute the approximate solution of a dynamic flow that contains two immiscible fluids. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, we proceed considering the case with two fluids. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
 
 \begin{eqnarray}
 % \nonumber to remove numbering (before each equation)
@@ -7,9 +7,9 @@ We wish to compute the approximate solution of a dynamic flow that contains two 
   \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \rho \mathbf{f}+ \mu \nabla^2 \mathbf{v}
 \end{eqnarray}
 
-where the convective term does not appear in this Lagrangian formulation but a kinematic problem will be solved at each time step. Here $v$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ are the external body forces (normally gravity and/or inertial forces). Apart from this, each particle carries the information of the fluid that was initially assigned, this quantity $\lambda$ has values -1 or 1 depending if it belongs to the first or second fluid. This function is projected to the mesh nodes to determine the free surface position, which is defined as the set of point with $\lambda=0$
+where the convective term does not appear in this Lagrangian formulation but a kinematic problem will be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body forces (normally gravity and/or inertial force).
 
-Let us explain the algorithm that PFEM-2 follows in order to compute a complete time step. Let us assume that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions. According to this notation
+Let us explain the algorithm that PFEM-2 follows in order to compute a complete time step. Let us assume that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions respectively. According to this notation
 
 \begin{enumerate}
   \item Acceleration Stage: Calculate acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
@@ -20,14 +20,15 @@ Let us explain the algorithm that PFEM-2 follows in order to compute a complete 
 \end{equation}
 
 \begin{equation}\label{Step1b}
-\int_{\Omega}\mathbf{a}^{n}_{p}\psi_j d\Omega=-\int_{\Omega}\nabla p^{n} \psi_j d\Omega=\int_{\Omega} p^{n} \nabla \psi_j d\Omega - \int_{\Gamma} p^{n} \psi_j d\Omega
+\int_{\Omega}\mathbf{a}^{n}_{p}\psi_j d\Omega=-\int_{\Omega}\nabla p^{n} \psi_j d\Omega
+%=\int_{\Omega} p^{n} \nabla \psi_j d\Omega - \int_{\Gamma} p^{n} \psi_j d\Omega
 \end{equation}
 
 \begin{equation}\label{Step1c}
 \mathbf{a}^{n}=\mathbf{a}^{n}_{p} + (1-\theta)\mathbf{a}^{n}_{\tau}
 \end{equation}
 
-In case we consider two fluids we use: $\theta=1$ y $p^n=0$.
+Where $\theta$ is a numerical parameter that rules the explicitness of the viscous term in the algorithm.
 
   \item X-IVAS Stage: Evaluate new particle position and intermediate velocity following the velocity streamlines
 
@@ -36,10 +37,12 @@ In case we consider two fluids we use: $\theta=1$ y $p^n=0$.
 \end{equation}
 
 \begin{equation}\label{Step2b}
-\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \int_{t_n}^{t_{n+1}} \left(\mathbf{a}^{n}(\mathbf{x}_{p}) + \mathbf{f}^{\alpha} (\mathbf{x}(\alpha)_{p})\right)  \ d\alpha
+\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + 
+\int_{t_n}^{t_{n+1}} \left( \mathbf{a}^{n}(\mathbf{x}_{p}) + \mathbf{f}^{\alpha} (\mathbf{x}(\alpha)_{p}) \right) 
+ \ d\alpha
 \end{equation}
 
-Here some comments are required. As the integration is along the streamlines, the time step $\Delta t=t^{n+1}-t^{n}$ is divided into $N$ substeps where the velocity field is frozen for the mesh nodes and particles evolve from one sub-position to the next driven by the interpolated velocity field at the new sub-position. Temporal integration for the position and velocity can be solved using analytical expressions\cite{} or high-order integrators\cite{}. However, in this work a sub-stepping integrator inherited from STS\cite{} is used, which can adapt its sub-step $\delta t$ depending on the local CFL number. A more exhaustive explanation of the X-IVAS can be found in \cite{Gimenez}. According to this sub-stepping integration the equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
+Here some comments are required. As the integration is along the streamlines, the time step $\Delta t=t^{n+1}-t^{n}$ is divided into $N$ sub-steps where the velocity field is frozen for the mesh nodes and particles evolve from one sub-position to the next driven by the interpolated velocity field at the new sub-position. Temporal integration for the position and velocity can be solved using analytical expressions\cite{Nigro11} or high-order integrators\cite{Nair2003275}. However, in this work a sub-stepping integrator inherited from STS\cite{Alexiades96} is used, which can adapt its sub-step $\delta t$ depending on the local CFL number. A more exhaustive explanation of the X-IVAS can be found in \cite{Nigro11}. According to this sub-stepping integration the equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
 
 \begin{equation}\label{Step2astep}
 \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \sum_{i=1}^{N} \mathbf{v}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) \delta t
@@ -49,40 +52,41 @@ Here some comments are required. As the integration is along the streamlines, th
 \widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \sum_{i=1}^{N} \left(\mathbf{a}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) + \mathbf{f}^{n} (\mathbf{x}^{n+\frac{i}{N}}_{p})\right)  \delta t
 \end{equation}
 
-  \item Projection Stage: Project velocity and level set function from the particles to the mesh:
+  \item Projection Stage: Project velocity from the particles onto the mesh nodes:
   \begin{equation}\label{Step3a}
 \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \mathbf{v}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
 \end{equation}
 
-\begin{equation}\label{Step3b}
-\displaystyle \lambda^{n+1}_{j}=\frac{\sum_{p} \lambda^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
-\end{equation}
 
-Where the functions $W$ are the typical kernel functions used in particle methods as for example SPH \cite{Monaghan} and summations are extended to the particles within a critical distance that depends on the election of the kernel function. 
 
-  \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion with FEM:
+Where the functions $W$ are the typical kernel functions used in particle methods as for example SPH \cite{Mon77} and summations are extended to the particles within a critical distance that depends on the election of the kernel function. For the computations presented in this paper the Wendland kernel function \cite{Wendland} was used for the projections.
+
+  \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion.
 
  \begin{eqnarray}\label{Step4a}
-\displaystyle \widehat{\mathbf{v}}^{n+1}_{j}=\widehat{\widehat{\mathbf{v}}}^{n+1}_{j} + \theta \Delta t \mathbf{a}^{n+1}_{\tau}
+\displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j d\Omega + \theta \Delta t \mu \int_{\Omega} \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j d\Omega
 \end{eqnarray}
 
-In this part the velocity boundary conditions are imposed. 
 
- \item Poisson Stage: Search the pressure value solving the Poisson equation system with FEM:
 
- 
+ \item Poisson Stage: Pressure correction $\delta p^{n+1}$ computation on the mesh nodes by solving the Poisson equation.
+
+
  \begin{eqnarray}\label{Step5a}
  % \nonumber to remove numbering (before each equation)
-   \ \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] &=& \nabla \cdot \widehat{\mathbf{v}}_j^{n+1} \\
-   \frac{\partial p}{\partial n} &=& 0 \quad \Gamma_D \\
-   p &=& 0 \quad in \Gamma_N \\
+   \int_{\Omega} \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] \phi_j d\Omega &=& \int_{\Omega} \nabla \cdot \widehat{\mathbf{v}}_j^{n+1} \phi_j d\Omega \\
+   \frac{\partial \delta p^{n+1}}{\partial n} &=& 0 \quad in \quad \Gamma_D \\
+   \delta p^{n+1} &=& 0 \quad in \quad \Gamma_N 
  \end{eqnarray}
-  
+ 
+ This problem should be stabilized if $p^n\neq0$ and P1-P1 FEM formulation is used. Pressure at time $t_{n+1}$ is updated as $p^{n+1}=p^{n}+\delta p^{n+1}$.
+
 
  \item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections:
  \begin{equation}\label{Step6a}
-  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ d\Omega\ - \int_{\Omega} \Delta t \ (\mathbf{a}_j^{n+1} - \mathbf{a}_j^{n})\ d\Omega
+  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ \psi_j d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ \psi_j d\Omega\ - \Delta t \int_{\Omega}  \nabla \delta p^{n+1}\ \psi_j d\Omega
  \end{equation}
+ In this part the velocity boundary conditions are imposed in $\Gamma_D$ and $\Gamma_N$. This stage has been solver either using a lumped version of the mass matrices or the complete mass matrix with very little difference in the results. Consequently for computational efficiency, the lumped version was finally used.
   \begin{equation}\label{Step6b}
   \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p})
   \end{equation}
@@ -92,3 +96,39 @@ In this part the velocity boundary conditions are imposed.
 %  \item 
 %  \item 
 \end{enumerate} 
+
+\subsection{Particular formulation for two fluids.}
+When 2 different fluids with free surface are considered, each particle carries the information of the fluid that was initially assigned, this quantity is represented by a scalar function $\lambda$ has integer values -1 or 1 depending if it belongs to the first or second fluid. This function is projected to the mesh nodes to determine the free surface position. Mesh nodes consequently obtain real values from the projection different to the integer values $\pm1$ that particles transport. Free surface interface is defined as the set of points that satisfy the equation $\lambda=0$. The following simplifications of the general algorithm described above are considered:
+
+\begin{itemize}
+  \item $\theta=1$
+  \item $p^n=0$
+\end{itemize}
+
+As the initial pressure $p^n$ and the factor $1-\theta$ are both zero, the first stage of the general formulation can be supressed and the algorithm starts with the X-IVAS step. 
+
+\begin{enumerate}
+
+\item X-IVAS Stage: Evaluate new particle position and intermediate velocity following the velocity streamlines
+
+ \begin{equation}\label{Step2astep2fluids}
+\mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \sum_{i=1}^{N} \mathbf{v}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) \delta t
+\end{equation}
+
+\begin{equation}\label{Step2bstep2fluids}
+\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \sum_{i=1}^{N} \mathbf{f}^{n} (\mathbf{x}^{n+\frac{i}{N}}_{p})  \delta t
+\end{equation}
+
+\item Projection Stage: Project velocity similarly to equation (\ref{Step3a}) and the scalar function $\lambda$ from the particles onto the mesh nodes:
+
+\begin{equation}\label{Step3b}
+\displaystyle \lambda^{n+1}_{j}=\frac{\sum_{p} \lambda^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
+\end{equation}
+
+\item Implicit Viscosity Stage: Implicit correction of the viscous diffusion, see equation (\ref{Step4a}).
+
+\item Poisson Stage: Pressure correction $\delta p^{n+1}$ computation on the mesh nodes by solving the Poisson equation system. Equation (\ref{Step5a}) is solved considering that density could change its value inside those elements where the $\lambda$ function changes its sign. For such elements, crossed by the free surface, will be subdivided into sub-elements of constant density according to the free surface intersections, see section \ref{GeneralFor}.
+    
+\item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections similarly to equations (\ref{Step6a}) and (\ref{Step6b}) but taking into account the density change in those elements close to the free surface.
+
+\end{enumerate}
