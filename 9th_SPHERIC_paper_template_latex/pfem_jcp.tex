@@ -112,6 +112,10 @@ This template helps you to create a properly formatted \LaTeX\ manuscript.
 \input{Second_order}
 
 \section{Free surface results}\label{FS_results}
+
+
+In this section a wide range of free-surface problems are solved using the PFEM-2 method. The startup test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are used and comparing it with reference codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions. The third case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature. The last example is a comparison between experimental and numerical results in a dam-break case. This case shows that the method can solve large motions of the interfaces and splashing of waves, also the comparison against pressure and height measurements examines the accuracy of PFEM-2 capturing data required by engineers. It can be noticed that in each test large time-steps are used showing the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy. 
+
 \input{FS_results_Ansari}
 \input{FS_results_standingwave}
 \input{FS_results_RT}
