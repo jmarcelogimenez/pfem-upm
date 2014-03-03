@@ -42,7 +42,7 @@ This enrichment space is constructed following $N_A^*(\xx_A)=1$, $N_B^*(\xx_B)=1
    Therefore, the pressure is now interpolated in the cut element following:
 
    \begin{equation}
-      p_h(\xx) = \sum_{i=1}^{nnodes} (N_i(\xx) \ p_i) + N^*(\xx) \ p^*
+      p_h(\xx) = \sum_{i=1}^{nnodes} (N_i(\xx) \ p_i) + \sum_{i=1}^{nenrich} N_i^*(\xx) \ p^*
    \end{equation}
 
    where $N_i$ are the traditional linear shape functions, and $N^*$ is defined as a linear combination of them (Equations \ref{N_enrichment-2} and \ref{N_enrichment-1}),
