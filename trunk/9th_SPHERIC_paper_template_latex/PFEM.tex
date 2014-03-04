@@ -1,5 +1,6 @@
 \subsection{General formulation}\label{GeneralFor}
-We wish to compute the approximate solution of a dynamic flow that contains two immiscible fluids. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, we proceed considering the case with two fluids. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
+We wish to compute the approximate solution of a dynamic flow that contains two immiscible fluids. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, we proceed considering the case with two fluids. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary 
+conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
 
 \begin{eqnarray}
 % \nonumber to remove numbering (before each equation)
@@ -33,12 +34,12 @@ Where $\theta$ is a numerical parameter that rules the explicitness of the visco
   \item X-IVAS Stage: Evaluate new particle position and intermediate velocity following the velocity streamlines
 
   \begin{equation}\label{Step2a}
-\mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{t_n}^{t_{n+1}} \mathbf{v}^{n}(\mathbf{x}(\alpha)_{p}) \ d\alpha
+\mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{t_n}^{t_{n+1}} \mathbf{v}^{n}(\mathbf{x}_p^{\alpha}) \ d\alpha
 \end{equation}
 
 \begin{equation}\label{Step2b}
 \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} +
-\int_{t_n}^{t_{n+1}} \left( \mathbf{a}^{n}(\mathbf{x}_{p}) + \mathbf{f}^{\alpha} (\mathbf{x}(\alpha)_{p}) \right)
+\int_{t_n}^{t_{n+1}} \left( \mathbf{a}^{n}(\mathbf{x}_p^{\alpha}) + \mathbf{f}^{\alpha} (\mathbf{x}_p^{\alpha}) \right)
  \ d\alpha
 \end{equation}
 
@@ -88,7 +89,7 @@ Where the functions $W$ are the typical kernel functions used in particle method
  \end{equation}
  In this part the velocity boundary conditions are imposed in $\Gamma_D$ and $\Gamma_N$. This stage has been solver either using a lumped version of the mass matrices or the complete mass matrix with very little difference in the results. Consequently for computational efficiency, the lumped version was finally used.
   \begin{equation}\label{Step6b}
-  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p})
+  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p}^{n+1})
   \end{equation}
   where $\delta \mathbf{v}_j^{n+1} = \mathbf{v}_j^{n+1}-\widehat{\widehat{\mathbf{v}}}_j^{n+1}$.
 

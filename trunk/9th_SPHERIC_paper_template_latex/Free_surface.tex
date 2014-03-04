@@ -4,7 +4,7 @@ Methods used to describe the evolution of interfaces can be clustered in two cla
 
 There are several, but no large, differences between the PFEM-2 algorithm for homogeneous flows and the multi-fluids version. Those differences are produced by the density and viscosity discontinuities that appear in the fluid, consequently most of the changes are related to the strategies followed to capture correctly the interface between both fluids. Although some details presented in this section have been reported in \cite{Idelsohn13c}, however in this work we consider add important strategies that easily improve the accuracy and efficiency of the computation. 
 
-Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, next are considerations to manage and improve each one of the stages for the particular case of multifluids problems. The following part is basically related with three aspects of the simulation: the kinematic treatment of the fluid particles during the X-IVAS stage, the pressure computation step and the enrichment technique for the free surface definition. Although these three topics are listed independently, the are closely related to each other during the computation and consequently the will be treated together in the next section.
+Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, next are considerations to manage and improve each one of the stages for the particular case of multifluids problems. The following part is basically related with three aspects of the simulation: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and consequently the will be treated together in the next section.
 
 \subsection{Internal interfaces tracking}
 
@@ -13,88 +13,102 @@ When 2 different fluids with free surface are considered, each particle $p$ carr
 In general the movement of a particle is done by sub-steps according to the equation (\ref{Step2astep}). The velocity used in the particle movement at position $\mathbf{x}_p$ is calculated by the law:
 
 \begin{equation}\label{Interpolation}
-    \mathbf{v}(\mathbf{x}_p)=\frac{\sum_i(\rho_i=\rho_p)\mathbf{v}_i\psi_i(\mathbf{x}_p)}{\sum_i(\rho_i=\rho_p)\psi_i}
+    \mathbf{v}(\mathbf{x}_p)=\frac{\sum_i(\rho_i=\rho_p)\mathbf{v}_i^n\psi_i(\mathbf{x}_p)}{\sum_i(\rho_i=\rho_p)\psi_i}
 \end{equation}
 
-where the nodes used in the interpolation are the nodes of the hosting element that have the same density as the particle. Two situations can happen to every particle when it changes its position: the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density. In the first case, the denominator of the equation (\ref{Interpolation}) is equal to 1 and the interpolation is standard, but the second situation clearly represents that the particle is close to the interface. In fact the denominator of the equation (\ref{Interpolation}) measures how isolated is the particle compared to its hosting nodes in terms of density. In this second case, let us assume that $\rho_1/\rho_2>20$ a different strategy is followed depending if $\rho_p=\rho_1$ (heavy particle in a light fluid) or $\rho_p=\rho_2$ (light particle in a heavy fluid). For the second case, velocity will be computed using equation (\ref{Interpolation}), but for the first case the denominator $\sum_i(\rho_i=\rho_p)\psi_i<0.05$ is evaluated in case it is lower the particle trajectory will be computed as a parabolic motion. this means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
+where the nodes used in the interpolation are the nodes of the hosting element that have the same density as the particle. Two situations can happen to every particle when it changes its position: the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density. In the first case, the denominator of the equation (\ref{Interpolation}) is equal to 1 and the interpolation is standard, but the second situation clearly represents that the particle is close to the interface. In fact the denominator of the equation (\ref{Interpolation}) measures how isolated is the particle compared to its hosting nodes in terms of density. In this second case, let us assume that $\rho_1/\rho_2>20$ a different strategy is followed depending if $\rho_p=\rho_1$ (heavy particle in a light fluid) or $\rho_p=\rho_2$ (light particle in a heavy fluid). For the second case, velocity will be computed using equation (\ref{Interpolation}), but for the first case the denominator $\sum_i(\rho_i=\rho_p)\psi_i<0.05$ is evaluated in case it is lower the particle trajectory will be computed as a parabolic motion. This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
 After \textit{Projection Stage}, each node $j$ has a distance function-like value $\lambda_j$ which is used to determinate the instantaneous local interface inside each element. That zone is defined by an iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$
 
-%%HASTA ACA ESTA CHEQUEADO EL CAPITULO DE PFEM MULTIFLUIDS
 \subsection{Shape function enrichments for pressure gradient discontinuity capturing}
 
 In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
 
-Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $N^*$ is ensuring that $N^*(\xx_A)=1$ and $N^*(\xx_1)=N^*(\xx_2)=N^*(\xx_3)=0$.
+Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that 
 
-Another set of enrichment functions is presented in Figure \ref{fg:enrichment2}, where, as in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space it is possible to ensure continuity between elements, but paying the cost of having to rebuild the system matrix at each time step, which is an expensive task due to memory allocation.
-This enrichment space is constructed following $N_A^*(\xx_A)=1$, $N_B^*(\xx_B)=1$ and $N_A^*(\xx_1)=N_A^*(\xx_2)=N_A^*(\xx_3)=N_A^*(\xx_B)=0$ and $N_B^*(\xx_1)=N_B^*(\xx_2)=N_B^*(\xx_3)=N_B^*(\xx_A)=0$ .
+\begin{equation}
+   \left\{\;
+   \begin{matrix}
+      \phi^*(\xx_A)= 1 \\
+      \phi^*(\xx_1)= \phi^*(\xx_2)=\phi^*(\xx_3)= 0 
+   \end{matrix}\;
+   \right.
+   \label{eq:enrich-1a}
+\end{equation}
 
-  \begin{figure}[H]
+It can be demonstrated\cite{Coppola05} that the enrichment function, which accomplishes the above presented restrictions, can be expressed as a linear combination of the traditional shape functions, being:
+ \begin{align}
+    \phi^*|_{\Omega_2} = & \ k_1 \phi_1 \label{phi_enrichment-2}\\
+    \phi^*|_{\Omega_1} = & \ k_2 \phi_2 + k_3 \phi_3 \label{phi_enrichment-1}
+  \end{align}
+where $k_1 = \dfrac{\lambda_2-\lambda_1}{\lambda_2}$, $k_2 = \dfrac{\lambda_1-\lambda_2}{\lambda_1}$, $k_3 = -k_1\dfrac{\lambda_3\lambda_1}{\lambda_3-\lambda_1}$, whilst $\Omega_1$ and $\Omega_2$ are the two regions of the split element.
+
+\begin{figure}[H]
   \centering
-    \subfloat[]{
-	  \label{fg:enrichment1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/enrichment1.pdf}
-    }
-    %%----segunda subfigura----
-    \subfloat[]{
-	  \label{fg:enrichment2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/enrichment2.pdf}
-    }
-   \caption{2D Enrichment functions. Figure \ref{fg:enrichment1} the enrichment proposed by Coppola and Figure \ref{fg:enrichment2} presents an enrichment space that can be used to ensure continuity between elements.}
-   \label{fg:enrichment}                %% Etiqueta para la figura entera
+  \includegraphics[width=.9\columnwidth]{images/enrichment1.pdf}
+   \caption{2D interface element. The interface is calculated cutting the element with the segment $A-B$. The enrichment proposed by Coppola and the partition of the triangle into three sub-triangles with its own Gauss points to allowing to calculate an enhanced integration is shown.}
+   \label{fg:enrichment1}                %% Etiqueta para la figura entera
 \end{figure}
+
+The other set of enrichment functions used in this work is presented in Figure \ref{fg:enrichment2}. As in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space it is possible to ensure continuity between elements, but paying the cost of having to rebuild the system matrix at each time step, which could be an expensive task due to memory allocation.
+This enrichment space is constructed following
+
+\begin{equation}
+   \left\{\;
+   \begin{matrix}
+     \phi_A^*(\xx_A)=\phi_B^*(\xx_B)=1 \\
+     \phi_A^*(\xx_1)=\phi_A^*(\xx_2)=\phi_A^*(\xx_3)=\phi_A^*(\xx_B)=0 \\
+     \phi_B^*(\xx_1)=\phi_B^*(\xx_2)=\phi_B^*(\xx_3)=\phi_B^*(\xx_A)=0
+   \end{matrix}\;
+   \right.
+   \label{eq:enrich-2a}
+\end{equation}
+
+
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=.9\columnwidth]{images/enrichment2.pdf}
+   \caption{2D interface element. The interface is calculated cutting the element with the segment $A-B$. An enrichment space with two functions per interface element, which can be used to ensure continuity between elements, is presented. The integration partition is the same as presented above (Figure \ref{fg:enrichment1}).}
+   \label{fg:enrichment2}
+\end{figure}
+
+% \begin{figure}[H]
+%   \centering
+%     \subfloat[]{
+% 	  \label{fg:enrichment1}         %% Etiqueta para la primera subfigura
+% 	  \includegraphics[width=.9\columnwidth]{images/enrichment1.pdf}
+%     } \\
+%     %%----segunda subfigura----
+%     \subfloat[]{
+% 	  \label{fg:enrichment2}         %% Etiqueta para la segunda subfigura
+% 	  \includegraphics[width=.9\columnwidth]{images/enrichment2.pdf}
+%     }
+%    \caption{2D interface element. The interface is calculated cutting the element with the segment $A-B$. Figure \ref{fg:enrichment1} shows the enrichment proposed by Coppola and the partition of the triangle into three sub-triangles with its own Gauss points to allowing to calculate an enhanced integration. Figure \ref{fg:enrichment2} presents an enrichment space with two functions per interface element, which can be used to ensure continuity between elements. The integration partition is the same as presented above.}
+%    \label{fg:enrichment}                %% Etiqueta para la figura entera
+% \end{figure}
 
    Therefore, the pressure is now interpolated in the cut element following:
 
    \begin{equation}
-      p_h(\xx) = \sum_{i=1}^{nnodes} (N_i(\xx) \ p_i) + \sum_{i=1}^{nenrich} N_i^*(\xx) \ p^*
+      p_h(\xx) = \sum_{i=1}^{nnodes} \phi_i(\xx) \ p_i + \sum_{i=1}^{nenrich} \phi_i^*(\xx) \ p_i^*
    \end{equation}
+   where $\phi_i$ are the $nnodes$ traditional linear shape functions, and $\phi_i^*$ are the $nenrich$ enrichment shape functions.
 
-   where $N_i$ are the traditional linear shape functions, and $N^*$ is defined as a linear combination of them (Equations \ref{N_enrichment-2} and \ref{N_enrichment-1}),
+   In order to capture the discontinuities and take advantage of the enrichment functions used, the integration rules need to be modified in elements cut by the front. The method we use is to divide each  tetrahedral (triangular in 2D) element into up to six tetrahedral
+  (three triangular in 2D) sub elements. For each sub element the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment1} shows that partition and the small circles represent the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
 
-   \begin{align}
-    N^*|_{\Omega_2} = & \ k_1 N_1 \label{N_enrichment-2}\\
-    N^*|_{\Omega_1} = & \ k_2 N_2 + k_3 N_3 \label{N_enrichment-1}
-   \end{align}
-   where $k_1 = \dfrac{\psi_2-\psi_1}{\psi_2}$, $k_2 = \dfrac{\psi_1-\psi_2}{\psi_1}$ and $k_3 = -k_1\dfrac{\psi_3\psi_1}{\psi_3-\psi_1}$
-	
-	
-   In order to capture the discontinuities and take advantage of the enrichment functions used, the integration rules need to be modified in elements cut by the front. The method we use is to divide each triangular element into up to three triangular sub elements. For each sub element the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment}  shows that partition and the crosses represents the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
+   \subsection{Pressure Calculation}
 
-   \subsection{Pressure Iterations}
+Particles can move across several elements and through the interface during a time step and the pressure gradient of the previous time step would introduce a poor and even unstable approximation of the pressure forces. In order to avoid these large errors in the evaluation of the pressure gradients in the initial value of the iterative process, the value of the pressure is set to zero at the beginning of each time-state. Therefore, the acceleration over the particle calculated in X-IVAS stage is only is due to gravity force (pressure gradient is considered null and viscous forces are treated implicitly)\cite{Idelsohn13c}.
 
-Most of multi-fluid flows present a large jump in the density properties, for instance water and air. For those cases, introducing a special strategy in the iterative algorithm to obtain acceptable convergence rates is mandatory. For instance, the strategy to introduce the last time step pressure field as the initial value for the first iteration of the next time step is not the best one. This is caused by the fact that the particles can move across several elements and through the interface during a time step (Figure 5.1) and, therefore, the pressure gradient of the previous time step would introduce a poor and even unstable approximation of the pressure forces.
+Starting from Equation \ref{Step5a}, and following the classical variational formulation, this is integrating, weighting with local shape functions and weakening, it is possible to obtain the elemental contribution:
 
-Therefore, at each time-state, the value of the pressure is set to zero in order to avoid large errors in the evaluation of the pressure gradients in the initial value of the iterative process. As consequence of that, the acceleration over the particle only is due to viscous force and gravity force (pressure gradient is considered null) for this step.
+\begin{equation}
+   [\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla \phi^T \nabla \phi \ d\Omega] \delta p^{n+1} = [\int_{\Omega^e} \nabla \phi^T \psi \ d\Omega] \hat \vv_j^{n+1}
+\end{equation}
 
-    We are following the most similar path to the real trajectory of the particle. For the case of a water particle on water zones, we consider that the water streamlines are the best option. But on air zones, if the particle follows the air streamlines, poor approximations to the real trajectory will be obtained. Therefore, in the last situation, the water particle leaves the streamline and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
-
-
-
-\subsection{Pressure Stage}
-
-  The Poisson equation for the pressure appears after applying the divergence operator to
-  \begin{equation}
-    \vv^{n+1}\  = \ \hat \vv^{n+1} - \dfrac{\Delta t}{\rho} \ [\nabla (\delta p)]^{n+1}
-    \label{correction_cont}
-  \end{equation}
-
-  which remains
-  \begin{equation}
-   \dfrac{\Delta t}{\rho} \ \nabla \cdot [\nabla(\delta p^{n+1})] = \nabla \cdot \hat \vv_j^{n+1}
-  \end{equation}
-
-  integrating, weighting with local shape functions and weakening, we can obtain the elemental contribution
-  \begin{equation}
-   [\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla N^T \nabla N \ d\Omega] \delta p^{n+1} = [\int_{\Omega^e} \nabla N^T \phi \ d\Omega] \hat \vv_j^{n+1}
-  \end{equation}
-
-  The main advantage of the above proposed enrichment shape functions is that the added degree of freedom is local to the element cut by the interface and can therefore be condensed after the element matrix has been computed and before assembly.
-
-  Therefore, if the element is not cut by the interface, the traditional lineal shape functions are used for weighting and the variables are approximated in terms of that space: $\delta p^{n+1}(\xx) = \sum_i N_i(\xx) \delta p^{n+1}_i$ and $\hat{\vv}^{n+1}(\xx) = \sum_i \phi_i(\xx) \hat{\vv}^{n+1}_i$, being $\phi_i = N_i$.
-
-  On the other hand, if the element is cut by the interface, we choose $N = [N_1; N_2; N_3; N^*]$ as weight shape functions and to approximate the pressure field (keeping only the traditional shape functions $\phi = [N_1; N_2; N_3]$ to approximate the velocity field). Then, for the split elements, the system before the condensation is:
+in the case of split elements the enrichment shape functions are used, then the resulting system is:
 
   \begin{equation*}
    \begin{pmatrix}
