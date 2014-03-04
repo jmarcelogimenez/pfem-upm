@@ -106,9 +106,9 @@ This enrichment space is constructed following
    Therefore, the pressure is now interpolated in the cut element following:
 
    \begin{equation}
-      p_h(\xx) = \sum_{i=1}^{nnodes} \phi_i(\xx) \ p_i + \sum_{i=1}^{nenrich} \phi_i^*(\xx) \ p_i^*
+      p_h(\xx) = \sum_{i=1}^{N_n} \phi_i(\xx) \ p_i + \sum_{i=1}^{N_e} \phi_i^*(\xx) \ p_i^*
    \end{equation}
-   where $\phi_i$ are the $nnodes$ traditional linear shape functions, and $\phi_i^*$ are the $nenrich$ enrichment shape functions.
+   where $\phi_i$ are traditional linear shape functions (a total of $N_n$), and $\phi_i^*$ are the enrichment shape functions (a total of $N_e$).
 
    In order to capture the discontinuities and take advantage of the enrichment functions used, the integration rules need to be modified in elements cut by the front. The method we use is to divide each  tetrahedral (triangular in 2D) element into up to six tetrahedral
   (three triangular in 2D) sub elements. For each sub element the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment1} shows that partition and the small circles represent the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
@@ -123,20 +123,20 @@ Starting from Equation \ref{Step5a}, and following the classical variational for
    [\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla \phi^T \nabla \phi \ d\Omega] \delta p^{n+1} = [\int_{\Omega^e} \nabla \phi^T \psi \ d\Omega] \hat \vv_j^{n+1}
 \end{equation}
 
-in the case of split elements the enrichment shape functions are used, then the resulting system is:
+In the case of split elements the enrichment shape functions are used, then the resulting system is:
 
   \begin{equation*}
    \begin{pmatrix}
-      L_{std} & L_{std}^*\\
-      {L_{std}^*}^T & L^*
+      L_{\phi,\phi} & L_{\phi,*}\\
+      {L_{\phi,*}}^T & L_{*,*}
    \end{pmatrix}\;
     \begin{pmatrix}
       \delta p^{n+1}\\
-      p^*
+      \delta {p^*}^{n+1}
    \end{pmatrix}\; = \;
    \begin{pmatrix}
-      D_{std}\\
-      D^*
+      D_{\phi}\\
+      D_*
    \end{pmatrix}\;
    (\hat{\vv}^{n+1})
    \label{poisson}
@@ -144,59 +144,43 @@ in the case of split elements the enrichment shape functions are used, then the 
 
 where
 \begin{itemize}
- \item ${(L_{std})}_{ij} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla N_i^T \nabla N_j \ d\Omega$ with $[i,j] = 1,2,3$ (size [$3$x$3$])
- \item ${(L_{std}^*)}_{i} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla N_i^T \nabla N^* \ d\Omega$ with $i = 1,2,3$ (size [$3$x$1$])
- \item $L^* = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla {N^*}^T \nabla N^* \ d\Omega$ (size [$1$x$1$])
- \item ${(D_{std})}_{ij} = \int_{\Omega^e} \nabla N_i^T \phi_j \ d\Omega$ with $[i,j] = 1,2,3$ (size [$3$x$3$])
- \item ${(D^*)}_{j} = \int_{\Omega^e}  \nabla {N^*}^ \phi_j \ d\Omega$ with $j = 1,2,3$ (size [$1$x$3$])
+ \item ${(L_{\phi,\phi})}_{N_n\times N_n} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j \ d\Omega$
+ \item ${(L_{\phi,*})}_{N_n\times N_e} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j^* \ d\Omega$
+ \item ${(L_{*,*})}_{N_e\times N_e} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla {\phi_i^*}^T \nabla \phi_j^* \ d\Omega$
+ \item ${(D_{\phi})}_{N_n\times N_n} = \int_{\Omega^e} \nabla \phi_i^T \psi_j \ d\Omega$
+ \item ${(D_*)}_{N_n\times N_e} = \int_{\Omega^e}  \nabla {\phi_i^*}^T \psi_j \ d\Omega$
 \end{itemize}
 
-  Therefore, the system is statically condensed obtaining:
+Therefore, following the classical procedure of static condensation of the system through Gaussian elimination\cite{Felippa04}, next reduced system is obtained:
 
   \begin{equation}
-   [L_{std} - L_{std}^*\frac{1}{L^*}{L_{std}^*}^T](\delta p^{n+1}) = [D_{std}- L_{std}^*\frac{1}{L^*}D^*](\hat{\vv}^{n+1})
+   [L_{\phi,\phi} - L_{\phi,*}{(L_{*,*})}^{-1}{L_{\phi,*}}^T](\delta p^{n+1}) = [D_{\phi}- L_{\phi,*}{(L_{*,*})}^{-1}D_{*}](\hat{\vv}^{n+1})
    \label{condensing}
   \end{equation}
+  
+  where $\delta p^{n+1} = p^{n+1}-p^{n}$.
 
-  If we are interested in solving the system in absolute pressure terms, the final system is
+%   If we are interested in solving the system in absolute pressure terms, the final system is
+% 
+%   \begin{equation}
+%   [L_{\phi,\phi} - L_{\phi,*}{L_{*,*}}^{-1}{L_{\phi,*}}^T](p^{n+1}) = [D_{\phi}- L_{\phi,*}{L_{*,*}}^{-1}D_*](\hat{\vv}^{n+1}) + [L_{\phi,\phi} - L_{\phi,*}{L_{*,*}}^{-1}{L_{\phi,*}^T] (p^n)
+%    \label{condensing-abs}
+%   \end{equation}
 
-  \begin{equation}
-  [L_{std} - L_{std}^*\frac{1}{L^*}{L_{std}^*}^T](p^{n+1}) = [D_{std}- L_{std}^*\frac{1}{L^*}D^*](\hat{\vv}^{n+1}) + [L_{std} - L_{std}^*\frac{1}{L^*}{L_{std}^*}^T] (p^n)
-   \label{condensing-abs}
-  \end{equation}
+After obtain the new pressure, it is necessary to correct the velocity prediction using the pressure gradient. However, the new degree of freedom for the pressure, which was condensed previously, must be taken into account in this step to calculate the enriched pressure gradient. The value of $p*^{n+1}$ can be recovered from the nodal pressures calculated in the poisson step with:
 
-
-\subsection{Correction Stage}
-
- This stage is typical from fractional steps. However, the new degree of freedom for the pressure, which was condensed previously, must be taken into account in this step to calculate the correct pressure gradient. Therefore, we must \textit{recover} $p^*$ doing:
-
-  \begin{equation}
-  {p^*}^{n+1} = \frac{1}{L^*}[D^* \hat{\vv}^{n+1} - {L_{std}^*}^Tp^{n+1} + {L_{std}^*}^Tp^{n} + L^*{p^*}^n]
+\begin{equation}
+  {p^*}^{n+1} = {(L_{*,*})}^{-1}[D_* \hat{\vv}^{n+1} - {L_{\phi,*}}^Tp^{n+1} + {L_{\phi,*}}^Tp^{n} + L_{*,*}{p^*}^n]
   \label{recovering}
-  \end{equation}
+\end{equation}
 
  Finally, the equation system presented in Equation \ref{correction} must be solved.
 
  \begin{equation}
-  \int_{\Omega} N \rho \vv^{n+1} d\Omega = \int_{\Omega} N \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ [\int_{\Omega} N_{std} \nabla p^{n+1} d\Omega + \int_{\Omega} N^* \nabla p* d\Omega]
+  \int_{\Omega} \psi \rho \vv^{n+1} d\Omega = \int_{\Omega} \psi \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ [\int_{\Omega} \psi \nabla \delta p^{n+1} d\Omega + \int_{\Omega} \psi \nabla \delta {p^*}^{n+1} d\Omega]
   \label{correction}
  \end{equation}
 
- Besides the nodal velocity correction, it also must be done the correction over particles. Must be noted this correction is done projecting the variation of the nodal velocity.
-	
-  \begin{equation}
-    \rho_p \vv_p^{n+1}\  = \ \rho_p \hat \vv_p^{n+1} - \boldsymbol{\pi}^{-1}(\delta \vv_j^{n+1})
-    \label{correction_particles}
-  \end{equation}
-  where $\delta \vv_j^{n+1} = \vv_j^{n+1} - \hat \hat \vv_j^{n+1}$.
+Previously, it was mentioned that the pressure value is zeroed at the beginning of the time step. In the recovering step one of the main reason can be found. It must be noticed that, not only the standard nodal pressures but also the enrichments pressures of the previous iteration are required in this stage. Because the enrichment pressures depend on the location of the interface inside the element, using the latest $p^*$ of the previous time-step may introduce several problems due to the movement of the interface. This lead to poor results that in most cases become unstable.
 
-
-\subsection{Iterations to improve the pressure-velocity coupling}
-
-The initial value of the pressure iterations is set to zero in order to avoid large errors in the evaluation of the pressure gradients in the initial value of the iterative process. It must be noticed that despite this first iteration of the pressure calculation is
-of first order, further iterations improve the incompressibility of the solution. Doing this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. Tests with hundreds of iterations were performed and, effectively,
-spurious pressure oscillations appear in the solution. However, for practical applications, only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. For this reason no stabilization technique is required in this case.
-
-Another justification because the pressure is restarted each time step is that we can not predict accurately the value of ${p^*}^n$ on Equation \ref{recovering} at the first iteration (using the latest $p^*$ of the previous time-step may introduce several problems due to the movement of the interface). Therefore, the acceleration for the velocity in X-IVAS only can have the viscous forces.
-
-%Detalle del tema de la inicializaciÃ³n a cero de la presiÃ³n, fundamentalmente por el hecho de que hay dos fluidos. Citar el clindro, como caso donde a pesar de haber un sÃ³lo fluido el algoritmo de puesta a cero de la presiÃ³n sigue siendo vÃ¡lido.
+Although this reinitialization of the pressure leads to a first iteration where the pressure calculation is of first order, further iterations pressure-correction improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. However, we share the conclusion with that work, because only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. For this reason no stabilization technique is required in this case.
