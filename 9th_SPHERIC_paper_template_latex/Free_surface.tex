@@ -13,21 +13,23 @@ When two different fluids separated by an interface are considered, each particl
 In general, the movement of a particle is done by sub-steps according to the equation (\ref{Step2astep}). The velocity used in the particle movement at position $\mathbf{x}_p$ is calculated by the equation:
 
 \begin{equation}\label{Interpolation}
-    \displaystyle \mathbf{v}(\mathbf{x}_p)=\frac{\sum_{i(\rho_i=\rho_p)}\mathbf{v}_i^n\psi_i(\mathbf{x}_p)}{\sum_{i(\rho_i=\rho_p)}\psi_i}
+    \displaystyle \mathbf{v}(\mathbf{x}_p)=\frac{\sum_{i}\mathbf{v}_i^n\psi_i(\mathbf{x}_p)}{\sum_{i}\psi_i}
 \end{equation}
 
-where the nodes included in the interpolation are the nodes of the hosting element that have the same density as the particle. Two situations could happen to every particle when it changes its position: all the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density as the fluid particle. In the first case, the denominator of the equation (\ref{Interpolation}) is equal to 1 and a typical finite element interpolation is performed, the second situation clearly represents a situation where the fluid particle is close to the interface. In fact the denominator of the equation (\ref{Interpolation}) measures how isolated is the particle compared to its hosting nodes in terms of density. Let us study this second possibility when there is high enough density ratio $\rho_1/\rho_2>20$, two situations can appear:
+where the nodes included in the interpolation are the nodes of the hosting element. Two situations could happen to every particle when it changes its position: all the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density as the fluid particle. While in the first case, a typical finite element interpolation is performed, the second situation clearly represents a situation where the fluid particle is close to the interface. Let us focus on  this second possibility when there is high enough density ratio $\rho_1/\rho_2>\alpha$, in this case two situations can appear:
 
  \begin{itemize}
  \item $\rho_p=\rho_2$ (light particle in a heavy fluid). The velocity will be computed using equation (\ref{Interpolation}).
-   \item $\rho_p=\rho_1$ (heavy particle in a light fluid). Depending on the value of $\sum_{i(\rho_i=\rho_p)}\psi_i$ we can have 2 possibilities:
+   \item $\rho_p=\rho_1$ (heavy particle in a light fluid). Depending on the value of $A=\sum_{i(\rho_i=\rho_p)}\psi_i$ where the sum is limited to the hosting nodes that have the same density as the particle, we can have 2 possibilities:
        \begin{itemize}
- \item $\sum_{i(\rho_i=\rho_p)}\psi_i<0.05$ the gravity force will be included in the computation of the particle trajectory, which will be computed as a parabolic motion.
-   \item $\sum_{i(\rho_i=\rho_p)}\psi_i>0.05$ equation (\ref{Interpolation}) is used to calculate the velocity.
+ \item $A<\beta$ the gravity force will be included in the computation of the particle trajectory, which will be computed as a parabolic motion.
+   \item $A>\beta$, the sums that appear in equation (\ref{Interpolation}) are both restricted to the hosting nodes $i$ that have the same density as the particle $\rho_i=\rho_p$.
  \end{itemize}
  \end{itemize}
  
- For those cases where the density ratio is not excessive, equation (\ref{Interpolation}) is always used.
+ 
+ 
+ where $\alpha$ and $\beta$ are numerical parameters. For those cases where the density ratio is not excessive $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
  
  This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
