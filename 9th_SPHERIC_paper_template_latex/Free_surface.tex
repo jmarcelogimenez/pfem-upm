@@ -2,35 +2,48 @@ The accurate and efficient simulation of interface evolution is of fundamental i
 
 Methods used to describe the evolution of interfaces can be clustered in two classes, namely: interface capturing and interface tracking methods. While in the former the interface is determined by an implicit function that is advected in a Eulerian frame (see Volume of Fluid \cite{VoF} and Level Set\cite{Osher01}), in the latter the interface evolution equation is solved in a Lagrangian fashion, for example by evolving marker particles. The spatial domain discretization using mesh and particles allows PFEM2 to select an appropriate combination of those approaches where the free position information is shared and interchanged by the particles and the fixed mesh.
 
-There are several, but no large, differences between the PFEM-2 algorithm for homogeneous flows and the multi-fluids version. Those differences are produced by the density and viscosity discontinuities that appear in the fluid, consequently most of the changes are related to the strategies followed to capture correctly the interface between both fluids. Although some details presented in this section have been reported in \cite{Idelsohn13c}, however in this work we consider add important strategies that easily improve the accuracy and efficiency of the computation. 
+There are several, but no large, differences between the PFEM-2 algorithm for homogeneous flows and the multi-fluids version. Those differences are produced by the density and viscosity discontinuities that appear in the fluid, consequently most of the changes are related to the strategies followed to capture correctly the interface between both fluids. Although some details presented in this section have been reported in \cite{Idelsohn13c}, however in this work we consider add important strategies that easily improve the accuracy and efficiency of the computation.
 
 Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, next are considerations to manage and improve each one of the stages for the particular case of multifluids problems. The following part is basically related with three aspects of the simulation: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and consequently the will be treated together in the next section.
 
 \subsection{Internal interfaces tracking}
 
-When 2 different fluids with free surface are considered, each particle $p$ carries the information of the fluid that was initially assigned, this quantity is represented by a scalar function $\lambda_p$ has integer values -1 or 1 depending if it belongs to the first or second fluid. This value is advected adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$, i.e. each particle only keeps its marker value during the entire simulation. This function is projected to the mesh nodes to determine the free surface position. Mesh nodes consequently obtain real values from the projection different to the integer values $\pm1$ that particles transport. Free surface interface is defined as the set of points that satisfy the equation $\lambda=0$.
+When two different fluids separated by an interface are considered, each particle $p$ carries the information of the fluid that was initially assigned, this quantity is represented by a scalar function $\lambda_p$ has integer values -1 or 1 depending if it belongs to the first or second fluid. This value is advected adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$, i.e. each particle keeps its marker value during the entire simulation. This function is projected to the mesh nodes to determine the free surface position. Mesh nodes consequently obtain real values from the projection different to the integer values $\pm1$ that particles transport. Free surface interface is defined as the set of points that satisfy the equation $\lambda=0$.
 
-In general the movement of a particle is done by sub-steps according to the equation (\ref{Step2astep}). The velocity used in the particle movement at position $\mathbf{x}_p$ is calculated by the law:
+In general, the movement of a particle is done by sub-steps according to the equation (\ref{Step2astep}). The velocity used in the particle movement at position $\mathbf{x}_p$ is calculated by the equation:
 
 \begin{equation}\label{Interpolation}
-    \mathbf{v}(\mathbf{x}_p)=\frac{\sum_i(\rho_i=\rho_p)\mathbf{v}_i^n\psi_i(\mathbf{x}_p)}{\sum_i(\rho_i=\rho_p)\psi_i}
+    \displaystyle \mathbf{v}(\mathbf{x}_p)=\frac{\sum_{i(\rho_i=\rho_p)}\mathbf{v}_i^n\psi_i(\mathbf{x}_p)}{\sum_{i(\rho_i=\rho_p)}\psi_i}
 \end{equation}
 
-where the nodes used in the interpolation are the nodes of the hosting element that have the same density as the particle. Two situations can happen to every particle when it changes its position: the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density. In the first case, the denominator of the equation (\ref{Interpolation}) is equal to 1 and the interpolation is standard, but the second situation clearly represents that the particle is close to the interface. In fact the denominator of the equation (\ref{Interpolation}) measures how isolated is the particle compared to its hosting nodes in terms of density. In this second case, let us assume that $\rho_1/\rho_2>20$ a different strategy is followed depending if $\rho_p=\rho_1$ (heavy particle in a light fluid) or $\rho_p=\rho_2$ (light particle in a heavy fluid). For the second case, velocity will be computed using equation (\ref{Interpolation}), but for the first case the denominator $\sum_i(\rho_i=\rho_p)\psi_i<0.05$ is evaluated in case it is lower the particle trajectory will be computed as a parabolic motion. This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
+where the nodes included in the interpolation are the nodes of the hosting element that have the same density as the particle. Two situations could happen to every particle when it changes its position: all the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density as the fluid particle. In the first case, the denominator of the equation (\ref{Interpolation}) is equal to 1 and a typical finite element interpolation is performed, the second situation clearly represents a situation where the fluid particle is close to the interface. In fact the denominator of the equation (\ref{Interpolation}) measures how isolated is the particle compared to its hosting nodes in terms of density. Let us study this second possibility when there is high enough density ratio $\rho_1/\rho_2>20$, two situations can appear:
 
-After \textit{Projection Stage}, each node $j$ has a distance function-like value $\lambda_j$ which is used to determinate the instantaneous local interface inside each element. That zone is defined by an iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$
+ \begin{itemize}
+ \item $\rho_p=\rho_2$ (light particle in a heavy fluid). The velocity will be computed using equation (\ref{Interpolation}).
+   \item $\rho_p=\rho_1$ (heavy particle in a light fluid). Depending on the value of $\sum_{i(\rho_i=\rho_p)}\psi_i$ we can have 2 possibilities:
+       \begin{itemize}
+ \item $\sum_{i(\rho_i=\rho_p)}\psi_i<0.05$ the gravity force will be included in the computation of the particle trajectory, which will be computed as a parabolic motion.
+   \item $\sum_{i(\rho_i=\rho_p)}\psi_i>0.05$ equation (\ref{Interpolation}) is used to calculate the velocity.
+ \end{itemize}
+ \end{itemize}
+ 
+ For those cases where the density ratio is not excessive, equation (\ref{Interpolation}) is always used.
+ 
+ This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
+
+Once the particle have been advected and the intermediate velocities have been determined, mesh nodes have to incorporate this updated velocity and density information. During this \textit{Projection Stage}, each node $j$ updates its intermediate velocity according to equation (\ref{Step3a}) and also its value $\lambda_j$. Depending on the value of $\lambda_j$ the instantaneous local interface inside each element is determined as the iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$.
 
 \subsection{Shape function enrichments for pressure gradient discontinuity capturing}
 
 In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
 
-Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that 
+Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that
 
 \begin{equation}
    \left\{\;
    \begin{matrix}
       \phi^*(\xx_A)= 1 \\
-      \phi^*(\xx_1)= \phi^*(\xx_2)=\phi^*(\xx_3)= 0 
+      \phi^*(\xx_1)= \phi^*(\xx_2)=\phi^*(\xx_3)= 0
    \end{matrix}\;
    \right.
    \label{eq:enrich-1a}
