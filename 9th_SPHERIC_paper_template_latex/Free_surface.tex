@@ -152,7 +152,6 @@ where
 \end{itemize}
 
 Therefore, following the classical procedure of static condensation of the system through Gaussian elimination\cite{Felippa04}, next reduced system is obtained:
-
   \begin{equation}
    [L_{\phi,\phi} - L_{\phi,*}{(L_{*,*})}^{-1}{L_{\phi,*}}^T](\delta p^{n+1}) = [D_{\phi}- L_{\phi,*}{(L_{*,*})}^{-1}D_{*}](\hat{\vv}^{n+1})
    \label{condensing}
@@ -168,14 +167,12 @@ Therefore, following the classical procedure of static condensation of the syste
 %   \end{equation}
 
 After obtain the new pressure, it is necessary to correct the velocity prediction using the pressure gradient. However, the new degree of freedom for the pressure, which was condensed previously, must be taken into account in this step to calculate the enriched pressure gradient. The value of $p*^{n+1}$ can be recovered from the nodal pressures calculated in the poisson step with:
-
 \begin{equation}
   {p^*}^{n+1} = {(L_{*,*})}^{-1}[D_* \hat{\vv}^{n+1} - {L_{\phi,*}}^Tp^{n+1} + {L_{\phi,*}}^Tp^{n} + L_{*,*}{p^*}^n]
   \label{recovering}
 \end{equation}
 
  Finally, the equation system presented in Equation \ref{correction} must be solved.
-
  \begin{equation}
   \int_{\Omega} \psi \rho \vv^{n+1} d\Omega = \int_{\Omega} \psi \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ [\int_{\Omega} \psi \nabla \delta p^{n+1} d\Omega + \int_{\Omega} \psi \nabla \delta {p^*}^{n+1} d\Omega]
   \label{correction}
