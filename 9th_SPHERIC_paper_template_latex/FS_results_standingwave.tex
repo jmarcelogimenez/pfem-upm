@@ -11,7 +11,7 @@ The chosen standing wave configuration consists in a rectangular tank with lengt
   \caption{\label{fg:standing-wave-config} Configuration scheme of standing wave case. Initial condition is represented by dotted lines. In continuous line is presented an intermediate state where the maximum amplitude $A$ is reached.}
 \end{figure}
 
-If the fluid is viscous, the dissipation due to the solid boundary layers is neglected, small-amplitude waves (i.e small $\epsilon$) and small wave steepness (i.e $2A/\lambda \ll 0.1$) are used; an approximate analytical solution of the standing wave evolution can be obtained through the linearization of Navier-Stokes equations for traveling waves:
+If the fluid is viscous, the dissipation due to the solid boundary layers is neglected, and small-amplitude waves (i.e small $\epsilon$) and small wave steepness (i.e $2A/\lambda \ll 0.1$) are used; an approximate analytical solution of the standing wave evolution can be obtained through the linearization of Navier-Stokes equations for traveling waves:
 \begin{align}
  \varphi(x,y,t) & = \varphi_0(x,y)\cos(\omega t) \\
  \varphi_0(x,y) & =-\epsilon\frac{Hg}{2\omega}\frac{\cosh\left[k(y+H)\right]}{\cosh(kH)}\cos(kx)
@@ -30,7 +30,7 @@ The kinetic attenuation is governed by the coefficient of the exponential $\beta
 
 To accomplish the linear solution hypothesis, the PFEM-2 simulations have been implemented by using a free-slip condition for the velocity and a Neumann condition for the pressure along each boundary of the tank. Also, the parameters $L=2$, $A=0.05$ and $g=1$ have been selected.
 
-Several Reynolds number ($Re=25,50,250,2500$) have been selected to compare with the approximate analytic dissipation. Problems were solved into a grid with $H/\Delta x=100$ and varying $\Delta t$ in order to solve using a Fourier number $Fo=\frac{\nu\Delta t}{\Delta x^2}$ with a local maximum of $Fo_{max}\approx10-50$. Figure \ref{fg:sw-energy} shows the comparison between the expected dissipation (which includes the improving damping rate) and numerical results with PFEM-2. Large Fourier numbers were used in order to reduce the computation times required to complete the simulations and to show the accuracy of the method working not only with large CFL numbers, even with large diffusion rate.
+Several Reynolds number ($Re=25,50,250,2500$) have been chosen to compare with the approximate analytic dissipation. Problems were solved into a grid with $H/\Delta x=100$ and varying $\Delta t$ in order to solve using a Fourier number $Fo=\frac{\nu\Delta t}{\Delta x^2}$ with a local maximum of $Fo_{max}\approx10-50$. Figure \ref{fg:sw-energy} shows the comparison between the expected energy dissipation (which includes the improving damping rate) and numerical results for kinetic energy calculated with PFEM-2. Large Fourier numbers were used in order to reduce the computation times required to complete the simulations and to show the accuracy of the method working not only with large CFL numbers, even with large diffusion rate.
 
   \begin{figure}[h]
   \centering
@@ -50,7 +50,7 @@ Several Reynolds number ($Re=25,50,250,2500$) have been selected to compare with
 	  \label{fg:sw-energy-2500}
 	  \includegraphics[width=.49\columnwidth]{images/sw_2500.pdf}
     }
-   \caption{Kinetic Energy decay for standing wave problem with different Reynolds numbers. Dotted lines are approximate analytical solutions for total energy and filled lines are the kinetic energy calculated with PFEM-2. Reynolds numbers analyzed: $Re=25,50,250,2500$ in Figures \ref{fg:sw-energy-25},\ref{fg:sw-energy-50},\ref{fg:sw-energy-250},\ref{fg:sw-energy-2500} respectively. Legend in each figure indicates the maximum Fourier number used in each numerical simulation.}
+   \caption{Kinetic Energy decay for standing wave problem with different Reynolds numbers. Dashed lines are approximate analytical solutions for total energy and filled lines are the kinetic energy calculated with PFEM-2. Reynolds numbers analyzed: $Re=25,50,250,2500$ in Figures \ref{fg:sw-energy-25},\ref{fg:sw-energy-50},\ref{fg:sw-energy-250},\ref{fg:sw-energy-2500} respectively. Legend in each figure indicates the maximum Fourier number used in each numerical simulation.}
    \label{fg:sw-energy}
 \end{figure}
 % \afterpage{\clearpage}
