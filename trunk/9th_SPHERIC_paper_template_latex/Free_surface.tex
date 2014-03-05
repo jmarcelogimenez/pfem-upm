@@ -1,10 +1,10 @@
-The accurate and efficient simulation of interface evolution is of fundamental importance in the simulation of multiphase flows. It is essential that the interface remains sharp. Large jumps of fluid density and viscosity across the interface should be correctly assumed by the numerical algorithm in order to satisfy the momentum balance at the vicinity of the interface.
+The accurate and efficient simulation of interface evolution is of fundamental importance in the simulation of multiphase flows. Large jumps of fluid density and viscosity across the interface should be correctly assumed by the numerical algorithm in order to satisfy the momentum balance and mass conservation at the vicinity of the interface.
 
 Methods used to describe the evolution of interfaces can be clustered in two classes, namely: interface capturing and interface tracking methods. While in the former the interface is determined by an implicit function that is advected in a Eulerian frame (see Volume of Fluid \cite{VoF} and Level Set\cite{Osher01}), in the latter the interface evolution equation is solved in a Lagrangian fashion, for example by evolving marker particles. The spatial domain discretization using mesh and particles allows PFEM2 to select an appropriate combination of those approaches where the free position information is shared and interchanged by the particles and the fixed mesh.
 
 There are several, but no large, differences between the PFEM-2 algorithm for homogeneous flows and the multi-fluids version. Those differences are produced by the density and viscosity discontinuities that appear in the fluid, consequently most of the changes are related to the strategies followed to capture correctly the interface between both fluids. Although some details presented in this section have been reported in \cite{Idelsohn13c}, however in this work we consider add important strategies that easily improve the accuracy and efficiency of the computation.
 
-Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, next are considerations to manage and improve each one of the stages for the particular case of multifluids problems. The following part is basically related with three aspects of the simulation: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and consequently the will be treated together in the next section.
+Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, in this section important considerations in order to manage and improve each one of the stages for the particular case of multifluids problems will be presented. The presence of more than one fluid basically affects three aspects of the simulation: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and consequently the will be treated together in the next section.
 
 \subsection{Internal interfaces tracking}
 
@@ -16,7 +16,7 @@ In general, the movement of a particle is done by sub-steps according to the equ
     \displaystyle \mathbf{v}(\mathbf{x}_p)=\frac{\sum_{i}\mathbf{v}_i^n\psi_i(\mathbf{x}_p)}{\sum_{i}\psi_i}
 \end{equation}
 
-where the nodes included in the interpolation are the nodes of the hosting element. Two situations could happen to every particle when it changes its position: all the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density as the fluid particle. While in the first case, a typical finite element interpolation is performed, the second situation clearly represents a situation where the fluid particle is close to the interface. Let us focus on  this second possibility when there is high enough density ratio $\rho_1/\rho_2>\alpha$, in this case two situations can appear:
+where the nodes included in the interpolation are the nodes of the hosting element. Two situations could happen when a particle changes its position: either all the nodes of the hosting element can have the same density as the fluid particle or one or more nodes can have different density as the fluid particle. While in the first case, a typical finite element interpolation is performed, the second situation clearly represents a situation where the fluid particle is close to the interface. Let us focus on  this second possibility when there is high enough density ratio $\rho_1/\rho_2>\alpha$, in this case two situations can appear:
 
  \begin{itemize}
  \item $\rho_p=\rho_2$ (light particle in a heavy fluid). The velocity will be computed using equation (\ref{Interpolation}).
@@ -26,20 +26,20 @@ where the nodes included in the interpolation are the nodes of the hosting eleme
    \item $A>\beta$, the sums that appear in equation (\ref{Interpolation}) are both restricted to the hosting nodes $i$ that have the same density as the particle $\rho_i=\rho_p$.
  \end{itemize}
  \end{itemize}
- 
- 
- 
- where $\alpha$ and $\beta$ are numerical parameters. For those cases where the density ratio is not excessive $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
- 
+
+
+
+ where $\alpha$ and $\beta$ are numerical parameters. For those cases where density ratio is not excessive $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
+
  This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
-Once the particle have been advected and the intermediate velocities have been determined, mesh nodes have to incorporate this updated velocity and density information. During this \textit{Projection Stage}, each node $j$ updates its intermediate velocity according to equation (\ref{Step3a}) and also its value $\lambda_j$. Depending on the value of $\lambda_j$ the instantaneous local interface inside each element is determined as the iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$.
+Once the particle have been advected and the intermediate velocities have been determined, mesh nodes have to incorporate this updated velocity, viscosity and density information. During this \textit{Projection Stage}, each node $j$ updates its intermediate velocity according to equation (\ref{Step3a}) and similarly its value $\lambda_j$. Depending on the value of $\lambda_j$, the node will be assigned to the first or the second fluid and the values of density and viscosity will be the corresponding ones. The instantaneous local interface inside each element is determined as the iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$.
 
 \subsection{Shape function enrichments for pressure gradient discontinuity capturing}
 
-In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
+In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that a typical interpolation based on continuous gradient shape functions cannot capture. This practice for the case of two different density fluids produce interpolation errors in the pressure that give rise to spurious velocities which finally can render the solution meaningless.
 
-Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that
+The strategy followed by enrichment methods is increasing the number of degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, see Figure \ref{fg:enrichment1} as a illustrating example of a 2D triangular element with nodes 1, 2 and 3 crossed by the interface at points A and B. The line that joins points A and B divides the element into two sub-domains $\Omega_1$ and $\Omega_2$. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that
 
 \begin{equation}
    \left\{\;
@@ -156,11 +156,11 @@ Therefore, following the classical procedure of static condensation of the syste
    [L_{\phi,\phi} - L_{\phi,*}{(L_{*,*})}^{-1}{L_{\phi,*}}^T](\delta p^{n+1}) = [D_{\phi}- L_{\phi,*}{(L_{*,*})}^{-1}D_{*}](\hat{\vv}^{n+1})
    \label{condensing}
   \end{equation}
-  
+
   where $\delta p^{n+1} = p^{n+1}-p^{n}$.
 
 %   If we are interested in solving the system in absolute pressure terms, the final system is
-% 
+%
 %   \begin{equation}
 %   [L_{\phi,\phi} - L_{\phi,*}{L_{*,*}}^{-1}{L_{\phi,*}}^T](p^{n+1}) = [D_{\phi}- L_{\phi,*}{L_{*,*}}^{-1}D_*](\hat{\vv}^{n+1}) + [L_{\phi,\phi} - L_{\phi,*}{L_{*,*}}^{-1}{L_{\phi,*}^T] (p^n)
 %    \label{condensing-abs}
@@ -180,4 +180,4 @@ After obtain the new pressure, it is necessary to correct the velocity predictio
 
 Previously, it was mentioned that the pressure value is zeroed at the beginning of the time step. In the recovering step one of the main reason can be found. It must be noticed that, not only the standard nodal pressures but also the enrichments pressures of the previous iteration are required in this stage. Because the enrichment pressures depend on the location of the interface inside the element, using the latest $p^*$ of the previous time-step may introduce several problems due to the movement of the interface. This lead to poor results that in most cases become unstable.
 
-Although this reinitialization of the pressure leads to a first iteration where the pressure calculation is of first order, further iterations pressure-correction improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. However, we share the conclusion with that work, because only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. For this reason no stabilization technique is required in this case.
+Although this reinitialization of the pressure leads to a first iteration where the pressure calculation is of first order, further iterations pressure-correction improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. However, we share the conclusion with that work, because only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. For this reason no stabilization technique is required in this case. 
