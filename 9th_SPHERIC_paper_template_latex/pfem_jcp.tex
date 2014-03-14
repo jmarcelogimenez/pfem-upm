@@ -109,7 +109,7 @@ This template helps you to create a properly formatted \LaTeX\ manuscript.
 \end{frontmatter}
 
 \linenumbers
-
+\fboxsep=0mm%padding thickness
 
 \section{Introduction}\label{Intro}
 \input{Intro}
@@ -128,13 +128,19 @@ This template helps you to create a properly formatted \LaTeX\ manuscript.
 \section{Free surface results}\label{FS_results}
 
 
-In this section a wide range of free-surface problems are solved using the PFEM-2 method. The startup test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system. The third case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature, once the main target is to show that using large time-steps, the method can capture and reproduce thoat behavior. The last example is a comparison between experimental and numerical results in a dam-break case. This case shows that the method can solve large motions of the interfaces and splashing of waves, also the comparison against pressure and height measurements examines the accuracy of PFEM-2 capturing data required by engineers. 
+In this section a wide range of free-surface problems are solved using the PFEM-2 method.  
+
+The first case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature. 
+% This problem is used to show the numerical problems introduced by the enrichment in the case of using the weak form of the velocity divergence when the condensation is applied. If it is used the continuous using large time-steps, the method can capture and reproduce that behavior. 
+This problem is used to show the capabilities of the method running with large time-steps, and these results are compared with those obtained with one of the best eulerian strategies.
+The second test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system. The last example is a comparison between experimental and numerical results in a dam-break case. 
+This case shows that the method can solve large motions of the interfaces and splashing of waves, also the comparison against pressure and height measurements examines the accuracy of PFEM-2 capturing data required by engineers. 
 
 The main aim of this section is to show the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy, then large time-steps are selected. It has been demonstrated that the computational cost of each time step in PFEM-2 is almost equal than traditional Eulerian solvers (see \cite{Idelsohn12b}). Then, if the method is able to solve simulation using larger time-steps than another codes, consequently it will be faster to solve the same problem.
 
+\input{FS_results_RT}
 \input{FS_results_Ansari}
 \input{FS_results_standingwave}
-\input{FS_results_RT}
 \input{FS_results_DamBreak}
 \input{FS_results_Roll}
 
