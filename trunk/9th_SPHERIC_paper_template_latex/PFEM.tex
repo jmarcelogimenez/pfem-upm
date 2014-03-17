@@ -5,10 +5,10 @@ conditions are imposed for the pressure and homogeneous Neumann boundary conditi
 \begin{eqnarray}
 % \nonumber to remove numbering (before each equation)
   \nabla \cdot \mathbf{v} &=& 0 \\
-  \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \rho \mathbf{f}+ \mu \nabla^2 \mathbf{v}
+  \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}
 \end{eqnarray}
 
-where the convective term does not appear in this Lagrangian formulation but a kinematic problem will be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body forces (normally gravity and/or inertial force).
+where the convective term does not appear in this Lagrangian formulation but a kinematic problem will be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body forces (normally gravity $\rho \mathbf{g}$ and/or inertial force).
 
 Let us explain the algorithm that PFEM-2 follows in order to compute a complete time step. Let us assume that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions respectively. According to this notation
 
@@ -55,7 +55,7 @@ Here some comments are required. As the integration is along the streamlines, th
 
   \item Projection Stage: Project velocity from the particles onto the mesh nodes:
   \begin{equation}\label{Step3a}
-\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \mathbf{v}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
+\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
 \end{equation}
 
 
@@ -65,7 +65,7 @@ Where the functions $W$ are the typical kernel functions used in particle method
   \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion.
 
  \begin{eqnarray}\label{Step4a}
-\displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j d\Omega + \theta \Delta t \mu \int_{\Omega} \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j d\Omega
+\displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j d\Omega + \theta \Delta t \int_{\Omega} \mu \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j d\Omega
 \end{eqnarray}
 
 
@@ -75,19 +75,19 @@ Where the functions $W$ are the typical kernel functions used in particle method
 
  \begin{eqnarray}\label{Step5a}
  % \nonumber to remove numbering (before each equation)
-   \int_{\Omega} \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] \phi_j d\Omega &=& \int_{\Omega} \nabla \cdot \widehat{\mathbf{v}}_j^{n+1} \phi_j d\Omega \\
+   \int_{\Omega} \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] \phi_j\ d\Omega &=& \int_{\Omega} \nabla \cdot \widehat{\mathbf{v}}_j^{n+1} \phi_j\ d\Omega \\
    \frac{\partial \delta p^{n+1}}{\partial n} &=& 0 \quad in \quad \Gamma_D \\
    \delta p^{n+1} &=& 0 \quad in \quad \Gamma_N
  \end{eqnarray}
 
- This problem should be stabilized if $p^n\neq0$ and P1-P1 FEM formulation is used. Pressure at time $t_{n+1}$ is updated as $p^{n+1}=p^{n}+\delta p^{n+1}$.
+ This problem should be stabilized if P1-P1 FEM formulation is used. Pressure at time $t_{n+1}$ is updated as $p^{n+1}=p^{n}+\delta p^{n+1}$.
 
 
  \item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections:
  \begin{equation}\label{Step6a}
   \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ \psi_j d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ \psi_j d\Omega\ - \Delta t \int_{\Omega}  \nabla \delta p^{n+1}\ \psi_j d\Omega
  \end{equation}
- In this part the velocity boundary conditions are imposed in $\Gamma_D$ and $\Gamma_N$. This stage has been solver either using a lumped version of the mass matrices or the complete mass matrix with very little difference in the results. Consequently for computational efficiency, the lumped version was finally used.
+ In this part the velocity boundary conditions are imposed in $\Gamma_D$ and $\Gamma_N$. This stage has been solved either using a lumped version of the mass matrices or the complete mass matrix with very little difference in the results. Consequently for computational efficiency, the lumped version was finally used. On the other hand, the velocity correction must be applied over the particles:
   \begin{equation}\label{Step6b}
   \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p}^{n+1})
   \end{equation}

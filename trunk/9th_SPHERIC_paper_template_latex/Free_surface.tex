@@ -8,7 +8,7 @@ Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, nex
 
 \subsection{Internal interfaces tracking}
 
-When two different fluids separated by an interface are considered, each particle $p$ carries the information of the fluid that was initially assigned, this quantity is represented by a scalar function $\lambda_p$ has integer values -1 or 1 depending if it belongs to the first or second fluid. This value is advected adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$, i.e. each particle keeps its marker value during the entire simulation. This function is projected to the mesh nodes to determine the free surface position. Mesh nodes consequently obtain real values from the projection different to the integer values $\pm1$ that particles transport. Free surface interface is defined as the set of points that satisfy the equation $\lambda=0$.
+When two different fluids separated by an interface are considered, each particle $p$ carries the information of the fluid that was initially assigned. This quantity, which is represented by a scalar function $\lambda_p$, has integer values $-1$ or $1$ depending if it belongs to the first or second fluid. This value is advected adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$, i.e. each particle keeps its marker value during the entire simulation. This function is projected to the mesh nodes to determine the free surface position. Mesh nodes consequently obtain real values from the projection different to the integer values $\pm1$ that particles transport. Free surface interface is defined as the set of points that satisfy the equation $\lambda=0$.
 
 In general, the movement of a particle is done by sub-steps according to the equation (\ref{Step2astep}). The velocity used in the particle movement at position $\mathbf{x}_p$ is calculated by the equation:
 
@@ -26,20 +26,19 @@ where the nodes included in the interpolation are the nodes of the hosting eleme
    \item $A>\beta$, the sums that appear in equation (\ref{Interpolation}) are both restricted to the hosting nodes $i$ that have the same density as the particle $\rho_i=\rho_p$.
  \end{itemize}
  \end{itemize}
- 
- 
- 
  where $\alpha$ and $\beta$ are numerical parameters. For those cases where the density ratio is not excessive $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
  
- This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
+This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, in that case and because the most similar path to the real trajectory of the particle is desired, the particle leaves the streamlines and follows a trajectory defined by the acting forces, being the simplest one the parabolic motion (only gravity force) or coupled with a water droplet drag model.
 
 Once the particle have been advected and the intermediate velocities have been determined, mesh nodes have to incorporate this updated velocity and density information. During this \textit{Projection Stage}, each node $j$ updates its intermediate velocity according to equation (\ref{Step3a}) and also its value $\lambda_j$. Depending on the value of $\lambda_j$ the instantaneous local interface inside each element is determined as the iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$.
 
 \subsection{Shape function enrichments for pressure gradient discontinuity capturing}
 
-In typical finite element methods, the gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
+In typical finite element methods, gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any unknown interpolated is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns that the interpolation used cannot capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
 
-Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, the enriched space mainly used is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that
+Enrichment methods add degrees of freedom at elements cut by the interface in order to reduce interpolation errors. In this work, two enriched space are proposed to treat with pressure gradient discontinuities. 
+
+The first enriched space is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The unique new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the way to construct the enrichment function $\phi^*$ is ensuring that
 
 \begin{equation}
    \left\{\;
@@ -65,9 +64,8 @@ where $k_1 = \dfrac{\lambda_2-\lambda_1}{\lambda_2}$, $k_2 = \dfrac{\lambda_1-\l
    \label{fg:enrichment1}                %% Etiqueta para la figura entera
 \end{figure}
 
-The other set of enrichment functions used in this work is presented in Figure \ref{fg:enrichment2}. As in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space it is possible to ensure continuity between elements, but paying the cost of having to rebuild the system matrix at each time step, which could be an expensive task due to memory allocation.
+The second set of enrichment functions used in this work is described in Figure \ref{fg:enrichment2}. As in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space it is possible to ensure continuity between elements, but paying the cost of having to rebuild the system matrix at each time step, which could be an expensive task due to memory allocation.
 This enrichment space is constructed following
-
 \begin{equation}
    \left\{\;
    \begin{matrix}
@@ -78,8 +76,6 @@ This enrichment space is constructed following
    \right.
    \label{eq:enrich-2a}
 \end{equation}
-
-
 
 \begin{figure}[H]
   \centering
@@ -103,25 +99,26 @@ This enrichment space is constructed following
 %    \label{fg:enrichment}                %% Etiqueta para la figura entera
 % \end{figure}
 
-   Therefore, the pressure is now interpolated in the cut element following:
-
-   \begin{equation}
+Therefore, using any of the enriched spaces, the pressure is now interpolated in the cut element following:
+ \begin{equation}
       p_h(\xx) = \sum_{i=1}^{N_n} \phi_i(\xx) \ p_i + \sum_{i=1}^{N_e} \phi_i^*(\xx) \ p_i^*
    \end{equation}
-   where $\phi_i$ are traditional linear shape functions (a total of $N_n$), and $\phi_i^*$ are the enrichment shape functions (a total of $N_e$).
+where $\phi_i$ are traditional linear shape functions (a total of $N_n$), and $\phi_i^*$ are the enrichment shape functions (a total of $N_e$).
 
-   In order to capture the discontinuities and take advantage of the enrichment functions used, the integration rules need to be modified in elements cut by the front. The method we use is to divide each  tetrahedral (triangular in 2D) element into up to six tetrahedral
-  (three triangular in 2D) sub elements. For each sub element the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment1} shows that partition and the small circles represent the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
+In order to capture the discontinuities and taking advantage of the enrichment functions used, the integration rules need to be modified in elements cut by the front. The method used is to divide each tetrahedral (triangular in 2D) element into up to six tetrahedral
+(three triangular in 2D) sub elements. For each sub element the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment1} shows that partition and the small circles represent the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
 
    \subsection{Pressure Calculation}
 
-Particles can move across several elements and through the interface during a time step and the pressure gradient of the previous time step would introduce a poor and even unstable approximation of the pressure forces. In order to avoid these large errors in the evaluation of the pressure gradients in the initial value of the iterative process, the value of the pressure is set to zero at the beginning of each time-state. Therefore, the acceleration over the particle calculated in X-IVAS stage is only is due to gravity force (pressure gradient is considered null and viscous forces are treated implicitly)\cite{Idelsohn13c}.
+Particles can move across several elements and through the interface during a time-step, then the pressure gradient of the previous time-step would introduce a poor and even unstable approximation of the pressure forces. In order to avoid these large errors in the evaluation of the pressure gradients in the initial value of the iterative process, the value of the pressure is set to zero at the beginning of each time-step. Therefore, the acceleration over the particle calculated in X-IVAS stage is only is due to gravity force (pressure gradient is considered null and viscous forces are treated implicitly)\cite{Idelsohn13c}.
 
-Starting from Equation \ref{Step5a}, and following the classical variational formulation, this is integrating, weighting with local shape functions and weakening, it is possible to obtain the elemental contribution:
+Starting from Equation \ref{Step5a}, and following the classical variational formulation, this is integrating, weighting with local shape functions and weakening both pressure laplacian and velocity divergence terms, it is possible to obtain the elemental contribution:
 
 \begin{equation}
-   [\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla \phi^T \nabla \phi \ d\Omega] \delta p^{n+1} = [\int_{\Omega^e} \nabla \phi^T \psi \ d\Omega] \hat \vv_j^{n+1}
+   \left[\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla \phi^T \nabla \phi \ d\Omega\right]\ \delta p^{n+1} = \left[\int_{\Omega^e} \nabla \phi^T \psi \ d\Omega\right]\ \hat \vv_j^{n+1}
+\label{poisson}
 \end{equation}
+where the term $\displaystyle \int_{\Gamma^e\cap\Gamma} \phi \left[ \hat \vv_j^{n+1} + \Delta t \frac{1}{\rho} \nabla  \delta p^{n+1} \right] \cdot \eta \ d\Gamma = \int_{\Gamma^e\cap\Gamma} \phi \ \vv_j^{n+1} \cdot \eta \ d\Gamma = 0$ to ensure impenetrability on walls. 
 
 In the case of split elements the enrichment shape functions are used, then the resulting system is:
 
@@ -144,20 +141,25 @@ In the case of split elements the enrichment shape functions are used, then the 
 
 where
 \begin{itemize}
- \item ${(L_{\phi,\phi})}_{N_n\times N_n} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j \ d\Omega$
- \item ${(L_{\phi,*})}_{N_n\times N_e} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j^* \ d\Omega$
- \item ${(L_{*,*})}_{N_e\times N_e} = \Delta t \int_{\Omega^e} \dfrac{1}{\rho} \nabla {\phi_i^*}^T \nabla \phi_j^* \ d\Omega$
- \item ${(D_{\phi})}_{N_n\times N_n} = \int_{\Omega^e} \nabla \phi_i^T \psi_j \ d\Omega$
- \item ${(D_*)}_{N_n\times N_e} = \int_{\Omega^e}  \nabla {\phi_i^*}^T \psi_j \ d\Omega$
+ \item ${(L_{\phi,\phi})}_{N_n\times N_n} = \Delta t \displaystyle \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j \ d\Omega$
+ \item ${(L_{\phi,*})}_{N_n\times N_e} = \Delta t \displaystyle \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j^* \ d\Omega$
+ \item ${(L_{*,*})}_{N_e\times N_e} = \Delta t \displaystyle \int_{\Omega^e} \dfrac{1}{\rho} \nabla {\phi_i^*}^T \nabla \phi_j^* \ d\Omega$
+ \item ${(D_{\phi})}_{N_n\times N_n} = \displaystyle \int_{\Omega^e} \nabla \phi_i^T \psi_j \ d\Omega$
+ \item ${(D_*)}_{N_n\times N_e} = \displaystyle \int_{\Omega^e}  \nabla {\phi_i^*}^T \psi_j \ d\Omega$
 \end{itemize}
 
-Therefore, following the classical procedure of static condensation of the system through Gaussian elimination\cite{Felippa04}, next reduced system is obtained:
+At this point is possible to choose between two options. First is including new degrees of freedom in the global system, which will guarantee continuity between elements if the enriched space \ref{eq:enrich-2a} is used. Second option is following the classical procedure of static condensation of the system through Gaussian elimination\cite{Felippa04}, where next reduced system is obtained:
   \begin{equation}
-   [L_{\phi,\phi} - L_{\phi,*}{(L_{*,*})}^{-1}{L_{\phi,*}}^T](\delta p^{n+1}) = [D_{\phi}- L_{\phi,*}{(L_{*,*})}^{-1}D_{*}](\hat{\vv}^{n+1})
+   \left[L_{\phi,\phi} - L_{\phi,*}{(L_{*,*})}^{-1}{L_{\phi,*}}^T\right](\delta p^{n+1}) = \left[D_{\phi}- L_{\phi,*}{(L_{*,*})}^{-1}D_{*}\right](\hat{\vv}^{n+1})
    \label{condensing}
   \end{equation}
-  
-  where $\delta p^{n+1} = p^{n+1}-p^{n}$.
+with $\delta p^{n+1} = p^{n+1}-p^{n}$.
+
+--- INICIO PARRAFO IMPORTANTE A CORREGIR
+
+Without ensuring continuity between elements, as it happens in the case of enriched ones when condensation is used, it is not true the assumption that the inter-elemental boundary terms from the weakening of the Poisson equation might be avoided. From our experience, and like is reported by Coppola\cite{Coppola05}, when the Froude Number is high (this is, low density ratio), the forgotten term from the weakening of the divergence of the velocity introduces severe problems of numerical diffusion. A way to solve this problem is to not integrate by parts the divergence term, but it requires imposing a pressure gradient on boundaries, whose value can not be easily predict when there is a gravitational field, large density ratio, and the fluid is not at rest. Finally, if condensation is used, we choose weakening the velocity divergence in the Poisson step only when large density ratio is considered. Continuous enrichment does not suffer of the above mentioned problems and the same formulation can be used for every Froude number. However, a loss of computational performance must be paid because the necessity of memory management to assemble the variable-size pressure equation system.
+
+--- FIN PARRAFO IMPORTANTE A CORREGIR
 
 %   If we are interested in solving the system in absolute pressure terms, the final system is
 % 
@@ -166,13 +168,13 @@ Therefore, following the classical procedure of static condensation of the syste
 %    \label{condensing-abs}
 %   \end{equation}
 
-After obtain the new pressure, it is necessary to correct the velocity prediction using the pressure gradient. However, the new degree of freedom for the pressure, which was condensed previously, must be taken into account in this step to calculate the enriched pressure gradient. The value of $p*^{n+1}$ can be recovered from the nodal pressures calculated in the poisson step with:
+After obtain the new pressure, it is necessary to correct the velocity prediction using the pressure gradient. However, the new degree of freedom for the pressure must be taken into account in this step to calculate the enriched pressure gradient. In the case of condensed calculation, the value of $p*^{n+1}$ can be recovered from the nodal pressures calculated in the poisson step with:
 \begin{equation}
   {p^*}^{n+1} = {(L_{*,*})}^{-1}[D_* \hat{\vv}^{n+1} - {L_{\phi,*}}^Tp^{n+1} + {L_{\phi,*}}^Tp^{n} + L_{*,*}{p^*}^n]
   \label{recovering}
 \end{equation}
 
- Finally, the equation system presented in Equation \ref{correction} must be solved.
+Finally, the equation system presented in Equation \ref{correction} must be solved.
  \begin{equation}
   \int_{\Omega} \psi \rho \vv^{n+1} d\Omega = \int_{\Omega} \psi \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ [\int_{\Omega} \psi \nabla \delta p^{n+1} d\Omega + \int_{\Omega} \psi \nabla \delta {p^*}^{n+1} d\Omega]
   \label{correction}
@@ -180,4 +182,4 @@ After obtain the new pressure, it is necessary to correct the velocity predictio
 
 Previously, it was mentioned that the pressure value is zeroed at the beginning of the time step. In the recovering step one of the main reason can be found. It must be noticed that, not only the standard nodal pressures but also the enrichments pressures of the previous iteration are required in this stage. Because the enrichment pressures depend on the location of the interface inside the element, using the latest $p^*$ of the previous time-step may introduce several problems due to the movement of the interface. This lead to poor results that in most cases become unstable.
 
-Although this reinitialization of the pressure leads to a first iteration where the pressure calculation is of first order, further iterations pressure-correction improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. However, we share the conclusion with that work, because only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. For this reason no stabilization technique is required in this case.
+Although this reinitialization of the pressure leads to a first iteration where the pressure calculation is of first order, further iterations pressure-correction improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. We arrive to the same conclusion, because only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. Then, no stabilization technique is required in this case.
