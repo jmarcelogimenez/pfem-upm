@@ -1,14 +1,11 @@
-\subsection{Particular formulation for two fluids.}
-The following simplifications of the general algorithm described above are considered:
+\subsection{PFEM-2 algorithm for two immiscible and incompressible fluids}
 
+Considering details presented in above section for the treatment of free-surface, the main changes regarding to the general algorithm described in Section \ref{GeneralFor} are:
 \begin{itemize}
-  \item $\theta=1$
-  \item $p^n=0$
+  \item Implicit solution of viscosity terms: $\theta=1$
+  \item Pressure restarting: $p^n=0$
 \end{itemize}
-
-As the initial pressure $p^n$ and the factor $1-\theta$ are both zero, the first stage of the general formulation can be supressed and the algorithm starts with the X-IVAS step.
-
-The Algorithm \ref{program:twofluids} presents the final algorithm to solve incompressible fluids with two differents densities
+As the initial pressure $p^n$ and the factor $1-\theta$ are both zero, the first stage of the general formulation can be suppressed and the algorithm starts with the X-IVAS step where the acceleration is only due to body forces $\mathbf{f}$. Finally, the Algorithm \ref{program:twofluids} presents the current PFEM algorithm to solve incompressible fluids with two different densities.
 
  \begin{program}[htbp]
 	{\footnotesize
@@ -28,31 +25,32 @@ The Algorithm \ref{program:twofluids} presents the final algorithm to solve inco
 	    \begin{equation}\label{Step3b2fluids}
 	    \left\{\;
 	      \begin{matrix}[l]
-	      \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \mathbf{v}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})} \\
+	      \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})} \\
 	      \displaystyle \lambda^{n+1}_{j}=\frac{\sum_{p} \lambda^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
 	      \end{matrix}\;
 	      \right.
 	    \end{equation}
 	    \item Implicit Viscosity Stage:
 	     \begin{eqnarray}\label{Step4a2fluids}
-	      \displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j d\Omega + \theta \Delta t \int_{\Omega} \mu_j \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j d\Omega
+	      \displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j\ d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j\ d\Omega + \theta \Delta t \int_{\Omega} \mu(\xx) \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j\ d\Omega
 	      \end{eqnarray}
 
 	    \item Pressure-Correction Iterations: \\
 	    \texttt{set} $\mathbf{v}_j^n = \widehat{\mathbf{v}}^{n+1}_{j}$ \\
-	    \texttt{for k=1 to N}
+	    \texttt{for k=1 to K}
 	    \begin{enumerate}
 	     \item Poisson Stage: 
 	     \begin{eqnarray}\label{Step5a2fluids}
-	      \int_{\Omega} \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{(n+\frac{k}{N})})] \phi_j d\Omega &=& \int_{\Omega} \nabla \cdot \mathbf{v}_j^{(n+\frac{k-1}{N})} \phi_j d\Omega
+	      \int_{\Omega} \nabla \cdot \left[\frac{\Delta t}{\rho(\xx)}\nabla(\delta p^{(n+\frac{k}{K})})\right]\phi_j\ d\Omega &=& \int_{\Omega} \nabla \cdot \mathbf{v}_j^{(n+\frac{k-1}{K})}\phi_j\ d\Omega
 % 	      \\
 % 	      \frac{\partial \delta p^{n+1}}{\partial n} &=& 0 \quad in \quad \Gamma_D \\
 % 	      \delta p^{n+1} &=& 0 \quad in \quad \Gamma_N
 	    \end{eqnarray}	    
 	    \item Correction Stage:
-	     \begin{equation}\label{Step5b2fluids}
-	      \int_{\Omega} \psi \rho \vv_j^{(n+\frac{k}{N})} d\Omega = \int_{\Omega} \psi \rho \vv_j^{(n+\frac{k-1}{N})} d\Omega - \Delta t \ [\int_{\Omega} \psi \nabla \delta p_j^{(n+\frac{k}{N})} d\Omega + \int_{\Omega} \psi \nabla \delta {p^*}^{(n+\frac{k}{N})} d\Omega]
-	    \end{equation}
+	     \begin{multline}\label{Step5b2fluids}
+	      \int_{\Omega} \psi \rho(\xx) \vv_j^{(n+\frac{k}{K})}\ d\Omega = \int_{\Omega} \psi \rho(\xx) \vv_j^{(n+\frac{k-1}{K})} d\Omega\\ 
+	      - \Delta t \ \left[\int_{\Omega} \psi \nabla (\delta p)_j^{(n+\frac{k}{K})} d\Omega + \int_{\Omega} \psi \nabla {(\delta p^*)}^{(n+\frac{k}{K})}\ d\Omega\right]
+	    \end{multline}
 	    \end{enumerate}
 	  \texttt{end for}
 	  \item Particle Correction Stage:
@@ -60,7 +58,7 @@ The Algorithm \ref{program:twofluids} presents the final algorithm to solve inco
 	  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p}^{n+1})
 	  \end{equation}
 	\end{enumerate}
-	\caption{- Time Step PFEM-2 two incompressible fluids.}
+	\caption{- Time-Step PFEM-2 for two immiscible and incompressible fluids.}
 	\label{program:twofluids}
       }
       \end{program}

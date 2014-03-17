@@ -115,37 +115,34 @@ This template helps you to create a properly formatted \LaTeX\ manuscript.
 \input{Intro}
 
 
-\section{PFEM Algorithm}\label{PFEM_Algorithm}
+\section{PFEM-2 Algorithm}\label{PFEM_Algorithm}
 \input{PFEM}
 
-\section{Free surface flows peculiarities}\label{Free_surface}
+\section{Free-Surface flows treatment}\label{Free_surface}
 \input{Free_surface}
 \input{PFEM_multifluids}
 
 % \section{Second order improvements.}\label{Second_order}
 % \input{Second_order}
 
-\section{Free surface results}\label{FS_results}
+\section{Free-Surface results}\label{FS_results}
 
-
-In this section a wide range of free-surface problems are solved using the PFEM-2 method.  
+In this section a wide range of free-surface problems, with different ratio between the densities and viscosities of the fluids involved, are solved using the PFEM-2 method and its results compared with reference ones, which include numerical results, expermiental analysis and/or analytical solutions.
 
 The first case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature. 
 % This problem is used to show the numerical problems introduced by the enrichment in the case of using the weak form of the velocity divergence when the condensation is applied. If it is used the continuous using large time-steps, the method can capture and reproduce that behavior. 
-This problem is used to show the capabilities of the method running with large time-steps, and these results are compared with those obtained with one of the best eulerian strategies.
-The second test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system. The last example is a comparison between experimental and numerical results in a dam-break case. 
-This case shows that the method can solve large motions of the interfaces and splashing of waves, also the comparison against pressure and height measurements examines the accuracy of PFEM-2 capturing data required by engineers. 
+This problem is used to focusing on the capabilities of the method running with large time-steps. These results are compared with those obtained with one of the best eulerian strategies: the named Volume fo Fluid (VoF), which can add limiters as a method of guaranteeing boundedness of phase-fractions, and interface compression numerical terms to keep the interface sharpen.
+The second test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system. 
+Finally, the last example is a comparison between experimental and numerical results in a dam-break case. 
+This case shows that the method can solve large motions of the interfaces and splashing of waves, and keep aceptable level of accuracy when a comparison against pressure and height measurements is done. 
 
-The main aim of this section is to show the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy, then large time-steps are selected. It has been demonstrated that the computational cost of each time step in PFEM-2 is almost equal than traditional Eulerian solvers (see \cite{Idelsohn12b}). Then, if the method is able to solve simulation using larger time-steps than another codes, consequently it will be faster to solve the same problem.
+The main aim of this section is to show the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy, then large time-steps are selected. It has been demonstrated that the computational cost of each time step in PFEM-2 is almost equal than traditional Eulerian solvers (see \cite{Idelsohn12b}). Then, if the method is able to solve simulation using larger time-steps than another codes, consequently it will be faster to solve the same problem and it will obtain results with guaranteed accuracy.
 
 \input{FS_results_RT}
 \input{FS_results_Ansari}
 \input{FS_results_standingwave}
 \input{FS_results_DamBreak}
-\input{FS_results_Roll}
-
-
-
+% \input{FS_results_Roll}
 
 
 \section{Conclusion}
@@ -154,12 +151,12 @@ The main aim of this section is to show the capability of the method to treat wi
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
-% optional entry into table of contents (if used)
-%\addcontentsline{toc}{section}{Acknowledgment}
-The research  leading  to these results has received funding from the Spanish Ministry for Science and
- Innovation under the grant TRA2010-16988
-``Caracterizaci\'on Num\'erica y Experimental de las Cargas Fluido-Din\'amicas en el transporte de Gas Licuado''.
-All the authors want to thank Mr. Hugo Gee for proof-reading the paper.
+
+Authors thank to Eng. Pablo Becker (CIMNE-Spain), Dr. Norberto Nigro (CIMEC-Argentina) and prof. Sergio Idelsohn (CIMNE-Spain and CIMEC-Argentina) for their valuable help and discussions about the method features and its implementation.
+
+J. Gimenez gratefully acknowledges the support of the Argentinian Agencia Nacional de Promoci\'on Cient\'ifica y T\' ecnica (ANPCyT) through a doctoral grant in the FONCyT program. Also the authors thank to the program ERASMUS mundus action 2 ARCOIRIS project for financial support throught a six-month doctoral scholarship.
+
+Other financial support was provided by CONICET, Universidad Nacional del Litoral (CAI+D Tipo II 65-333 (2009)), ANPCyT-FONCyT (grants PICT 1645 BID (2008)) and ERC Advanced Grant REALTIME project AdG-2009325.
 
 \bibliographystyle{plain}
 \bibliography{mybib}
