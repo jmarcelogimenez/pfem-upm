@@ -98,11 +98,12 @@
 %\address[mysecondaryaddress]{UPM, Madrid, Spain}
 
 \begin{abstract}
-This template helps you to create a properly formatted \LaTeX\ manuscript.
+In this paper a new generation of a particle method known as PFEM2 which combines convective particle movement and fixed mesh resolution is applied to free surface flows. This methodology presents basically two novel steps: first the possibility of using larger time steps compared to other similar numerical tools showing in a wide variety of problems where the accuracy of the solution is maintained. Second, as surface flows is the searched topic of the paper, a general methodology based on a continuous enriched basis functions for the pressure field has been also developed. Combining these two improvements, a variety of free surface flows have been solved in 2D and 3D cases, where the evident advantages of the improvements are remarked. The collection of problems has been carefully selected such that a wide variety of Froude numbers, density ratios and dominant dissipative cases are presented with the intention of presenting a general methodology that is not restricted to particular ranges of application. The results of the different free-surface problems solved which include: Rayleigh-Taylor flow, sloshing problems, viscous standing waves and the dam break problem are compared to well validated numerical alternatives and experimental measurements obtaining
+good approximations for such complex flows. 
 \end{abstract}
 
 \begin{keyword}
-\texttt{elsarticle.cls}\sep \LaTeX\sep Elsevier \sep template
+PFEM PFEM2 free surface flows finite elements
 \MSC[2010] 00-01\sep  99-00
 \end{keyword}
 
@@ -129,12 +130,12 @@ This template helps you to create a properly formatted \LaTeX\ manuscript.
 
 In this section a wide range of free-surface problems, with different ratio between the densities and viscosities of the fluids involved, are solved using the PFEM-2 method and its results compared with reference ones, which include numerical results, expermiental analysis and/or analytical solutions.
 
-The first case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature. 
-% This problem is used to show the numerical problems introduced by the enrichment in the case of using the weak form of the velocity divergence when the condensation is applied. If it is used the continuous using large time-steps, the method can capture and reproduce that behavior. 
+The first case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature.
+% This problem is used to show the numerical problems introduced by the enrichment in the case of using the weak form of the velocity divergence when the condensation is applied. If it is used the continuous using large time-steps, the method can capture and reproduce that behavior.
 This problem is used to focusing on the capabilities of the method running with large time-steps. These results are compared with those obtained with one of the best eulerian strategies: the named Volume fo Fluid (VoF), which can add limiters as a method of guaranteeing boundedness of phase-fractions, and interface compression numerical terms to keep the interface sharpen.
-The second test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system. 
-Finally, the last example is a comparison between experimental and numerical results in a dam-break case. 
-This case shows that the method can solve large motions of the interfaces and splashing of waves, and keep aceptable level of accuracy when a comparison against pressure and height measurements is done. 
+The second test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system.
+Finally, the last example is a comparison between experimental and numerical results in a dam-break case.
+This case shows that the method can solve large motions of the interfaces and splashing of waves, and keep acceptable level of accuracy when a comparison against pressure and height measurements is done.
 
 The main aim of this section is to show the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy, then large time-steps are selected. It has been demonstrated that the computational cost of each time step in PFEM-2 is almost equal than traditional Eulerian solvers (see \cite{Idelsohn12b}). Then, if the method is able to solve simulation using larger time-steps than another codes, consequently it will be faster to solve the same problem and it will obtain results with guaranteed accuracy.
 
