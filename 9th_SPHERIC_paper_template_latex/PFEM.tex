@@ -17,7 +17,7 @@ Let us explain the algorithm that PFEM-2 follows in order to compute a complete 
 
 
   \begin{equation}\label{Step1a}
-\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j d\Omega
+\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j d\Gamma
 \end{equation}
 
 \begin{equation}\label{Step1b}
@@ -31,7 +31,7 @@ Let us explain the algorithm that PFEM-2 follows in order to compute a complete 
 
 Where $\theta$ is a numerical parameter that rules the explicitness of the viscous term in the algorithm.
 
-  \item X-IVAS Stage: Evaluate new particle position and intermediate velocity following the velocity streamlines
+  \item X-IVAS Stage: Evaluate new particle position and intermediate velocity following the velocity streamlines fixed at time $t_n$
 
   \begin{equation}\label{Step2a}
 \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{t_n}^{t_{n+1}} \mathbf{v}^{n}(\mathbf{x}_p^{\alpha}) \ d\alpha
@@ -39,18 +39,18 @@ Where $\theta$ is a numerical parameter that rules the explicitness of the visco
 
 \begin{equation}\label{Step2b}
 \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} +
-\int_{t_n}^{t_{n+1}} \left( \mathbf{a}^{n}(\mathbf{x}_p^{\alpha}) + \mathbf{f}^{\alpha} (\mathbf{x}_p^{\alpha}) \right)
+\int_{t_n}^{t_{n+1}} \left[ \mathbf{a}^{n}(\mathbf{x}_p^{\alpha}) + \mathbf{f}^{\alpha} (\mathbf{x}_p^{\alpha}) \right]
  \ d\alpha
 \end{equation}
 
-Here some comments are required. As the integration is along the streamlines, the time step $\Delta t=t^{n+1}-t^{n}$ is divided into $N$ sub-steps where the velocity field is frozen for the mesh nodes and particles evolve from one sub-position to the next driven by the interpolated velocity field at the new sub-position. Temporal integration for the position and velocity can be solved using analytical expressions\cite{Nigro11} or high-order integrators\cite{Nair2003275}. However, in this work a sub-stepping integrator inherited from STS\cite{Alexiades96} is used, which can adapt its sub-step $\delta t=\frac{\Delta t}{K\cdot CFL_h}$ depending on the local CFL number as $CFL_h=\frac{|\mathbf{v}|\Delta t}{h}$ and $K$ is a parameter to adjust the minimal number of sub-steps required to cross an element. A more exhaustive explanation of the X-IVAS can be found in \cite{Nigro11}. According to this sub-stepping integration the equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
+Here some comments are required. The temporal integration along the streamlines can be solved using analytical expressions\cite{Idelsohn12} or high-order integrators\cite{Nair2003275}. However, in this work a sub-stepping integrator inherited from STS\cite{Alexiades96} is used, which can adapt its sub-step $\delta t=\frac{\Delta t}{K\cdot CFL_h}$ depending on the local CFL number as $CFL_h=\frac{|\mathbf{v}|\Delta t}{h}$ and $K$ is a parameter to adjust the minimal number of sub-steps required to cross an element. A more exhaustive explanation of the X-IVAS can be found in \cite{Nigro11}. According to this sub-stepping integration the equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
 
 \begin{equation}\label{Step2astep}
 \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \sum_{i=1}^{N} \mathbf{v}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) \delta t
 \end{equation}
 
 \begin{equation}\label{Step2bstep}
-\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \sum_{i=1}^{N} \left(\mathbf{a}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) + \mathbf{f}^{n} (\mathbf{x}^{n+\frac{i}{N}}_{p})\right)  \delta t
+\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} + \sum_{i=1}^{N} \left[\mathbf{a}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) + \mathbf{f}^{n} (\mathbf{x}^{n+\frac{i}{N}}_{p})\right]  \delta t
 \end{equation}
 
   \item Projection Stage: Project velocity from the particles onto the mesh nodes:
@@ -75,12 +75,12 @@ Where the functions $W$ are the typical kernel functions used in particle method
 
  \begin{eqnarray}\label{Step5a}
  % \nonumber to remove numbering (before each equation)
-   \int_{\Omega} \nabla \cdot [\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})] \phi_j\ d\Omega &=& \int_{\Omega} \nabla \cdot \widehat{\mathbf{v}}_j^{n+1} \phi_j\ d\Omega \\
+   \int_{\Omega} \nabla \cdot \left[\frac{\Delta t}{\rho}\nabla(\delta p^{n+1})\right] \phi_j\ d\Omega &=& \int_{\Omega} \nabla \cdot \widehat{\mathbf{v}}_j^{n+1} \phi_j\ d\Omega \\
    \frac{\partial \delta p^{n+1}}{\partial n} &=& 0 \quad in \quad \Gamma_D \\
    \delta p^{n+1} &=& 0 \quad in \quad \Gamma_N
  \end{eqnarray}
 
- This problem should be stabilized if P1-P1 FEM formulation is used. Pressure at time $t_{n+1}$ is updated as $p^{n+1}=p^{n}+\delta p^{n+1}$.
+ This problem should be stabilized if P1-P1 FEM formulation is used\cite{Idelsohn12b}. Pressure at time $t_{n+1}$ is updated as $p^{n+1}=p^{n}+\delta p^{n+1}$.
 
 
  \item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections:

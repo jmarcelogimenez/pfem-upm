@@ -157,7 +157,7 @@ with $\delta p^{n+1} = p^{n+1}-p^{n}$.
 
 --- INICIO PARRAFO IMPORTANTE A CORREGIR
 
-Without ensuring continuity between elements, as it happens in the case of enriched ones when condensation is used, it is not true the assumption that the inter-elemental boundary terms from the weakening of the Poisson equation might be avoided. From our experience, and like is reported by Coppola\cite{Coppola05}, when the Froude Number is high (this is, low density ratio), the forgotten term from the weakening of the divergence of the velocity introduces severe problems of numerical diffusion. A way to solve this problem is to not integrate by parts the divergence term, but it requires imposing a pressure gradient on boundaries, whose value can not be easily predict when there is a gravitational field, large density ratio, and the fluid is not at rest. Finally, if condensation is used, we choose weakening the velocity divergence in the Poisson step only when large density ratio is considered. Continuous enrichment does not suffer of the above mentioned problems and the same formulation can be used for every Froude number. However, a loss of computational performance must be paid because the necessity of memory management to assemble the variable-size pressure equation system.
+Without ensuring continuity between elements, as it happens in the case of enriched ones when condensation is used, the assumption that the inter-elemental boundary terms from the weakening of the Poisson equation might be avoided is not true. From our experience, and like is reported by Coppola\cite{Coppola05}, when the Froude Number is high (this is, low density ratio), the forgotten term from the weakening of the divergence of the velocity introduces severe problems of numerical diffusion. A way to solve this problem is not integrating by parts the divergence term, but it requires imposing a pressure gradient on boundaries, whose value can not be easily predict when there is a gravitational field, large density ratio, and the fluid is not at rest. Finally, if condensation is used, we choose weakening the velocity divergence in the Poisson step only when large density ratio is considered. Continuous enrichment does not suffer of the above mentioned problems and the same formulation can be used for every Froude number. However, a loss of computational performance must be paid because the necessity of memory management to assemble the variable-size pressure equation system.
 
 --- FIN PARRAFO IMPORTANTE A CORREGIR
 
@@ -168,7 +168,7 @@ Without ensuring continuity between elements, as it happens in the case of enric
 %    \label{condensing-abs}
 %   \end{equation}
 
-After obtain the new pressure, it is necessary to correct the velocity prediction using the pressure gradient. However, the new degree of freedom for the pressure must be taken into account in this step to calculate the enriched pressure gradient. In the case of condensed calculation, the value of $p*^{n+1}$ can be recovered from the nodal pressures calculated in the poisson step with:
+After obtain the new pressure, it is necessary to correct the velocity prediction using the pressure gradient. However, the new degree of freedom for the pressure must be taken into account in this step to calculate the enriched pressure gradient. In the case of condensed calculation, the value of $p*^{n+1}$ must be recovered from the nodal pressures calculated in the poisson step with:
 \begin{equation}
   {p^*}^{n+1} = {(L_{*,*})}^{-1}[D_* \hat{\vv}^{n+1} - {L_{\phi,*}}^Tp^{n+1} + {L_{\phi,*}}^Tp^{n} + L_{*,*}{p^*}^n]
   \label{recovering}
@@ -176,7 +176,7 @@ After obtain the new pressure, it is necessary to correct the velocity predictio
 
 Finally, the equation system presented in Equation \ref{correction} must be solved.
  \begin{equation}
-  \int_{\Omega} \psi \rho \vv^{n+1} d\Omega = \int_{\Omega} \psi \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ [\int_{\Omega} \psi \nabla \delta p^{n+1} d\Omega + \int_{\Omega} \psi \nabla \delta {p^*}^{n+1} d\Omega]
+  \int_{\Omega} \psi \rho \vv^{n+1} d\Omega = \int_{\Omega} \psi \rho \hat{\vv}^{n+1} d\Omega - \Delta t \ \left[\int_{\Omega} \psi \nabla \delta p^{n+1} d\Omega + \int_{\Omega} \psi \nabla \delta {p^*}^{n+1} d\Omega \right]
   \label{correction}
  \end{equation}
 
