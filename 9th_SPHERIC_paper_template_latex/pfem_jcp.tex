@@ -76,7 +76,9 @@
 \begin{frontmatter}
 
 %\title{Applications and improvements of the PFEM (particles + finite elements) methodology to free surface flows.}
-\title{A free surface extension of semiLagrangian particle and finite element methodologies.}
+% \title{A free surface extension of semiLagrangian particle and finite element methodologies.}
+% \title{Extension and validation of the PFEM methodology to free surface flows}
+\title{Extension and validation of the last generation of PFEM on free-surface flows}
 \tnotetext[mytitlenote]{Fully documented templates are available in the elsarticle package on 
  \href{http://www.ctan.org/tex-archive/macros/latex/contrib/elsarticle}{CTAN}.}
 
@@ -100,8 +102,10 @@
 %\address[mysecondaryaddress]{UPM, Madrid, Spain}
 
 \begin{abstract}
-In this paper a new generation of a particle method known as PFEM-2 which combines convective particle movement and fixed mesh resolution is applied to free surface flows. This methodology presents basically two novel steps: first the possibility of using larger time steps compared to other similar numerical tools showing in a wide variety of problems that shorter computational times can be achieved while the solution accuracy is maintained. Second, as surface flows is the searched topic of the paper, different improved versions of discontinuous and continuous enriched basis functions for the pressure field have been also developed in order to reconstruct the free surface without artificial diffusion or undesired numerical effects. Combining these two improvements, a variety of free surface flows have been solved in 2D and 3D cases, where the evident advantages of the improvements are remarked. The collection of problems has been carefully selected such that a wide variety of Froude numbers, density ratios and dominant dissipative cases are presented with the intention of presenting a general methodology that is not restricted to particular ranges of application.
-The results of the different free-surface problems solved which include: Rayleigh-Taylor flow, sloshing problems, viscous standing waves and the dam break problem are compared to well validated numerical alternatives and experimental measurements obtaining
+In this paper a new generation of a particle method known as Particle Finite Element Method Two (PFEM-2), which combines convective particle movement and fixed mesh resolution, is applied to free surface flows. This methodology presents basically two novel steps: first the possibility of using larger time steps compared to other similar numerical tools showing in a wide variety of problems that shorter computational times can be achieved while the solution accuracy is maintained. Second, as surface flows is the searched topic of the paper, different improved versions of discontinuous and continuous enriched basis functions for the pressure field have been also developed in order to reconstruct the free surface without artificial diffusion or undesired numerical effects. Combining these two improvements, a variety of free surface flows have been solved in 2D and 3D cases, where the evident advantages of the improvements are remarked. The collection of problems has been carefully selected such that a wide 
+variety of Froude numbers, density ratios 
+and dominant dissipative cases are presented with the intention of presenting a general methodology that is not restricted to particular ranges of application.
+The results of the different free-surface problems solved which include: Rayleigh-Taylor instability, sloshing problems, viscous standing waves and the dam break problem are compared to well validated numerical alternatives and experimental measurements obtaining
 good approximations for such complex flows.
 \end{abstract}
 
@@ -135,12 +139,12 @@ In this section a wide range of free-surface problems, with different ratio betw
 
 The first case is the widely known Rayleigh-Taylor instability, where a small perturbation must generate complex fluid structures that are well reported in literature.
 % This problem is used to show the numerical problems introduced by the enrichment in the case of using the weak form of the velocity divergence when the condensation is applied. If it is used the continuous using large time-steps, the method can capture and reproduce that behavior.
-This problem is used to focusing on the capabilities of the method running with large time-steps. These results are compared with those obtained with one of the best Eulerian strategies: the named Volume fo Fluid (VoF), which can add limiters as a method of guaranteeing boundedness of phase-fractions, and interface compression numerical terms to keep the interface sharpen.
+This problem is used to focusing on the capabilities of the method running with large time-steps. These results are compared with those obtained with one of the best Eulerian strategies: the named Volume fo Fluid (VoF), which adds limiters as a method of guaranteeing boundedness of phase-fractions, and interface compression numerical terms to keep the interface sharpen.
 The second test is a sloshing problem which allows us to analyze the behavior of the numerical strategy when both large and small density jumps are simulated, and comparing it with the results using widely used codes. Next is a standing wave problem which is used to test the ability of the method to solve free-surface problems where the viscosity plays an important role, comparing results with semi-analytical solutions of the decayment of the total energy of the system.
-Finally, the last example is a comparison between experimental and numerical results in a dam-break case.
+Finally, the last example is a comparison against experimental results in a dam-break case.
 This case shows that the method can solve large motions of the interfaces and splashing of waves, and keep acceptable level of accuracy when a comparison against pressure and height measurements is done.
 
-The main aim of this section is to show the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy, then large time-steps are selected. It has been demonstrated that the computational cost of each time step in PFEM-2 is almost equal than traditional Eulerian solvers (see \cite{Idelsohn12b}). Then, if the method is able to solve simulation using larger time-steps than another codes, consequently it will be faster to solve the same problem and it will obtain results with guaranteed accuracy.
+The main aim of this section is to show the capability of the method to treat with large Courant numbers without loss stability and without almost resign accuracy, then reasonable large time-steps are selected in each test. Previous works showed that the computational cost of each time-step in PFEM-2 is almost equal than traditional Eulerian solvers (see \cite{Idelsohn12b}\cite{Gimenez14}). Then, if the method is able to solve simulation using larger time-steps than another codes, consequently it will be faster to solve the same problem and it will obtain results with guaranteed accuracy.
 
 \input{FS_results_RT}
 \input{FS_results_Ansari}
@@ -153,7 +157,8 @@ The main aim of this section is to show the capability of the method to treat wi
 
 The second generation of the Particle Finite Element Method (PFEM-2) is a novel strategy which uses a spatial discretization based on a background mesh and a cloud of particles. The dynamics equations are solved in a Lagrangian frame, where the implicit nonlinearities of the equation are solved using the X-IVAS strategy. That explicit temporal integration for convective terms allows to use large time-steps, then it provides a very efficient way concerning to computing times.
 
-In the current work, a general formulation to solve multi-phase flows with pressure gradient discontinuities was presented and exhaustively tested. That algorithm, which is based on a continuous enriched space for pressure, has shown good accuracy solving a wide range of multiphase problems and keeping the advantage of the possibility of using large time-steps. Several cases with a large variety of Froude numbers, density ratios and dominant dissipative cases have been analyzed, whose results were compared with other reference softwares, semi-analytical expressions and also experimental data. In each of them, PFEM-2 has proven being accurately competitive and computationally efficient. Regarding to CPU times, they can be decreased without accuracy lost if the condensing strategy for enriched pressure degrees of freedom is used. That approach loss the generality of the formulation for any range of application, but reduces the computational cost enforcing the asseveration that, to our knowledge, nowadays PFEM-2 is the faster algorithm for solving multiphase flows.
+In the current work, a general formulation to solve multi-phase flows with pressure gradient discontinuities was presented and exhaustively tested. That algorithm, which is based on a continuous enriched space for pressure, has shown good accuracy solving a wide range of multiphase problems and keeping the advantage of the possibility of using large time-steps. Several cases with a large variety of Froude numbers, density ratios and dominant dissipative cases have been analyzed, whose results were compared with other reference softwares, semi-analytical expressions and also experimental data. In each of them, PFEM-2 has proven being accurately competitive and computationally efficient. Regarding to CPU times, they can be decreased without accuracy lost if the condensing strategy for enriched pressure degrees of freedom is used. That approach loss the generality of the formulation for any range of application, but reduces the computational cost enforcing the asseveration that, to our knowledge, nowadays PFEM-
+2 is the faster algorithm for solving multiphase flows.
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
