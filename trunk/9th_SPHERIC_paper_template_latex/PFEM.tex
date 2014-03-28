@@ -1,6 +1,5 @@
 \subsection{General formulation}\label{GeneralFor}
-We wish to compute the approximate solution of a dynamic flow that contains two immiscible fluids. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, we proceed considering the case with two fluids. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary
-conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
+The computing of the approximate solution of a dynamic flow that contains two immiscible fluids is desired. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, the general case with two fluids is considered. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
 
 \begin{eqnarray}
 % \nonumber to remove numbering (before each equation)
@@ -10,18 +9,18 @@ conditions are imposed for the pressure and homogeneous Neumann boundary conditi
 
 where the convective term does not appear in this Lagrangian formulation but a kinematic problem will be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body forces (normally gravity $\rho \mathbf{g}$ and/or inertial force).
 
-Let us explain the algorithm that PFEM-2 follows in order to compute a complete time step. Let us assume that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions respectively. According to this notation
+Next is an explanation of the general algorithm that PFEM-2 follows in order to compute a complete time step. It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions respectively. According to this notation
 
 \begin{enumerate}
   \item Acceleration Stage: Calculate acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
 
 
   \begin{equation}\label{Step1a}
-\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j \cdot \eta \ d\Gamma
+\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j\ d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j\ d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j\ d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j \cdot \eta \ d\Gamma
 \end{equation}
 
 \begin{equation}\label{Step1b}
-\int_{\Omega}\mathbf{a}^{n}_{p}\psi_j d\Omega=-\int_{\Omega}\nabla p^{n} \psi_j d\Omega
+\int_{\Omega}\mathbf{a}^{n}_{p}\psi_j\ d\Omega=-\int_{\Omega}\nabla p^{n} \psi_j\ d\Omega
 %=\int_{\Omega} p^{n} \nabla \psi_j d\Omega - \int_{\Gamma} p^{n} \psi_j d\Omega
 \end{equation}
 
@@ -55,7 +54,7 @@ Here some comments are required. The temporal integration along the streamlines 
 
   \item Projection Stage: Project velocity from the particles onto the mesh nodes:
   \begin{equation}\label{Step3a}
-\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p})}
+\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}
 \end{equation}
 
 
@@ -65,7 +64,7 @@ Where the functions $W$ are the typical kernel functions used in particle method
   \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion.
 
  \begin{eqnarray}\label{Step4a}
-\displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j d\Omega + \theta \Delta t \int_{\Omega} \mu \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j d\Omega
+\displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j\ d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j\  d\Omega + \theta \Delta t \int_{\Omega} \mu \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j\ d\Omega
 \end{eqnarray}
 
 
@@ -85,7 +84,7 @@ Where the functions $W$ are the typical kernel functions used in particle method
 
  \item Correction Stage: Update the mesh and particle velocity with pressure and diffusion corrections:
  \begin{equation}\label{Step6a}
-  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\ \psi_j d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\ \psi_j d\Omega\ - \Delta t \int_{\Omega}  \nabla \delta p^{n+1}\ \psi_j d\Omega
+  \int_{\Omega} \rho_j \mathbf{v}_j^{n+1}\psi_j\ d\Omega \ = \ \int_{\Omega} \rho_j  \widehat{\mathbf{v}}_j^{n+1}\psi_j\ d\Omega\ - \Delta t \int_{\Omega}  \nabla \delta p^{n+1}\psi_j\ d\Omega
  \end{equation}
  In this part the velocity boundary conditions are imposed in $\Gamma_D$ and $\Gamma_N$. This stage has been solved either using a lumped version of the mass matrices or the complete mass matrix with very little difference in the results. Consequently for computational efficiency, the lumped version was finally used. On the other hand, the velocity correction must be applied over the particles:
   \begin{equation}\label{Step6b}

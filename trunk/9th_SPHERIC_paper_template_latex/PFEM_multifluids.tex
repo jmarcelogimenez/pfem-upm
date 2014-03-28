@@ -5,10 +5,10 @@ Considering details presented in above section for the treatment of free-surface
   \item Implicit solution of viscosity terms: $\theta=1$
   \item Pressure restarting: $p^n=0$
 \end{itemize}
-As the initial pressure $p^n$ and the factor $1-\theta$ are both zero, the first stage of the general formulation can be suppressed and the algorithm starts with the X-IVAS step where the acceleration is only due to body forces $\mathbf{f}$. Finally, the Algorithm \ref{program:twofluids} presents the current PFEM algorithm to solve incompressible fluids with two different densities.
+As the initial pressure $p^n$ and the factor $(1-\theta)$ are both zero, the first stage of the general formulation can be suppressed and the algorithm starts with the X-IVAS step where the acceleration is only due to body forces $\mathbf{f}$. Finally, the Algorithm \ref{program:twofluids} presents the current PFEM algorithm to solve incompressible fluids with two different densities.
 
  \begin{program}[htbp]
-	{\footnotesize
+	{\small
 	\begin{enumerate}
 	    \item X-IVAS Stage:
 	    \begin{equation}
@@ -58,7 +58,7 @@ As the initial pressure $p^n$ and the factor $1-\theta$ are both zero, the first
 	  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p}^{n+1})
 	  \end{equation}
 	\end{enumerate}
-	\caption{- Time-Step PFEM-2 for two immiscible and incompressible fluids.}
+	\caption{{\small- Time-Step PFEM-2 for two immiscible and incompressible fluids.}}
 	\label{program:twofluids}
       }
       \end{program}
