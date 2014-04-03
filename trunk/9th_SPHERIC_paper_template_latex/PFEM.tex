@@ -1,20 +1,25 @@
-\subsection{General formulation}\label{GeneralFor}
-The computing of the approximate solution of a dynamic flow that contains two immiscible fluids is desired. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, the general case with two fluids is considered. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
+\subsection{General considerations}\label{GeneralFor}
+
+The main aim of this paper is computing the approximate solution of a dynamic flow that contains two immiscible fluids. This theory holds when we use just one fluid, but as this particular case is not the most important case of this work, the general case with two fluids is considered. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one (denoted by subscript 1) and the other (with its corresponding variables denoted by the subscript 2) of densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively, being $\Gamma=\Gamma_D\bigcup\Gamma_N$ the boundary of $\Omega$. The boundary can be considered as the union of two boundary types: $\Gamma_D$, where Dirichlet boundary conditions are imposed for the velocity and homogeneous Neumann boundary conditions for pressure and $\Gamma_N$ where homogeneous Dirichlet boundary conditions are imposed for the pressure and homogeneous Neumann boundary conditions are used for the velocity. The governing equations written in a Lagrangian framework are:
 
 \begin{eqnarray}
 % \nonumber to remove numbering (before each equation)
-  \nabla \cdot \mathbf{v} &=& 0 \\
-  \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}
+  \nabla \cdot \mathbf{v} &=& 0 \label{eq:continuity} \\
+  \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}\label{eq:momentum}
 \end{eqnarray}
 
 where the convective term does not appear in this Lagrangian formulation but a kinematic problem will be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body forces (normally gravity $\rho \mathbf{g}$ and/or inertial force).
 
-Next is an explanation of the general algorithm that PFEM-2 follows in order to compute a complete time step. It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions respectively. According to this notation
+It is well known that the velocity vector unknown can be found solving the vector momentum equation \ref{eq:momentum}. However, the scalar unknown (the pressure) does not appear in the continuity equation \ref{eq:continuity}. Moreover, this equation is not a time evolution equation, it works like a constraint over the velocity field, choosing only those velocity field that satisfy a free divergence.  To discover the equation associated with the pressure several alternatives are possible. Among them, segregated or projection methods like fractional step appear as good candidates and they are selected by PFEM-2 as strategy of solution. The idea behind the fractional step is to write the momentum equation discretized in time in such a way to firstly predict a velocity using the old value of the pressure (the pressure at the old time step) and after correcting it with the updated pressure that arises from applying the divergence operator to the correction equation getting a Poisson like equation for the pressure.
+
+Next section is a brief explanation of the general algorithm that PFEM-2 follows in order to compute a complete time step. Predictor step is done by four stages: an acceleration calculation stage over the mesh, the X-IVAS stage to convect the fluid properties using the particles, the projection of the particle data to the mesh, and the implicit calculation of the diffusion. The predictor step ends with a predicted velocity $\widehat\vv^{n+1}$ on the mesh. After that, a Poisson equation to find the current pressure $p^{n+1}$ is solved. Finally, the velocity prediction is corrected to find the zero divergence field $\vv^{n+1}$.
+
+\subsection{Generic formulation}\label{GeneralFor}
+
+It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing the fluids. Subindexes $()_j$ y $()_p$ represent a generic node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element basis functions respectively. According to this notation
 
 \begin{enumerate}
   \item Acceleration Stage: Calculate acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
-
-
   \begin{equation}\label{Step1a}
 \int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j\ d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j\ d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j\ d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j \cdot \eta \ d\Gamma
 \end{equation}
@@ -42,7 +47,7 @@ Where $\theta$ is a numerical parameter that rules the explicitness of the visco
  \ d\alpha
 \end{equation}
 
-Here some comments are required. The temporal integration along the streamlines can be solved using analytical expressions\cite{Idelsohn12} or high-order integrators\cite{Nair2003275}. However, in this work a sub-stepping integrator inherited from STS\cite{Alexiades96} is used, which can adapt its sub-step $\delta t=\frac{\Delta t}{K\cdot CFL_h}$ depending on the local CFL number as $CFL_h=\frac{|\mathbf{v}|\Delta t}{h}$ and $K$ is a parameter to adjust the minimal number of sub-steps required to cross an element. A more exhaustive explanation of the X-IVAS can be found in \cite{Nigro11}. According to this sub-stepping integration the equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
+Here some comments are required. X-IVAS is a novel strategy which allows to a significantly better particle trajectory integration following streamlines resolving more difficult details of the flow with high accuracy without a drastically reduction in the time-step, as it is normally done by standard Lagrangian integration schemes. The temporal integration along the streamlines can be solved using analytical expressions\cite{Idelsohn12} or high-order integrators\cite{Nair2003275}. However, in this work a sub-stepping integrator inherited from STS\cite{Alexiades96} is used, which can adapt its sub-step $\delta t=\frac{\Delta t}{K\cdot CFL_h}$ depending on the local CFL number as $CFL_h=\frac{|\mathbf{v}|\Delta t}{h}$ and $K$ is a parameter to adjust the minimal number of sub-steps required to cross an element. A more exhaustive explanation of the X-IVAS can be found in \cite{Idelsohn12} and \cite{Idelsohn12b}. According to this sub-stepping integration the equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
 
 \begin{equation}\label{Step2astep}
 \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \sum_{i=1}^{N} \mathbf{v}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) \delta t
@@ -57,9 +62,7 @@ Here some comments are required. The temporal integration along the streamlines 
 \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}
 \end{equation}
 
-
-
-Where the functions $W$ are the typical kernel functions used in particle methods as for example SPH \cite{Mon77} and summations are extended to the particles within a critical distance that depends on the election of the kernel function. For the computations presented in this paper the Wendland kernel function \cite{Wendland} was used for the projections.
+Where the functions $W$ are the typical kernel functions used in particle methods as for example SPH\cite{Mon77} and summations are extended to the particles within a critical distance that depends on the election of the kernel function. For the computations presented in this paper the Wendland kernel function\cite{Wendland} was used for the projections.
 
   \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion.
 
@@ -92,8 +95,5 @@ Where the functions $W$ are the typical kernel functions used in particle method
   \end{equation}
   where $\delta \mathbf{v}_j^{n+1} = \mathbf{v}_j^{n+1}-\widehat{\widehat{\mathbf{v}}}_j^{n+1}$.
 
-%  \item 
-%  \item 
-%  \item 
 \end{enumerate}
 
