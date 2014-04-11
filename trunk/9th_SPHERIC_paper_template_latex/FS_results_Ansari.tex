@@ -42,4 +42,31 @@ Figure \ref{fg:ansari-results} presents the free surface displacement reported o
    \label{fg:ansari-results}                %% Etiqueta para la figura entera
 \end{figure}
 
+\subsubsection{Enrichment and density ratio issues}
+
+The PFEM-2 results presented in the previous section were using the continuous enrichment strategy, which allows to use the same formulation independently of the Froude Number of the problem. However, as it was mentioned before, without ensuring continuity between elements when the enriched shape functions are used, the assumption that the inter-elemental boundary terms from the weakening of the Poisson equation might be avoided is not true. In this subsection, problems that appear using large Froude numbers (which represent the relation between the inertial and gravitational forces and is defined by $Fr = \dfrac{U^2}{gL}\dfrac{\rho_I}{\rho_I-\rho_{II}}$) are shown. This behavior is also commented, but not reported, by Coppola\cite{Coppola05}. 
+
+The Figure \ref{fg:ansari-results-b} shows a comparison between the level of the height calculated by PFEM-2 using continuous enrichment, discontinuous enrichment and no-enrichment in the extreme density ratio cases. It must be mentioned that the results were obtained with the enrichment shape functions presented in \ref{eq:enrich-1a}, however using \ref{eq:enrich-2a} similar conclusions were reached.
+
+Low density ratio generates higher $Fr$ values, as happens in the case $\sigma=0.8$ of the sloshing case, and in the Figure \ref{ansari-4b} a comparison between different PFEM-2 results is presented. Without using any strategy of enrichment, the solution might be not noisy due to the low density ratio, but from the height levels it can be viewed that the typical mass-loss appears deteriorating the overall solution. With discontinuous enrichment (it is, condensing the equation system \ref{eqsys-poisson}) the solution is too smooth. We concluded that the diffusive behavior with discontinuous enrichment appears because of avoiding the inter-elemental boundary terms from the weakening the right hand side of \ref{poisson}. This idea is confirmed when discontinuous enrichment is used but without weakening the divergence of the velocity and a solution very similar to continuous enrichment is obtained. Not integrating by parts the divergence term requires imposing a pressure gradient on boundaries: with low density ratios we can impose the previous gradient value $\nabla p^n$ on boundaries, but this approximation is not valid when there is a gravitational field, large density ratio, and the fluid is not at rest.
+
+On the other hand, in the Figure \ref{fg:ansari-1b} the case $\sigma=0.0013$ is presented. The graphic shows that the solution obtained with continuous enrichment is almost equal to the discontinuous enrichment solution. The results without enrichment are noisy, showing the problem with spurious velocity that appears in the free surface if no improvements in this region are done.
+
+  \begin{figure}[h]
+  \centering
+    \subfloat[]{
+	  \label{fg:ansari-1b}         %% Etiqueta para la primera subfigura
+	  \includegraphics[width=.49\columnwidth]{images/ansari_1b.pdf}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:ansari-4b}         %% Etiqueta para la segunda subfigura
+	  \includegraphics[width=.49\columnwidth]{images/ansari_4b.pdf}
+    }
+   \caption{Level of height on the left wall for a two phase flow for different density ratios. Figure \ref{fg:ansari-1b}: $\sigma=0.0013$ and Figure \ref{fg:ansari-4b}: $\sigma=0.8$. References: filled black line continuous enrichment, filled gray line discontinuous enrichment, and dotted line without enrichment.}
+   \label{fg:ansari-results-b}                %% Etiqueta para la figura entera
+\end{figure}
+
+In the current implementation choosing continuous enrichment increases in a $50\%$ the total CPU times comparing with discontinuous ones, but the former formulation can be applied on a wide range of situations. With discontinuous enrichment, better computing times can be obtained, but the formulation is not general now: to integrate by parts or not the term with velocity divergence will depend on principally the density ratio of the problem to solve.
+
 \clearpage
