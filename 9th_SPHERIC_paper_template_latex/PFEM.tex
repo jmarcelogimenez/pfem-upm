@@ -10,11 +10,11 @@ The main aim of this paper is to describe an efficient and accurate methodology 
 
 as expected the convective term does not appear in this Lagrangian formulation but a kinematic problem has to be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body force (normally gravity $\rho \mathbf{g}$ and/or inertial force).
 
-%It is well known that the velocity vector unknown can be found solving the vector momentum equation \ref{eq:momentum}. However, the scalar unknown (the pressure) does not appear in the continuity equation \ref{eq:continuity}. Moreover, this equation is not a time evolution equation, it works like a constraint over the velocity field, choosing only those velocity field that satisfy a free divergence.  To discover the equation associated with the pressure several alternatives are possible. 
+%It is well known that the velocity vector unknown can be found solving the vector momentum equation \ref{eq:momentum}. However, the scalar unknown (the pressure) does not appear in the continuity equation \ref{eq:continuity}. Moreover, this equation is not a time evolution equation, it works like a constraint over the velocity field, choosing only those velocity field that satisfy a free divergence.  To discover the equation associated with the pressure several alternatives are possible.
 
 In order to decouple the velocity and pressure unknown fields, segregated or projection methods like fractional step were implemented in PFEM-2. Following a fractional step, the momentum equation is discretized in time in such a way to firstly predict a velocity using the old value of the pressure (the pressure at the old time step) and after correcting this predicted velocity with the updated pressure that arises from applying the divergence operator to the correction equation getting a Poisson like equation for the pressure.
 
-In the next section, a complete description of the general algorithm that PFEM-2 follows in order to compute a complete time step is presented. Similarly to other Navier-Stokes algorithms, there are three main steps: predictor, Poisson equation and correction. Predictor step is done by four sub-steps: 
+In the next section, a complete description of the general algorithm that PFEM-2 follows in order to compute a complete time step is presented. Similarly to other Navier-Stokes algorithms, there are three main steps: predictor, Poisson equation and correction. Predictor step is done by four sub-steps:
 
 \begin{enumerate}
   \item An acceleration calculation stage over the mesh.
@@ -70,10 +70,10 @@ Here a detailed explanation is required. X-IVAS is a novel strategy which signif
 
   \item Projection Stage: Project velocity from the particles onto the mesh nodes:
   \begin{equation}\label{Step3a}
-\displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\frac{\sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}{\sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}
+\widehat{\widehat{\mathbf{v}}}^{n+1}_{j}=\dfrac{\displaystyle \sum_{p} \widehat{\widehat{\mathbf{v}}}^{n+1}_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}{\displaystyle \sum_{p} W(\mathbf{x}_{j}-\mathbf{x}_{p}^{n+1})}
 \end{equation}
 
-Where the functions $W$ are the typical kernel functions used in particle methods as for example SPH\cite{Mon77} and summations are extended to the particles within a critical distance that depends on the election of the kernel function. For the computations presented in this paper the Wendland kernel function\cite{Wendland} was used for the projections.
+Where the functions $W$ are the typical kernel functions used in particle methods as for example SPH\cite{Mon77} and summations are extended to the particles $p$ within a critical distance that depends on the election of the kernel function. For the computations presented in this paper the Wendland kernel function\cite{Wendland} was used for the projections.
 
   \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion.
 

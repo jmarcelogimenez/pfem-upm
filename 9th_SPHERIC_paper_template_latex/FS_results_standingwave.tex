@@ -1,8 +1,8 @@
 \subsection{Viscous standing waves}%Re=250,2500.
 
-Computing the dissipation due to wave-breaking remains a challenging problem in the computational fluid mechanics context. In order to analyze the solution with PFEM-2 of two-phase viscous incompressible flows, the evolution of a viscous standing wave has been chosen. This is a classical problem in the scientific literature for which an approximate analytical solution is available for small amplitude perturbations\cite{Lighthill01} and it is of practical interest since it is related to the propagation of gravity waves.
+Computing the dissipation due to wave-breaking remains a challenging problem in the computational fluid mechanics context. In order to analyze the PFEM-2 solution when two-phase viscous incompressible flows are simulated, the evolution of a viscous standing wave has been chosen. An approximate analytical solution is available for small amplitude perturbations in the scientific literature \cite{Lighthill01} and it is of practical interest since it is related to the propagation of gravity waves.
 
-The chosen standing wave configuration consists in a rectangular tank with length $L$ and a water filling height of $H = L/2$. This setup is taken from \cite{Colagrossi12}, and in the Figure \ref{fg:standing-wave-config} a sketch of this configuration is displayed. The wave length is $\lambda = L$, $k$ is the corresponding wave number (i.e. $k = 2\pi/\lambda$), $A$ is the wave amplitude and denotes the ratio $\epsilon=2A/H$.
+The chosen standing wave configuration consists in a rectangular tank with length $L$ and a water filling height of $H = L/2$. This setup has been extracted, see \cite{Colagrossi12}, Figure \ref{fg:standing-wave-config} for a sketch of this configuration. The wave length is $\lambda = L$, $k$ is the corresponding wave number (i.e. $k = 2\pi/\lambda$) and $A$ is the wave amplitude that defines the ratio $\epsilon=2A/H$.
 
 \begin{figure}[H]
   \begin{center}
@@ -11,7 +11,7 @@ The chosen standing wave configuration consists in a rectangular tank with lengt
   \caption{\label{fg:standing-wave-config} Configuration scheme of standing wave case. Initial condition is represented by dotted lines. In continuous line is presented an intermediate state where the maximum amplitude $A$ is reached.}
 \end{figure}
 
-If the fluid is viscous, the dissipation due to the solid boundary layers is neglected, and small-amplitude waves (i.e small $\epsilon$) and small wave steepness (i.e $2A/\lambda \ll 0.1$) are used; an approximate analytical solution of the standing wave evolution can be obtained through the linearization of Navier-Stokes equations for traveling waves:
+When the fluid is viscous, solid boundary layers dissipation neglected, and assuming small-amplitude waves (i.e small $\epsilon$) and small wave steepness (i.e $2A/\lambda \ll 0.1$); an approximate analytical solution of the standing wave evolution can be obtained through the linearization of Navier-Stokes equations for traveling waves:
 \begin{align}
  \varphi(x,y,t) & = \varphi_0(x,y)\cos(\omega t) \\
  \varphi_0(x,y) & =-\epsilon\frac{Hg}{2\omega}\frac{\cosh\left[k(y+H)\right]}{\cosh(kH)}\cos(kx)
@@ -26,11 +26,11 @@ It can be demonstrated that the approximate solution is well posed only for $Re\
  \label{kin-eq}
 \end{equation}
 
-The kinetic attenuation is governed by the coefficient of the exponential $\beta_l = 4\nu k^2$, which depends on the wave number and on the kinematic viscosity $\nu = \mu/\rho_{I}$. Lately work\cite{Antuono13} has demonstrated that generally, the Equation \ref{kin-eq} overestimates the dissipations, especially when the Reynolds number is not very large. Then an improved damping rate is proposed in that paper $\beta = 4\nu k^2 -  2\sqrt{2}k^{11/4}Re^{-3/2}+O(Re^{-2})$, which is next used for comparisons.
+The kinetic attenuation is governed by the parameter $\beta_l = 4\nu k^2$, which depends on the wave number and on the kinematic viscosity $\nu = \mu/\rho_{I}$. Lately work\cite{Antuono13} has demonstrated that generally, the Equation (\ref{kin-eq}) overestimates the dissipations, especially when the Reynolds number is not very large. Then an improved damping rate is proposed in \cite{Antuono13} $\beta = 4\nu k^2 -  2\sqrt{2}k^{11/4}Re^{-3/2}+O(Re^{-2})$, which is next used for comparisons.
 
 To accomplish the linear solution hypothesis, the PFEM-2 simulations have been implemented by using a free-slip condition for the velocity and a Neumann condition for the pressure along each boundary of the tank. Also, the parameters $L=2$, $A=0.05$ and $g=1$ have been selected.
 
-Several Reynolds number ($Re=25,50,250,2500$) have been chosen to compare with the approximate analytic dissipation. Problems were solved into a grid with $H/\Delta x=100$ and varying $\Delta t$ in order to solve using a Fourier number $Fo=\frac{\nu\Delta t}{\Delta x^2}$ with a local maximum of $Fo_{max}\approx10-50$. Figure \ref{fg:sw-energy} shows the comparison between the expected energy dissipation (which includes the improving damping rate) and numerical results for kinetic energy calculated with PFEM-2. Large Fourier numbers were used in order to reduce the computation times required to complete the simulations and to show the accuracy of the method working not only with large CFL numbers, even with large diffusion rate.
+Several Reynolds number ($Re=25,50,250,2500$) have been chosen to compare with the approximate analytic dissipation. Problems were solved using a grid size $\Delta x$ such that $H/\Delta x=100$ and varying $\Delta t$ in order to solve using a Fourier number $Fo=\frac{\nu\Delta t}{\Delta x^2}$ with a local maximum of $Fo_{max}\approx10-50$. Figure \ref{fg:sw-energy} shows the comparison between the expected energy dissipation (which includes the improved damping rate) and numerical results for kinetic energy calculated with PFEM-2. Large Fourier numbers were used in order to reduce the computation times required to complete the simulations showing that the accuracy of the method remains with large CFL numbers, even when large diffusion is considered.
 
   \begin{figure}[h]
   \centering
@@ -55,4 +55,4 @@ Several Reynolds number ($Re=25,50,250,2500$) have been chosen to compare with t
 \end{figure}
 % \afterpage{\clearpage}
 
-Regarding to computational effort, it is noticeable that the set of PFEM simulations have spent only few hours in an Intel i7-2600k 3.4GHz processor. This is a big difference with the CPU times reported on other works. As an example, in \cite{Colagrossi12} it is reported that, to solve a similar set of problems with SPH and to obtain similar accuracy than those presented in this work, they had to use a 30 CPUs cluster, each CPU with 8 Intel Xeon 2.33GHz cores, running continuously for 30 days.
+Regarding the computational effort, it is noticeable that the complete set of PFEM simulations have spent only few hours in an Intel i7-2600k 3.4GHz processor. This is a large difference with the CPU times reported in other works, see \cite{Colagrossi12}, where a similar set of problems were solved with similar accuracy using SPH and a 30 CPUs cluster, each CPU with 8 Intel Xeon 2.33GHz cores, running continuously for 30 days. 

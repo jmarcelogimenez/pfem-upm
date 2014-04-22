@@ -1,10 +1,9 @@
 \subsection{Rayleigh-Taylor Instability}
 
-This problem consists on the evolution of two layers of fluids initially at rest in the gravity field. The top layer is more dense than the one is placed at the bottom. Due to a little disturbance in the contact surface the more dense fluid goes down and the less dense fluid does the opposite. In the intermediate state a mixture is created, which is lately segregated. The final state reaches an stable equilibrium with the more dense fluid at the bottom layer and the less dense fluid at the top layer. The growth and evolution of the instability has been investigated among others by Tryggvason\cite{Tryggvason88} for inviscid incompressible flows, and by Guermond
-\& Quartapelle\cite{Guermond00} for viscous flows.
+This problem consists on the evolution of two layers of fluids initially at rest in the gravity field. The density of the fluid placed at the topis larger than the one placed at the bottom. Due to a little disturbance in the contact surface the more dense fluid goes down and the less dense fluid does the opposite. During the evolution of the problem a mixture is created, which is lately segregated. The final state reaches an stable equilibrium with the more dense fluid at the bottom layer and the less dense fluid at the top layer. The growth and evolution of the instability has been investigated among others by Tryggvason\cite{Tryggvason88} for inviscid incompressible flows, and by Guermond \& Quartapelle\cite{Guermond00} for viscous flows.
 
-The starting point is the problem documented by Guermond. The domain is $[-d/2,-2d]\times[d/2,2d]$. The initial position of the perturbed interface is $\eta(x) = 0.1d \cos(2\pi x/d)$. The heavy fluid is above and the density ratio is $3$, so that the Atwood
-number is $0.5$ according to Tryggvason's definition $At = (\rho_{max}-\rho_{min})/(\rho_{max}+\rho_{min})$. Other physical parameters are selected to obtain $Re=\rho_{min}d^{\frac{3}{2}}g^{\frac{1}{2}}/\mu=1000$. Computational domain is discretized into $80000$ structured triangles ($\Delta x=0.01$) setting slip boundary conditions on each wall. Time step selected is $\Delta t=0.01[s]$, which allows to reach $CFL_{max} \approx 8$. Between five and eight particles per element are used and two pU corrections are required.
+The starting point is the problem documented by Guermond. The computational domain is $[-d/2,-2d]\times[d/2,2d]$ and the initial position of the perturbed interface is $\eta(x) = 0.1d \cos(2\pi x/d)$. The density ratio is $3$, which corresponds to an Atwood
+number of $0.5$ according to Tryggvason's definition $At = (\rho_{max}-\rho_{min})/(\rho_{max}+\rho_{min})$. Other physical parameters are selected to obtain a Reynolds number $Re=\rho_{min}d^{\frac{3}{2}}g^{\frac{1}{2}}/\mu=1000$. The computational domain is discretized into $80000$ structured triangles ($\Delta x=0.01$) setting slip boundary conditions on each wall. Time step selected is $\Delta t=0.01[s]$, which allows to reach $CFL_{max} \approx 8$. Between five and eight particles per element are used and two pressure corrections are required.
 
 To compare with reference results, the time is made dimensionless by using $\widetilde{t} = t\sqrt{g\ At}$. Results on the vertical position of the tip of the falling and rising fluid (spike and bubble, respectively) are shown in Figure \ref{fg:rayleigh-rf}. It can be observed that current solution is in good agreement with the reference results.
 
@@ -15,7 +14,7 @@ To compare with reference results, the time is made dimensionless by using $\wid
   \caption{\label{fg:rayleigh-rf} Position of rising and falling bubbles versus time. Case with $Re=1000$.}
 \end{figure}
 
-On the other hand, the evolution of the instability is shown in Figure \ref{fg:rayleigh-screenshots} at dimensionless times $\widetilde{t}=0, 1, 1.5, 2$. Around $\widetilde{t}=1.5$ the heavy fluid begins to roll up into two counter-rotating vortices. Later, around $\widetilde{t} = 2$, these two vortices become unstable and a pair of secondary vortices appear at the tails of the roll-ups. These shapes of the fluid interface obtained with PFEM-2 are similar than those of the reference results.
+On the other hand, the evolution of the instability is shown in Figure \ref{fg:rayleigh-screenshots} at dimensionless times $\widetilde{t}=0, 1, 1.5, 2$. Around $\widetilde{t}=1.5$ the heavy fluid begins to roll up into two counter-rotating vortices. Later, around $\widetilde{t} = 2$, these two vortices become unstable and a pair of secondary vortices appear at the tails of the roll-ups. These shapes of the fluid interface obtained with PFEM-2 are similar to the ones shown as reference results, see \cite{Guermond00}.
 
 
 \begin{figure}[htbp]
@@ -27,12 +26,12 @@ On the other hand, the evolution of the instability is shown in Figure \ref{fg:r
 
 \subsubsection{Extending the time step}
 
-In order to make emphasis in the capability of the method to manage large time-steps, the current case is also simulated with a large range of $\Delta t$ using the in-house implementation of PFEM and comparing with results obtained by the widely knows \OF suite. The problem setup and domain discretization is the same as presented above and the PFEM settings are not modified. 
+In order to make emphasis in the capability of the method to manage large time-steps, the current case is also simulated with a large range of $\Delta t$ using the in-house implementation of PFEM and comparing with results obtained by the widely knows \OF suite. The problem setup and domain discretization is the same as presented above and the PFEM settings are not modified.
 
 In the case of \OF, the solver \texttt{interFoam} is chosen, which implements a Volume of Fluid (VoF) algorithm for multiphase flow\cite{Berberovic09}. It includes the multi-dimensional limiter for explicit solution (MULES) as a method of guaranteeing boundedness of scalar fields, in particular phase/mass-fractions (more information about MULES can be found in \cite{Marquez13}). Since \OF version 2.3, a new semi-implicit variant of MULES is introduced which combines operator splitting with application of the MULES limiter to an explicit correction rather than to the complete flux. This approach would maintain boundedness and stability at an arbitrarily large Courant number. In next simulation, the recommended schemes for the simulation have been used: \texttt{CrankNicolson} (second order, implicit) time integration, \texttt{Gauss linear} (second order, Gaussian integration with linear interpolation) discretization for the gradient, divergence and Laplacian operators (\texttt{corrected} with two \texttt{
 nNonOrthogonalCorrectors} due to the triangular mesh, for the later ). Relevant VoF settings are: \texttt{nAlphaSubCycles} is set in order to keep the CFL of the sub-cycling around $0.5$, \texttt{cAlpha}$=0.25$ to give more stability through relaxing in some level the strong sharpness imposition, and \texttt{MULESCorr} is enabled to calculate the limiter in a semi-implicit way.
 
-The set of figures in \ref{fg:rayleigh-comparison-dts} presents the comparison of the solutions with PFEM and \OF at a particular time ($\widehat{t}=2.25$) using several fixed time-steps (with the largest time-step a $CFL_{max}=15$ is reached). From captures, it can be shown that PFEM keeps approximately the same solution with each time-step, but interFoam can not solve with any accuracy using $\Delta t>0.001$ because the evolution of the mushroom-like interface differs form the reference results and this mistake is increased with large time-steps. Moreover, each simulation of interFoam diverges when $CFL_{mean}>0.5$ is reached (this happens at different times, depending on selected time-step).
+Figure \ref{fg:rayleigh-comparison-dts} presents the comparison of the solutions with PFEM and \OF at a particular time ($\widehat{t}=2.25$) using several fixed time-steps (with the largest time-step a $CFL_{max}=15$ is reached). From captures, it can be shown that PFEM keeps approximately the same solution with each time-step, but interFoam can not solve with any accuracy using $\Delta t>0.001$ because the evolution of the mushroom-like interface differs form the reference results and this mistake is increased with large time-steps. Moreover, each simulation of interFoam diverges when $CFL_{mean}>0.5$ is reached (this happens at different times, depending on selected time-step).
 
 \begin{figure}[htbp]
   \begin{center}
@@ -41,26 +40,34 @@ The set of figures in \ref{fg:rayleigh-comparison-dts} presents the comparison o
       \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_B.jpg}
       \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_C.jpg}
       \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_D.jpg}
-      
+
       \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_A.jpg}
       \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_B.jpg}
       \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_C.jpg}
       \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_D.jpg}
-      
+
   \end{center}
-  \caption{\label{fg:rayleigh-comparison-dts} Rayleigh-Taylor instability capture for $\widetilde{t}=2.25$. Above PFEM simulations, below VoF+MULES simulation (InterFoam solver - OpenFoam suite). From left to right $\Delta t =0.001[s]$, $0.0025[s]$, $0.01[s]$, $0.025[s]$.}
+  \caption{\label{fg:rayleigh-comparison-dts} Rayleigh-Taylor instability capture for $\widetilde{t}=2.25$. Bottom: PFEM simulations, top: VoF+MULES simulation (InterFoam solver - OpenFoam suite). From left to right $\Delta t =0.001[s]$, $0.0025[s]$, $0.01[s]$, $0.025[s]$.}
 \end{figure}
 
 Another relevant feature to take into account is that the CPU times to solve a unique time-step is almost equal using both algorithms.
 % Table \ref{tb:times-rt} shows a resume of the CPU Times requires to complete $1[s]$ of real time in the current case.
 In current case,  the only reasonable solution of \OF among the ones presented above is that with $\Delta t=0.001$. For that simulation, using a processor Intel i5-3230M CPU @ 2.60GHz with a 8Gb RAM in one processor, interFoam requires $1121[s]$ to reach $1[s]$ of simulation time. On the other hand, to reach the same simulation time using the same computer, solutions with PFEM-2 requires $1011[s]$, $288[s]$ and $123[s]$ with $\Delta t=0.0025[s]$, $0.01[s]$ and $0.025[s]$ respectively.
 
+Presentacría tabla o gráfico con estos resultados de este último parrafo ??
+
 
 \subsubsection{Three-dimensional simulation}
 
-In this section, the extension of the two dimensional problem to three dimensions is presented. The third dimension is generated as a surface of revolution from the 2d geometry, conforming a cylindrical volume in 3d of radius $R=0.5$. This allows to keep the same problem configuration, it is slip boundary condition on each wall, $At=0.5$, and initial perturbation of the surface $\eta(r) = 0.1d \cos(2\pi r/d)$, with $0<r<R$.
+In this section, the extension of the two dimensional problem to three dimensions is presented. The third dimension is generated as a surface of revolution from the previous 2d geometry, conforming a cylindrical volume in 3d of radius $R=0.5$. This allows to keep the same problem configuration, it is slip boundary condition on the wall, $At=0.5$, and initial perturbation of the surface $\eta(r) = 0.1d \cos(2\pi r/d)$, with $0<r<R$.
 
-Computational domain is discretized with a mesh size of $\Delta x=0.03[m]$ conforming a non-structured mesh with around $1.2$ millon of tetrahedral elements. An average of eight millon of particles are used during the simulation that move across the light-phase and heavy-phase domains. Simulation was carried out with a $\Delta t=0.025$ which allows to reach peaks of $CFL_{max}=15$. In the Figure \ref{fg:rayleigh-3d} can be shown the evolution of the heavy-phase. It must be noticed that the simulation is extended long time up to reach the stable condition with heavy-phase at bottom and at rest, which is approximately $30[s]$ of simulation time. To complete the entire simulation, the implementation requires around three hours of CPU time running in an AMD Opteron 6376 @ 2.3GHz with a 64Gb RAM using 16 processors. Because of a large $\Delta t$ was used, if the conclusions about 2d case are extended here the transient evolution of the solution could be improved using shorter time-steps. However, the spirit of this section is to show the stability of the 3d simulation, keeping a realistic progress. A way to prove the goodness of the solution is that, during the simulation, the initial mass quantity is preserved. More detailed analysis about the accuracy of 3d simulations will be presented in Section \ref{sec:ETSIN-3d}.
+Computational domain is discretized with a mesh size of $\Delta x=0.03[m]$ conforming a non-structured mesh with around $1.2$ millon of tetrahedral elements. An average of eight millon of particles are used during the simulation that move across the light-phase and heavy-phase domains. Simulation was carried out with a $\Delta t=0.025$ which allows to reach peaks of $CFL_{max}=15$. In the Figure \ref{fg:rayleigh-3d} can be shown the evolution of the heavy-phase. It must be noticed that the simulation is extended long time up to reach the stable condition with heavy-phase at bottom and at rest, which is approximately $30[s]$ of simulation time. To complete the entire simulation, the implementation requires around three hours of CPU time running in an AMD Opteron 6376 @ 2.3GHz with a 64Gb RAM using 16 processors. 
+
+If the conclusions about the 2D case were extended to this simulation, the solution could be improved using shorter time-steps.No lo entiendo ??
+
+As a additional result, it is important to underline that during the simulation the global mass conservation has been checked. 
+
+ However, the spirit of this section is to show the stability of the 3D simulation, keeping a realistic progress. A way to prove the goodness of the solution is that, during the simulation, the initial mass quantity is preserved. More detailed analysis about the accuracy of 3d simulations will be presented in Section \ref{sec:ETSIN-3d}.
 
 \begin{figure}[htbp]
   \begin{center}
