@@ -51,19 +51,29 @@ Figure \ref{fg:rayleigh-comparison-dts} presents the comparison of the solutions
 \end{figure}
 
 Another relevant feature to take into account is that the CPU times to solve a unique time-step is almost equal using both algorithms.
-% Table \ref{tb:times-rt} shows a resume of the CPU Times requires to complete $1[s]$ of real time in the current case.
-In current case,  the only reasonable solution of \OF among the ones presented above is that with $\Delta t=0.001$. For that simulation, using a processor Intel i5-3230M CPU @ 2.60GHz with a 8Gb RAM in one processor, interFoam requires $1121[s]$ to reach $1[s]$ of simulation time. On the other hand, to reach the same simulation time using the same computer, solutions with PFEM-2 requires $1011[s]$, $288[s]$ and $123[s]$ with $\Delta t=0.0025[s]$, $0.01[s]$ and $0.025[s]$ respectively.
+Table \ref{tb:times-rt} shows a resume of the CPU Times requires to complete $1[s]$ of real time in the current case. Results show that using the same time-step both solver have similar performance, being \OF faster. However, due to capability of time-step enlargement of PFEM, it achieves shorter CPU times with similar accuracy.
 
-Presentacría tabla o gráfico con estos resultados de este último parrafo ??
-
+{\small
+\begin{longtable}{||c|c||c||}
+    \hline
+    Solver & $\Delta t$ & CPU Time\\
+      \hline
+      \hline
+      \OF & 0.001 & 1121[s]\\
+      PFEM & 0.0025 & 1011[s]\\
+      PFEM & 0.01 & 288[s]\\
+      PFEM & 0.025 & 123[s]\\
+      \hline
+      \hline
+    \caption{\label{tb:times-rt} Total computing times to simulate $1[s]$ of real time of the Rayleigh-Taylor instability 2d. Running over an Intel i5-3230M CPU @ 2.60GHz with a 8Gb RAM in one processor.}
+\end{longtable}
+}
 
 \subsubsection{Three-dimensional simulation}
 
 In this section, the extension of the two dimensional problem to three dimensions is presented. The third dimension is generated as a surface of revolution from the previous 2d geometry, conforming a cylindrical volume in 3d of radius $R=0.5$. This allows to keep the same problem configuration, it is slip boundary condition on the wall, $At=0.5$, and initial perturbation of the surface $\eta(r) = 0.1d \cos(2\pi r/d)$, with $0<r<R$.
 
 Computational domain is discretized with a mesh size of $\Delta x=0.03[m]$ conforming a non-structured mesh with around $1.2$ millon of tetrahedral elements. An average of eight millon of particles are used during the simulation that move across the light-phase and heavy-phase domains. Simulation was carried out with a $\Delta t=0.025$ which allows to reach peaks of $CFL_{max}=15$. In the Figure \ref{fg:rayleigh-3d} can be shown the evolution of the heavy-phase. It must be noticed that the simulation is extended long time up to reach the stable condition with heavy-phase at bottom and at rest, which is approximately $30[s]$ of simulation time. To complete the entire simulation, the implementation requires around three hours of CPU time running in an AMD Opteron 6376 @ 2.3GHz with a 64Gb RAM using 16 processors. 
-
-If the conclusions about the 2D case were extended to this simulation, the solution could be improved using shorter time-steps.No lo entiendo ??
 
 As a additional result, it is important to underline that during the simulation the global mass conservation has been checked. 
 

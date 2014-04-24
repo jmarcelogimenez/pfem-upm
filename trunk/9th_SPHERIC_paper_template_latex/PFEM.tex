@@ -32,7 +32,7 @@ It is assumed that all fluid variables are known at time $t_n$ for the particles
 \begin{enumerate}
   \item Acceleration Stage: Calculate acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
   \begin{equation}\label{Step1a}
-\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j\ d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j\ d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j\ d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j \cdot \eta \ d\Gamma
+\int_{\Omega}\mathbf{a}^{n}_{\tau}\psi_j\ d\Omega=\int_{\Omega}\mu \nabla^{2}\mathbf{v}^{n} \psi_j\ d\Omega=-\int_{\Omega}\mu \nabla\mathbf{v}^{n} \nabla \psi_j\ d\Omega + \int_{\Gamma}\mu \nabla\mathbf{v}^{n} \psi_j \cdot \mathbf{n} \ d\Gamma
 \end{equation}
 
 \begin{equation}\label{Step1b}
@@ -44,7 +44,7 @@ It is assumed that all fluid variables are known at time $t_n$ for the particles
 \mathbf{a}^{n}=\mathbf{a}^{n}_{p} + (1-\theta)\mathbf{a}^{n}_{\tau}
 \end{equation}
 
-Where $\theta$ is a numerical parameter that rules the explicitness of the viscous term in the algorithm.
+Where $\theta$ is a numerical parameter that rules the explicitness of the viscous term in the algorithm and $\mathbf{n}$ is the unitary vector normal to the surface.
 
   \item X-IVAS Stage: Evaluate the new particle position $\mathbf{x}^{n+1}_{p}$ and intermediate velocity $\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}$ following the velocity streamlines at time $t_n$
 
