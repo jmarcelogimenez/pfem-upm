@@ -35,7 +35,14 @@ Once the particles have been advected and the intermediate velocities have been 
 
 \subsection{Shape function enrichments for pressure gradient discontinuity capturing}
 
-In typical finite element methods, gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any interpolated unknown is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the gradients of the unknowns (SPECIFY WHAT UNKNOWNS??) that the interpolation used does not capture. For the case of two different density fluids the interpolation errors in the pressure give rise to spurious velocities that can render the solution meaningless.
+In typical finite element methods, gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any interpolated unknown is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the unknows and/or its gradients that the classical interpolation used does not capture:
+\begin{itemize}
+\item pressure gradient jumps where density discontinuities are present
+\item pressure jumps where viscosity discontinuities are present
+\item gradient velocity jumps where viscosity discontinuities are present
+\item pressure jumps where surface tension is present
+\end{itemize}
+For the case of interest in this work, this is two different density fluids, the interpolation errors in the pressure and its gradient give rise to spurious velocities that can render the solution meaningless. 
 
 Enrichment methods add degrees of freedom to elements cut by the interface in order to reduce interpolation errors. In this work, two space enrichment methodologies are proposed to treat with pressure gradient discontinuities.
 
@@ -113,19 +120,19 @@ In order to capture the discontinuities and taking advantage of the enrichment f
 
 Particles can move across several elements and cross the interface during a time-step, consequently the pressure gradient of the previous time-step would introduce a poor and even unstable approximation of the new pressure forces. In order to avoid these large errors in the evaluation of the pressure gradients in the initial value of the iterative process, the value of the pressure is set to zero at the beginning of each time-step. Therefore, the acceleration over the particle calculated in X-IVAS stage is only is due to gravity force (pressure gradient is considered null and viscous forces are treated implicitly)\cite{Idelsohn13c}.
 
-Starting from Equation (\ref{Step5a}), and following the classical variational formulation for a generic element $\Omega^e$ with boundary $\Gamma^e$, this is integrating, weighting with local shape functions and weakening both pressure laplacian and \emph{velocity divergence terms ??}, it is possible to obtain the elemental contribution:
+Starting from Equation (\ref{Step5a}), and following the classical variational formulation for the glo0bal domain $\Omega$ with boundary $\Gamma$, this is integrating, weighting with test functions and weakening both pressure laplacian and velocity divergence terms, it is possible to obtain the system:
 
 \begin{equation}
-   \left[\Delta t \int_{\Omega^e} \frac{1}{\rho} \nabla \phi^T \nabla \phi \ d\Omega\right]\ \delta p^{n+1} = \left[\int_{\Omega^e} \nabla \phi^T \psi \ d\Omega\right]\ \hat \vv_j^{n+1}
+   \left[\Delta t \int_{\Omega} \frac{1}{\rho} \nabla \phi^T \nabla \phi \ d\Omega\right]\ \delta p^{n+1} = \left[\int_{\Omega} \nabla \phi^T \psi \ d\Omega\right]\ \hat \vv_j^{n+1}
 \label{poisson}
 \end{equation}
 where the term resulting from weakening
 \begin{equation}
-\displaystyle \int_{\Gamma^e\cap\Gamma} \phi \left[ \hat \vv_j^{n+1} + \Delta t \frac{1}{\rho} \nabla  \delta p^{n+1} \right] \cdot \eta \ d\Gamma = \int_{\Gamma^e\cap\Gamma} \phi \ \vv_j^{n+1} \cdot \eta \ d\Gamma
+\displaystyle \int_{\Gamma} \phi \left[ \hat \vv_j^{n+1} + \Delta t \frac{1}{\rho} \nabla  \delta p^{n+1} \right] \cdot \mathbf{n} \ d\Gamma = \int_{\Gamma} \phi \ \vv_j^{n+1} \cdot \mathbf{n} \ d\Gamma
 \end{equation}
- is zeroed to ensure impenetrability on walls.  (What is $\eta$ ??)
+ is zeroed to ensure impenetrability on walls.
 
-The enrichment shape functions are used in the case of split elements, then the resulting system is:
+Then, in the case of slipt elements where enrichment shape functions are used as trial functions, the resulting local system is:
 
   \begin{equation}
   \label{eqsys-poisson}
@@ -164,7 +171,7 @@ with $\delta p^{n+1} = p^{n+1}-p^{n}$, where the continuity between elements is 
 
 In the case of enriched ones, see equation (\ref{eq:enrich-1a}), when condensation is used, the asscorrectumption of neglecting the inter-elemental boundary terms from the integration by parts of the Poisson equation is not true. From our experience, and like is reported by Coppola\cite{Coppola05}, when the Froude Number is high (this is, low density ratio), the neglected term from the weakening of the divergence of the velocity introduces severe problems of numerical diffusion. 
 
-A way to solve this problem is not integrating by parts the divergence term, but it requires imposing a pressure gradient on boundaries, whose value can not be easily predict when there is a gravitational field, large density ratio, and the fluid is not at rest.(LO quitaria??)
+A way to solve this problem is not integrating by parts the divergence term, but it requires imposing a pressure gradient on boundaries, whose value can not be easily predict when there is a gravitational field, large density ratio, and the fluid is not at rest.
 
 Finally, if condensation is used, we choose weakening the velocity divergence in the Poisson step only when large density ratio is considered. Continuous enrichment does not suffer of the above mentioned problems and the same formulation can be used for every
 Froude number. However, a loss of computational performance must be paid because the necessity of memory management to assemble the variable-size pressure equation system.
