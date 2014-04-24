@@ -33,7 +33,7 @@ This means that if a water particle is momentarily on an air regime, it will rem
 
 Once the particles have been advected and the intermediate velocities have been determined, this updated velocity and density information has to be incorporated into the mesh nodes. During this \textit{Projection Stage}, each mesh node $j$ updates its intermediate velocity according to equation (\ref{Step3a}), analogously a similar equation is used to update the values of $\lambda_j$. Depending on the value of $\lambda_j$ the instantaneous local interface inside each element is determined as the iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$.
 
-\subsection{Shape function enrichments for pressure gradient discontinuity capturing}
+\subsection[Enriched Shape Functions]{Shape function enrichments for pressure gradient discontinuity capturing}
 
 In typical finite element methods, gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any interpolated unknown is also continuous. When the interface crosses an element the discontinuity in the material properties leads to discontinuities in the unknows and/or its gradients that the classical interpolation used does not capture:
 \begin{itemize}
