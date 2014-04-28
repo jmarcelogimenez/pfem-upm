@@ -310,13 +310,13 @@ The results of the different free-surface problems solved which include: Rayleig
 
 \section{Introduction}
 
-Hybrid methods are everyday more present in computational fluid mechanics, where the Lagrangian framework given by a particle method is combined with a Eulerian methodology. In these hybrid methods, a fixed or reconstructed every k time steps grid support part of the pressure and velocity calculation. The original idea, given by Monaghan \cite{Mon77} or later works applied to fluid mechanics \cite{Monaghan88} where a pure Lagrangian perspective was used during the whole meshless computation, has been in some cases completed using other well known discretization methods as FVM\cite{Nestor20091733} or FEM\cite{Ide03}. The first combination of Lagrangian methods and FEM methods, known as MFEM \cite{Ide03b}, where a extended Delaunay Tesellation is used to reconstruct the mesh while the fluid evolves.
+Hybrid methods are everyday more present in computational fluid mechanics, where the Lagrangian framework given by a particle method is combined with a Eulerian methodology. In these hybrid methods, a fixed or reconstructed every k time steps grid support part of the pressure and velocity calculation. The original idea, given by Monaghan \cite{Mon77} or later works applied to fluid mechanics \cite{Monaghan88} where a pure Lagrangian perspective was used during the whole meshless computation, has been in some cases completed using other well known discretization methods as FVM\cite{Nestor20091733} or FEM\cite{Ide03}. The first combination of Lagrangian methods and FEM methods, known as MFEM \cite{Ide03b}, where an extended Delaunay Tesellation is used to reconstruct the mesh while the fluid evolves.
 
 The next step in this evolution was the first version of the PFEM method\cite{Idelsohn04}, which was a robust method designed to solve fluid-structure interaction problems including free-surface, breaking waves, flow separations, etc... where lagrangian particles and meshing processes are alternated with the advantage of having a FEM structure that supports the differential equation solvers. An interesting difference between the PFEM and other particle methods as SPH or MPM\cite{Wieckowsky04} is that while latter methods transport mass and consequently have a volume, PFEM uses non-material points that transport fixed intensive properties of the fluid.
 
-In contrast to the backward characteristic method where the feet of the characteristic line was searched and located in a mesh element based on the known velocity fields at past time steps, a new strategy known as X-IVAS (eXplicit Integration following the Velocity and Acceleration Streamlines) was developed\cite{Idelsohn12}. This methodology of integrating of convection of fluid particles is based on following the streamlines of the flow in the current time step instead of the particle trajectories, which is a better way to solve the non-linearities of the equations of the flow. Adding this strategy to the original PFEM method, a new methodology called Particle Finite Element Method Second Generation (PFEM-2)\cite{Idelsohn12b} appears. The X-IVAS strategy gives the possibility of solving complex flows with large time steps ($CFL>1$), as well as the presence of the mesh allows accurate solutions of the fractional step method.
+A new strategy known as X-IVAS (eXplicit Integration following the Velocity and Acceleration Streamlines) was developed\cite{Idelsohn12}. This methodology of integrating of convection of fluid particles is based on following the streamlines of the flow in the current time step instead of the particle trajectories, which is a better way to solve the non-linearities of the equations of the flow. Adding this strategy to the original PFEM method, a new methodology called Particle Finite Element Method Second Generation (PFEM-2)\cite{Idelsohn12b} appears. The X-IVAS strategy gives the possibility of solving complex flows with large time steps ($CFL>1$), as well as the presence of the mesh allows accurate solutions of the fractional step method.
 
-In PFEM-2, there are two approaches to communicate particle and mesh data, each one generating two versions of the method. The first one is called \textit{Moving Mesh}, which follows the original idea of PFEM creating a new mesh using the new position of the particles as nodes. The second version, named \textit{Fixed Mesh}, projects states from particles to nodes preserving the initial background mesh. The former strategy keeps the uncomfortable drawback of methods cited before, which is the necessity of constructing or controlling the mesh quality during the simulation if an accuracy of the solution has to be maintained. The evaluation of the mesh distortions or the re-meshing processes are always computationally expensive and it would be interesting exploring the possibility of avoiding that step. Consequently, \textit{Fixed Mesh} approach avoids the remeshing at each time-step. In this approach, mesh nodes and moving particles interchange information through different interpolation algorithms. In the context of this paper, PFEM-2 will refer to the \textit{Fixed Mesh} version, and a detailed explanation of this algorithm is given in Section \ref{PFEM_Algorithm}.
+The current \textit{Fixed Mesh}-PFEM-2, projects states from particles to nodes preserving the initial background mesh, avoiding remeshing at each time-step. In this approach, mesh nodes and moving particles interchange information through different interpolation algorithms. A detailed explanation of this algorithm is given in Section \ref{PFEM_Algorithm}.
 
 In this work the PFEM-2 has been used to solve free-surface flows in different problems starting from classical benchmark problems as the Rayleigh-Taylor instability and finishing with problems of industrial interest. To the authors knowledge, this paper presents the first application to free-surface flows where PFEM-2 advantage of using larger time steps compared to other methods is exploited. This analysis includes very accurately demanding problems as those involving two different fluids with high density ratios. Taking into account that the computational time per time-step is similar as the one required by other methodologies, the possibility of increasing the time-step implies shorter global computational times.
 
@@ -336,7 +336,7 @@ The main aim of this paper is to describe an efficient and accurate methodology 
   \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}\label{eq:momentum}
 \end{eqnarray}
 
-as expected the convective term does not appear in this Lagrangian formulation but a kinematic problem has to be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body force (normally gravity $\rho \mathbf{g}$ and/or inertial force).
+Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body force (normally gravity $\rho \mathbf{g}$ and/or inertial force).
 
 %It is well known that the velocity vector unknown can be found solving the vector momentum equation \ref{eq:momentum}. However, the scalar unknown (the pressure) does not appear in the continuity equation \ref{eq:continuity}. Moreover, this equation is not a time evolution equation, it works like a constraint over the velocity field, choosing only those velocity field that satisfy a free divergence.  To discover the equation associated with the pressure several alternatives are possible.
 
@@ -355,7 +355,7 @@ The predictor step ends with a predicted velocity $\widehat\vv^{n+1}$ on the mes
 
 \subsection{Generic formulation}\label{GeneralFor}
 
-It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing both fluids. Subindexes $()_j$ y $()_p$ represent a generic mesh node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element linear basis functions respectively. According to this notation
+It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing both fluids. Subindexes $()_j$ y $()_p$ represent a generic mesh node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ be the pressure and velocity finite element linear basis functions respectively. According to this notation
 
 \begin{enumerate}
   \item Acceleration Stage: Calculate acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
@@ -425,9 +425,9 @@ Where the functions $W$ are the typical kernel functions used in particle method
  \end{footnotesize}
  In this part the velocity boundary conditions are imposed in $\Gamma_D$ and $\Gamma_N$. On the other hand, the velocity correction must be interpolated on the particle positions $\mathbf{x}_{p}^{n+1}$:
   \begin{equation}\label{Step6b}
-  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \delta \mathbf{v}_j^{n+1} \psi_j(\mathbf{x}_{p}^{n+1})
+  \rho_p \mathbf{v}_p^{n+1}\  = \ \rho_p \widehat{\widehat{\mathbf{v}}}_p^{n+1} + \sum_{j} \left(\mathbf{v}_j^{n+1}-\widehat{\widehat{\mathbf{v}}}_j^{n+1}\right) \psi_j(\mathbf{x}_{p}^{n+1})
   \end{equation}
-  where $\delta \mathbf{v}_j^{n+1} = \mathbf{v}_j^{n+1}-\widehat{\widehat{\mathbf{v}}}_j^{n+1}$.
+  %where $\delta \mathbf{v}_j^{n+1} = \mathbf{v}_j^{n+1}-\widehat{\widehat{\mathbf{v}}}_j^{n+1}$.
 
 \end{enumerate}
 
@@ -441,11 +441,11 @@ Where the functions $W$ are the typical kernel functions used in particle method
 
 Free surface oscillations of a liquid confined in a closed container (sloshing phenomenon) are an important issue when big amounts of liquid are industrially transported. The phenomenon involves two fluids that share a free surface boundary separating them, normally the density of the upper fluid is several orders of magnitude less than the bottom one. This phenomenon has proven of great interest due to the fact that violent impacts of the fluid can affect the structural integrity of the container.
 
-For studied cases in this section, the sloshing phenomenon is produced by a horizontal harmonic excitation $x = a_h (\sin \omega_h t)$, where $a_h$ is the excitation amplitude and $\omega_h$ is the excitation frequency of the rectangular tank where the two fluid phases are contained. The tank is divided in two parts, the bottom part is water with a density of $\rho_{I} = 1000 [kg/m^3]$ and the top part contains a fluid with different densities $\rho_{II} = 1.3, 50, 200, 800 [kg/m^3]$, depending on the studied case. The dimensions of the tank are $a$(width) by $b$(height) and the initial free surface is at height $h$ from the bottom of the tank, see Figure \ref{fg:ansari-config}. The free surface starts the simulation as a horizontal line and is subsequently deformed by the tank excitation and the flow dynamics.
+For studied cases in this section, the sloshing phenomenon is produced by a horizontal harmonic excitation $x = a_h \sin (\omega_h t)$, where $a_h$ is the excitation amplitude and $\omega_h$ is the excitation frequency of the rectangular tank where the two fluid phases are contained. The tank is divided in two parts, the bottom part is water with a density of $\rho_{I} = 1000 [kg/m^3]$ and the top part contains a fluid with different densities $\rho_{II} = 1.3, 50, 200, 800 [kg/m^3]$, depending on the studied case. The dimensions of the tank are $a$(width) by $b$(height) and the initial free surface is at height $h$ from the bottom of the tank, see Figure \ref{fg:ansari-config}. The free surface starts the simulation as a horizontal line and is subsequently deformed by the tank excitation and the flow dynamics.
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=.6\columnwidth]{images/ansari_config.pdf}
+      \includegraphics[width=.2\textwidth]{images/ansari_config.pdf}
   \end{center}
   \caption{\label{fg:ansari-config} Configuration of the Non-linear sloshing in a rectangular container case. Initial condition is represented by dashed lines. Continuous line represents the position of the free-surface for a certain time.}
 \end{figure}
@@ -453,29 +453,29 @@ For studied cases in this section, the sloshing phenomenon is produced by a hori
 For the different cases in this report, a 2D rectangular tank $a=1.0[m]$ width by $b=1.0[m]$ height is used. The initial height of the interface is $h=0.5[m]$ and the lateral excitation applied is $x=0.05\sin(3t)$. The simulations were performed considering the
 flow as laminar and non-viscous, hence no turbulence model was used and slip boundary conditions are taken. The density ratio $\sigma=\frac{\rho{II}}{\rho{I}}$ was modified to study the density influence on the free surface evolution. A two dimensional Cartesian mesh of $450\times225$, splitted into triangles, has been used in all cases.
 
-Reference results for this case are taken from \cite{Goni13} which uses the codes STARCCM+ and \OF to obtain numerical solutions and reports the free surface displacement on the left wall of the container. Those simulations use the same grid as presented above, but, in order to avoid numerical instabilities, the $CFL$ number was limited to $CFL_{max}=0.5$ which implies $\Delta t \approx 0.001$. In PFEM-2 simulations such restrictions do not exist, then $\Delta t$ is fixed to $0.01$, reaching $CFL_{max}\approx5$.
-Figure \ref{fg:ansari-results} presents the free surface displacement reported on the left wall of the container for different density ratios. For each one of them, PFEM-2 simulations shows a good agreement with reference solutions. It is worth mentioning that the time step used is around ten times bigger than the used in \cite{Goni13}.
+Reference results for this case are taken from \cite{Gomez13} which uses the codes STARCCM+ and \OF to obtain numerical solutions and reports the free surface displacement on the left wall of the container. Those simulations use the same grid as presented above, but, in order to avoid numerical instabilities, the $CFL$ number was limited to $CFL_{max}=0.5$ which implies $\Delta t \approx 0.001$. In PFEM-2 simulations such restrictions do not exist, then $\Delta t$ is fixed to $0.01$, reaching $CFL_{max}\approx5$.
+Figure \ref{fg:ansari-results} presents the free surface displacement reported on the left wall of the container for different density ratios. For each one of them, PFEM-2 simulations shows a good agreement with reference solutions. It is worth mentioning that the time step used is around ten times bigger than the one used in \cite{Gomez13}.
 
 
   \begin{figure}
   \centering
     \subfloat[]{
 	  \label{fg:ansari-1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_1.pdf}
+	  \includegraphics[width=.25\textwidth]{images/ansari_1.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_2.pdf}
+	  \includegraphics[width=.25\textwidth]{images/ansari_2.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:ansari-3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_3.pdf}
+	  \includegraphics[width=.25\textwidth]{images/ansari_3.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_4.pdf}
+	  \includegraphics[width=.25\textwidth]{images/ansari_4.pdf}
     }
    \caption{Level of height on the left wall for a two phase flow for different density ratios. Figure \ref{fg:ansari-1}: $\sigma=0.0013$, Figure \ref{fg:ansari-2}: $\sigma=0.05$, Figure \ref{fg:ansari-3}: $\sigma=0.2$ and Figure \ref{fg:ansari-4}: $\sigma=0.8$. References:\ \Circle \ STARCCM, \Square \ OpenFOAM and filled line PFEM-2.}
    \label{fg:ansari-results}                %% Etiqueta para la figura entera
@@ -485,13 +485,13 @@ Figure \ref{fg:ansari-results} presents the free surface displacement reported o
 
 \subsection{Viscous standing waves}%Re=250,2500.
 
-Computing the dissipation due to wave-breaking remains a challenging problem in the computational fluid mechanics context. In order to analyze the solution with PFEM-2 of two-phase viscous incompressible flows, the evolution of a viscous standing wave has been chosen. This is a classical problem in the scientific literature for which an approximate analytical solution is available for small amplitude perturbations\cite{Lighthill01} and it is of practical interest since it is related to the propagation of gravity waves.
+In order to analyze the solution with PFEM-2 of two-phase viscous incompressible flows, the evolution of a viscous standing wave has been chosen. An approximate analytical solution is available for small amplitude perturbations\cite{Lighthill01}.
 
 The chosen standing wave configuration consists in a rectangular tank with length $L$ and a water filling height of $H = L/2$. This setup is taken from \cite{Colagrossi12}, and in the Figure \ref{fg:standing-wave-config} a sketch of this configuration is displayed. The wave length is $\lambda = L$, $k$ is the corresponding wave number (i.e. $k = 2\pi/\lambda$), $A$ is the wave amplitude and denotes the ratio $\epsilon=2A/H$.
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=.9\columnwidth]{images/standing_wave.pdf}
+      \includegraphics[width=.45\textwidth]{images/standing_wave.pdf}
   \end{center}
   \caption{\label{fg:standing-wave-config} Configuration scheme of standing wave case. Initial condition is represented by dotted lines. In continuous line is presented an intermediate state where the maximum amplitude $A$ is reached.}
 \end{figure}
@@ -521,21 +521,21 @@ Several Reynolds number ($Re=25,50,250,2500$) have been selected to compare with
   \centering
     \subfloat[]{
 	  \label{fg:sw-energy-25}
-	  \includegraphics[width=.72\columnwidth]{images/sw_25.pdf}
+	  \includegraphics[width=.35\textwidth]{images/sw_25.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:sw-energy-50}
-	  \includegraphics[width=.72\columnwidth]{images/sw_50.pdf}
+	  \includegraphics[width=.35\textwidth]{images/sw_50.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:sw-energy-250}
-	  \includegraphics[width=.72\columnwidth]{images/sw_250.pdf}
+	  \includegraphics[width=.35\textwidth]{images/sw_250.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:sw-energy-2500}
-	  \includegraphics[width=.72\columnwidth]{images/sw_2500.pdf}
+	  \includegraphics[width=.35\textwidth]{images/sw_2500.pdf}
     }
-   \caption{Kinetic Energy decay for standing wave problem with different Reynolds numbers. Red lines are approximate analytical solutions for total energy and blue lines are numerical solutions with PFEM-2. Reynolds numbers analyzed: $Re=25,50,250,2500$ in Figures \ref{fg:sw-energy-25},\ref{fg:sw-energy-50},\ref{fg:sw-energy-250},\ref{fg:sw-energy-2500} respectively. Legend in each figure indicates the maximum Fourier number used in each numerical simulation.}
+   \caption{Kinetic Energy decay for standing wave problem with different Reynolds numbers. Dash lines are approximate analytical solutions for total energy and filled lines are numerical solutions with PFEM-2. Reynolds numbers analyzed: $Re=25,50,250,2500$ in Figures \ref{fg:sw-energy-25},\ref{fg:sw-energy-50},\ref{fg:sw-energy-250},\ref{fg:sw-energy-2500} respectively. Legend in each figure indicates the maximum Fourier number used in each numerical simulation.}
    \label{fg:sw-energy}
 \end{figure}
 
@@ -543,7 +543,7 @@ Several Reynolds number ($Re=25,50,250,2500$) have been selected to compare with
 
 This problem consists on the evolution of two layers of fluids initially at rest in the gravity field. The density of the fluid placed at the top is larger than the one placed at the bottom. Due to a little disturbance in the contact surface the more dense fluid goes down and the less dense fluid does the opposite. During the evolution of the problem a mixture is created, which is lately segregated. The final state reaches an stable equilibrium with the more dense fluid at the bottom layer and the less dense fluid at the top layer. The growth and evolution of the instability has been investigated among others by Tryggvason\cite{Tryggvason88} for inviscid incompressible flows, and by Guermond \& Quartapelle\cite{Guermond00} for viscous flows.
 
-The starting point is the problem documented by Guermond. The computational domain is $[-d/2,-2d]\times[d/2,2d]$ and the initial position of the perturbed interface is $\eta(x) = 0.1d \cos(2\pi x/d)$. The density ratio is $3$, which corresponds to an Atwood
+The starting point is the problem documented by Guermond. The computational domain is $[-d/2,d/2]\times[-2d,2d]$ and the initial position of the perturbed interface is $\eta(x) = 0.1d \cos(2\pi x/d)$. The density ratio is $3$, which corresponds to an Atwood
 number of $0.5$ according to Tryggvason's definition $At = (\rho_{max}-\rho_{min})/(\rho_{max}+\rho_{min})$. Other physical parameters are selected to obtain a Reynolds number $Re=\rho_{min}d^{\frac{3}{2}}g^{\frac{1}{2}}/\mu=1000$. The computational domain is discretized into $80000$ structured triangles ($\Delta x=0.01$) setting slip boundary conditions on each wall. Time step selected is $\Delta t=0.01[s]$, which allows to reach $CFL_{max} \approx 8$. Between five and eight particles per element are used and two pressure corrections are required.
 
 To compare with reference results, the time is made dimensionless by using $\widetilde{t} = t\sqrt{g\ At}$. Results on the vertical position of the tip of the falling and rising fluid (spike and bubble, respectively) are shown in Figure \ref{fg:rayleigh-rf}. It can be observed that current solution is in good agreement with the reference results.
@@ -560,7 +560,7 @@ On the other hand, the evolution of the instability is shown in Figure \ref{fg:r
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=\columnwidth]{images/rayleigh_2_better.jpg}
+      \includegraphics[width=.45\textwidth]{images/rayleigh_2_better.jpg}
   \end{center}
   \caption{\label{fg:rayleigh-screenshots} Rayleigh-Taylor instability evolution. Case with $Re=1000$. From left to right $\widetilde{t} =0.0$, $1.0$, $1.5$, $2.0$.}
 \end{figure}
@@ -600,9 +600,9 @@ In current case,  the only reasonable solution of \OF among the ones presented a
 
 In this section, the extension of the two dimensional problem to three dimensions is presented. The third dimension is generated as a surface of revolution from the previous 2d geometry, conforming a cylindrical volume in 3d of radius $R=0.5$. This allows to keep the same problem configuration, it is slip boundary condition on the wall, $At=0.5$, and initial perturbation of the surface $\eta(r) = 0.1d \cos(2\pi r/d)$, with $0<r<R$.
 
-Computational domain is discretized with a mesh size of $\Delta x=0.03[m]$ conforming a non-structured mesh with around $1.2$ millon of tetrahedral elements. An average of eight millon of particles are used during the simulation that move across the light-phase and heavy-phase domains. Simulation was carried out with a $\Delta t=0.025$ which allows to reach peaks of $CFL_{max}=15$. In the Figure \ref{fg:rayleigh-3d} can be shown the evolution of the heavy-phase. It must be noticed that the simulation is extended long time up to reach the stable condition with heavy-phase at bottom and at rest, which is approximately $30[s]$ of simulation time. To complete the entire simulation, the implementation requires around three hours of CPU time running in an AMD Opteron 6376 @ 2.3GHz with a 64Gb RAM using 16 processors.
+Computational domain is discretized with a mesh size of $\Delta x=0.03[m]$ conforming a non-structured mesh with around $1.2$ millon of tetrahedral elements. An average of eight millon of particles are used during the simulation that move across the light-phase and heavy-phase domains. Simulation was carried out with a $\Delta t=0.025$ which allows to reach peaks of $CFL_{max}=15$. Figure \ref{fg:rayleigh-3d} shows the evolution of the heavy-phase. It must be noticed that the simulation is extended long time up to reach the stable condition with heavy-phase at bottom and at rest, which is approximately $30[s]$ of simulation time. To complete the entire simulation, the implementation requires around three hours of CPU time running in an AMD Opteron 6376 @ 2.3GHz with a 64Gb RAM using 16 processors.
 
-As a additional result, it is important to underline that during the simulation the global mass conservation has been checked.
+As an additional result, it is important to underline that during the simulation the global mass conservation has been checked.
 
  However, the spirit of this section is to show the stability of the 3D simulation, keeping a realistic progress. A way to prove the goodness of the solution is that, during the simulation, the initial mass quantity is preserved. More detailed analysis about the accuracy of 3d simulations will be presented in Section \ref{sec:ETSIN-3d}.
 
@@ -639,7 +639,7 @@ As a additional result, it is important to underline that during the simulation 
 
 \subsection{Dam-break problem}%ETSIN experimental tests
 
-The objectives of this section are to compare experimental measurements on dam-break flow over a dry horizontal bed with the numerical approximation carried out with the PFEM-2 algorithm. The extensive set of experimental data is extracted from \cite{Lobovsky13}, where the dynamics of the dam break wave impacting a vertical wall downstream the dam, with emphasis on the pressure loads and surface evolution after the dam burst, are presented.
+The objectives of this section are to compare experimental measurements\cite{Lobovsky13} on dam-break flow over a dry horizontal bed with the numerical approximation carried out with the PFEM-2 algorithm. The comparison was focused on pressure loads and surface evolution after the dam burst.
 
 Computational configuration of the tank used in experimental cases is presented in Figure \ref{fg:dambreak-config}, where the locations of water level measuring points and pressure sensors are shown. In this report only the case with $H=300[mm]$ is analyzed. Two-phase non-viscous flow simulation is carried on, with $\rho_{water}=1000[kg/m^3]$, $\rho_{air}=1[kg/m^3]$ and gravity force $\mathbf{g}=-10\ \hat{j} [m/s^2]$. The 2D computational grid used has $322\times120$ nodes, conforming a mesh with around $80000$ triangles. Boundary conditions are slip on all walls, and $\Delta t$ is fixed to $0.1$, which allows to reach $CFL_{max}\approx20$ when free surface impacts the downstream wall.
 
@@ -656,24 +656,48 @@ Figure \ref{fg:dambreak-h} shows the comparison between experimental and numeric
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-h1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/dambreak_h1.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_h1.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-h2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/dambreak_h2.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_h2.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-h3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/dambreak_h3.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_h3.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-h4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/dambreak_h4.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_h4.pdf}
     }
    \caption{Water level elevations at locations $H_1$, $H_2$, $H_3$ and $H_4$ for tests with $H=300[mm]$ initial filling height compared to data from literature experimental results\cite{Lobovsky13} (dashed lines) and numerical results with PFEM-2 (filled lines). Time normalization is $t^*=t(g/h)^{1/2}$.}
    \label{fg:dambreak-h}                %% Etiqueta para la figura entera
+\end{figure}
+
+  \begin{figure} [h!]
+  \centering
+    \subfloat[]{
+	  \label{fg:dambreak-p1}         %% Etiqueta para la primera subfigura
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p1.pdf}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:dambreak-p2}         %% Etiqueta para la segunda subfigura
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p2.pdf}
+    } \\
+    \subfloat[]{
+	  \label{fg:dambreak-p3}         %% Etiqueta para la primera subfigura
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p3.pdf}
+    }
+    %%----segunda subfigura----
+    \subfloat[]{
+	  \label{fg:dambreak-p4}         %% Etiqueta para la segunda subfigura
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p4.pdf}
+    }
+   \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 (filled lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1},\ref{fg:dambreak-p2},\ref{fg:dambreak-p3},\ref{fg:dambreak-p4} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
+   \label{fg:dambreak-p}                %% Etiqueta para la figura entera
 \end{figure}
 
 The impact pressure was measured with four sensors at the vertical wall at the end of the downstream flume, as described in Figure \ref{fg:dambreak-config}. The statistical analysis of the pressure peaks, rise times and the occurrence time, i.e. the time between
@@ -681,73 +705,51 @@ the opening of the dam gate and the occurrence of the impact, are presented in F
 
 In the reference work, the analysis is focused on peaks events. It can be noticed that the highest peak is recorded by sensor number 1 which is the sensor receiving the full impact, whilst the pressure of the other sensors is given by the run up of the flow. It can also be observed that sensor number 4, i.e. the sensor located at the highest position, does not show a pure impact event, see Figure \ref{fg:dambreak-p4}, and actually the maximum for this sensor is obtained later in time, when the water falls back after running along the wall. Numerical solution behavior follows the mentioned conclusions, but the pressure values are not between the statistical limits of experimental data. Also, a discrepancy can be observed with the peaks arrival times for sensors $1$ to $3$. This difference can be assigned to the numerical simplification which does not model the gate movement. However, pressure magnitude of the peaks is well predicted giving confidence to PFEM-2 calculations.
 
-  \begin{figure}
-  \centering
-    \subfloat[]{
-	  \label{fg:dambreak-p1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p4.pdf}
-    }
-    %%----segunda subfigura----
-    \subfloat[]{
-	  \label{fg:dambreak-p2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p3.pdf}
-    } \\
-    \subfloat[]{
-	  \label{fg:dambreak-p3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p2.pdf}
-    }
-    %%----segunda subfigura----
-    \subfloat[]{
-	  \label{fg:dambreak-p4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p1.pdf}
-    }
-   \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 (filled lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1},\ref{fg:dambreak-p2},\ref{fg:dambreak-p3},\ref{fg:dambreak-p4} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
-   \label{fg:dambreak-p}                %% Etiqueta para la figura entera
-\end{figure}
 
 Finally, the Figure \ref{fg:dambreak-screenshots} presents snapshots for the evolution of the free-surface simulation. Initial condition is shown in Figure \ref{fg:dambreak-1}. Pressure peaks are related with the impact event observed in Figure \ref{fg:dambreak-3}, which generates the back wave propagation that is displayed in remain figures.
+
 \begin{figure}
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-1}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_1_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_1_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-2}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_2_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_2_w.jpg}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-3}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_3_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_3_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-4}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_4_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_4_w.jpg}
     }\\
         \subfloat[]{
 	  \label{fg:dambreak-5}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_5_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_5_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-6}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_6_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_6_w.jpg}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-7}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_7_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_7_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-8}
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_pfem_8_w.jpg}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_8_w.jpg}
     }
    \caption{Snapshots of the dam-break at times $t=0$, $0.25$, $0.5$, $0.75$, $1$, $1.25$, $1.5$, $1.75[s]$, in Figures \ref{fg:dambreak-1} to \ref{fg:dambreak-8} respectly.}
    \label{fg:dambreak-screenshots}
 \end{figure}
-\clearpage
+%\clearpage
 
 \subsubsection{Three-dimensional Simulation}\label{sec:ETSIN-3d}
 
@@ -759,23 +761,23 @@ In this example, the time step used, the element sizes and the velocity of the f
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-p1-3d}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p4_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p1_3d.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-p2-3d}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p3_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p2_3d.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-p3-3d}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p2_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p3_3d.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-p4-3d}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.48\columnwidth]{images/dambreak_p1_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{images/dambreak_p4_3d.pdf}
     }
-   \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 in three dimensions (filled lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1-3d},\ref{fg:dambreak-p2-3d},\ref{fg:dambreak-p3-3d},\ref{fg:dambreak-p4-3d} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
+   \caption{Pressure time histories comparison between experimental \cite{Lobovsky13} (discontinuous lines) and 3D PFEM-2 results (filled lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1-3d},\ref{fg:dambreak-p2-3d},\ref{fg:dambreak-p3-3d},\ref{fg:dambreak-p4-3d} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
    \label{fg:dambreak-p-3d}                %% Etiqueta para la figura entera
 \end{figure}
 
@@ -789,7 +791,7 @@ In the current work, a general formulation to solve free-surface flows with pres
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
-The research leading to these results has received funding from the ARCOIRIS EU grant.
+Authors thank the program ERASMUS MUNDUS action 2 ARCOIRIS project for financial support throught a six-month doctoral scholarship.
 \bibliographystyle{plain}
 \bibliography{mybib}
 
