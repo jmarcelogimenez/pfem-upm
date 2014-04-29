@@ -26,7 +26,7 @@ where the nodes included in the interpolation are the nodes of the hosting eleme
    \item $A>\beta$, the sums that appear in Equation (\ref{Interpolation}) are both restricted to the hosting nodes $i$ that have the same density as the particle $\rho_i=\rho_p$.
  \end{itemize}
  \end{itemize}
- 
+
  where $\beta$ is a second numerical parameter that has to be defined. For those cases where the density ratio $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
 
 This means that if a water particle is momentarily on an air regime, it will remain as a water particle for further determination of the interface position. However, as the best approximation to the real particle trajectory defined by the acting forces is searched, the parabolic motion is used as the simplest trajectory when only gravity forces are acting, an interesting alternative (not used in this work) could be using a water droplet drag model to the particle motion.
@@ -42,7 +42,7 @@ In typical finite element methods, gradient of the shape functions $\nabla\phi_j
 \item gradient velocity jumps where viscosity discontinuities are present
 \item pressure jumps where surface tension is present
 \end{itemize}
-For the case of interest in this work, this is two different density fluids, the interpolation errors in the pressure and its gradient give rise to spurious velocities that can render the solution meaningless. 
+For the case of interest in this work, this is two different density fluids, the interpolation errors in the pressure and its gradient give rise to spurious velocities that can render the solution meaningless.
 
 Enrichment methods add degrees of freedom to elements cut by the interface in order to reduce interpolation errors. In this work, two space enrichment methodologies are proposed to treat with pressure gradient discontinuities.
 
@@ -169,7 +169,7 @@ with $\delta p^{n+1} = p^{n+1}-p^{n}$, where the continuity between elements is 
 
 % --- INICIO PARRAFO IMPORTANTE A CORREGIR
 
-In the case of enriched ones, see equation (\ref{eq:enrich-1a}), when condensation is used, the asscorrectumption of neglecting the inter-elemental boundary terms from the integration by parts of the Poisson equation is not true. From our experience, and like is reported by Coppola\cite{Coppola05}, when the Froude Number is high (this is, low density ratio), the neglected term from the weakening of the divergence of the velocity introduces severe problems of numerical diffusion. 
+In the case of enriched ones, see equation (\ref{eq:enrich-1a}), when condensation is used, the assumption of neglecting the inter-elemental boundary terms from the integration by parts of the Poisson equation is not true. From our experience, and like is reported by Coppola\cite{Coppola05}, when the Froude Number is high (this is, low density ratio), the neglected term from the weakening of the divergence of the velocity introduces severe problems of numerical diffusion.
 
 A way to solve this problem is not integrating by parts the divergence term, but it requires imposing a pressure gradient on boundaries, whose value can not be easily predict when there is a gravitational field, large density ratio, and the fluid is not at rest.
 
@@ -199,4 +199,4 @@ Finally, the equation system presented in Equation (\ref{correction}) must be so
 
 It was previously mentioned that the pressure value is zeroed at the beginning of the time step, one of the main reason can be found in the recovering step. It must be noticed that, not only the standard nodal pressures, but also the enrichments pressures of the previous iteration are required in this stage. As the enrichment pressures depend on the interface location inside the element, using the latest $p^*$ of the previous time-step may introduce several problems due to the movement of the interface. This lead to poor results that in most cases become unstable.
 
-\emph{Although this reinitialization of the pressure leads to a first iteration where the pressure calculation is based on a first order approximation, successive iterations on a pressure-correction loop improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that this implies that the stabilization effect of the first order fractional step is lost due to the higher order scheme. We arrived to the same conclusion, because only two or three iterations are needed in order to obtain pressure convergence and, despite not being theoretically stable, pressure oscillations do not appear in the solution. Then, no stabilization technique is required in this case.} ?? 
+Although this pressure reinitialization leads to a first order temporal approximation, successive iterations on a pressure-correction loop improve the incompressibility of the solution. Idelsohn\cite{Idelsohn13c} ensures that the stabilization effect of the first order fractional step is lost when higher order schemes are used. The same conclusion was obtained here, instead of using a stabilization technique, a limited number of iterations (two or three) were used in order to obtain a converged pressure field without any presence of pressure oscillations. More iterations would tend to make the scheme unstable. 

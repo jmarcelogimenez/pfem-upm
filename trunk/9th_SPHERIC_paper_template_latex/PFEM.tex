@@ -8,7 +8,7 @@ The main aim of this paper is to describe an efficient and accurate methodology 
   \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}\label{eq:momentum}
 \end{eqnarray}
 
-as expected the convective term does not appear in this Lagrangian formulation but a kinematic problem has to be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body force (normally gravity $\rho \mathbf{g}$ and/or inertial force).
+As expected the convective term does not appear explicitly in this Lagrangian formulation but a kinematic problem has to be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is a external body force (normally gravity $\rho \mathbf{g}$ and/or inertial force).
 
 %It is well known that the velocity vector unknown can be found solving the vector momentum equation \ref{eq:momentum}. However, the scalar unknown (the pressure) does not appear in the continuity equation \ref{eq:continuity}. Moreover, this equation is not a time evolution equation, it works like a constraint over the velocity field, choosing only those velocity field that satisfy a free divergence.  To discover the equation associated with the pressure several alternatives are possible.
 
@@ -27,7 +27,7 @@ The predictor step ends with a predicted velocity $\widehat\vv^{n+1}$ on the mes
 
 \subsection{Generic formulation}\label{GeneralFor}
 
-It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing both fluids. Subindexes $()_j$ y $()_p$ represent a generic mesh node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ the pressure and velocity finite element linear basis functions respectively. According to this notation
+It is assumed that all fluid variables are known at time $t_n$ for the particles and the mesh nodes representing both fluids. Subindexes $()_j$ y $()_p$ represent a generic mesh node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ be the pressure and velocity finite element linear basis functions respectively. According to this notation
 
 \begin{enumerate}
   \item Acceleration Stage: Calculate acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
