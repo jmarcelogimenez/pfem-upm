@@ -22,21 +22,21 @@ Figure \ref{fg:ansari-results} presents the free surface displacement reported o
   \centering
     \subfloat[]{
 	  \label{fg:ansari-1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_1.pdf}
+	  \includegraphics[width=.47\columnwidth]{images/ansari_1.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_2.pdf}
+	  \includegraphics[width=.47\columnwidth]{images/ansari_2.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:ansari-3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_3.pdf}
+	  \includegraphics[width=.47\columnwidth]{images/ansari_3.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.49\columnwidth]{images/ansari_4.pdf}
+	  \includegraphics[width=.47\columnwidth]{images/ansari_4.pdf}
     }
    \caption{Level of height on the left wall for a two phase flow for different density ratios. Figure \ref{fg:ansari-1}: $\sigma=0.0013$, Figure \ref{fg:ansari-2}: $\sigma=0.05$, Figure \ref{fg:ansari-3}: $\sigma=0.2$ and Figure \ref{fg:ansari-4}: $\sigma=0.8$. References:\ \Circle \ STARCCM, \Square \ OpenFOAM and filled line PFEM-2.}
    \label{fg:ansari-results}                %% Etiqueta para la figura entera
@@ -44,15 +44,19 @@ Figure \ref{fg:ansari-results} presents the free surface displacement reported o
 
 \subsubsection{Enrichment and density ratio issues}
 
-The PFEM-2 results presented in the previous section have been obtained using the continuous enrichment strategy, which allows to use the same formulation independently of the Froude number. However, as it was mentioned before, without using a continuous formulation between elements for the enriched shape functions, the assumption about the inter-elemental boundary terms of the Poisson equation formulation should be revisited. In this subsection, problems that appear when the formulation combines non continuous enriched shape functions and large Froude numbers (ratio between inertial and gravitational forces, this is $Fr = \dfrac{U^2}{gL}\dfrac{\rho_I}{\rho_I-\rho_{II}}$) are presented. This phenomenon is mentioned, but not investigated, by Coppola\cite{Coppola05}.
+The PFEM-2 results presented in the previous section have been obtained using the continuous enrichment strategy, which allows to use the same formulation independently of the Froude number. However, as it was mentioned before, without using a continuous formulation between elements for the enriched shape functions, the assumption about the inter-elemental boundary terms of the Poisson equation formulation should be revisited. In this subsection, problems that appear when the formulation combines non continuous enriched shape functions and large density ratio (approximately to one) are presented. The latter is somewhat measured by the Froude number, which also includes the ratio between inertial and gravitational forces, this is $Fr = \dfrac{U^2}{gL}\dfrac{\rho_I}{\rho_I-\rho_{II}}$. This phenomenon is mentioned, but not investigated, by Coppola\cite{Coppola05}.
 
-The Figure \ref{fg:ansari-results-b} shows a comparison between the height level calculated by PFEM-2 using continuous enrichment, discontinuous enrichment and no-enrichment for the two extreme density ratio cases. \emph{It must be mentioned that the results were obtained with the enrichment shape functions presented in \ref{eq:enrich-1a}, however using \ref{eq:enrich-2a} similar conclusions were reached.}. It must be mentioned that the reference solution used in Figure \ref{fg:ansari-results-b}, obtained using the continuous enrichment formulation presented in \ref{eq:enrich-2a}, was previously validated as explained in section \ref{sec:Ansari}.
+The Figure \ref{fg:ansari-results-b} shows a comparison between the height level calculated by PFEM-2 using continuous enrichment, discontinuous enrichment and no-enrichment for the two extreme density ratio cases. It must be mentioned that next results were obtained with the enrichment shape functions presented in \ref{eq:enrich-1a}, however using \ref{eq:enrich-2a}, and condensing the elemental matrices, similar conclusions were reached. The reference solution used in the Figure \ref{fg:ansari-results-b} was obtained using the formulation presented in \ref{eq:enrich-2a} without condensing, it is continuous enrichment. As it was mentioned, that reference solution was previously validated in section \ref{sec:Ansari}.
 
-Da la impresiÛn que ambos sistemas de enrichment deberÌan ser discontinuos(??), pero el segundo es contÌnuo.
+%Da la impresi√≥n que ambos sistemas de enrichment deber√≠an ser discontinuos(??), pero el segundo es cont√≠nuo. -> Si bien el segundo sistema parece ser continuo, la continuidad va a depender de como lo ensamblas. Si haces condensaci√≥n, aun utilizando el segundo enrichment te queda discontinuo. Si quieres continuidad hay que utilizar el segundo enrichment y NO condensar.
 
-When both fluids have similar densities $\sigma \sim 1$, high $Fr$ values are obtained. In Figure \ref{fg:ansari-4b} a comparison when $\sigma=0.8$ between different PFEM-2 formulations is presented. When no enrichment strategy is used, the solution \textcolor[rgb]{1.00,0.00,0.00}{at this high $Fr$ values} presents a noisy behavior \emph{due to the low density ratio} (not so low???0.8), where according to the height levels a typical mass-loss appears deteriorating the overall solution. When discontinuous enrichment is added (this is, condensing the equation system \ref{eqsys-poisson}) the solution is smoother but still too dissipative compared to the continuous enrichment formulation used as reference. This means that when the discontinuous enrichment formulation is used, the assumption of avoiding the inter-elemental boundary terms in the right hand side of \ref{poisson} is not correct and consequently a diffusive behavior appears. This conclusion is confirmed when discontinuous enrichment is used but without weakening the divergence of the velocity and a solution very similar to continuous enrichment is obtained(picture?). Not integrating by parts the divergence term requires imposing a pressure gradient on boundaries: with low density ratios we can impose the previous gradient value $\nabla p^n$ on boundaries, but this approximation is not valid when there is a gravitational field, large density ratio, and the fluid is not at rest.
+When both fluids have similar densities $\sigma \sim 1$, larger $Fr$ values are obtained. In Figure \ref{fg:ansari-4b} a comparison when $\sigma=0.8$ between different PFEM-2 formulations is presented. When no enrichment strategy is used, the solution 
+% \textcolor[rgb]{1.00,0.00,0.00}{
+% at this high $Fr$ values
+% }
+presents a noisy behavior where, according to the height levels, a typical mass-loss appears deteriorating the overall solution. When discontinuous enrichment is added (this is, condensing the equation system \ref{eqsys-poisson}) the solution is smoother but still too dissipative compared to the continuous enrichment formulation used as reference. This means that when the discontinuous enrichment formulation is used, the assumption of avoiding the inter-elemental boundary terms in the right hand side of \ref{poisson} is not correct and consequently a diffusive behavior appears. This conclusion is confirmed when discontinuous enrichment is used (but without weakening the divergence of the velocity) and a solution very similar to continuous enrichment is obtained (there is not presented in the figure because is almost identical to reference). Not integrating by parts the divergence term requires imposing a pressure gradient on boundaries: with large density ratios we can impose the previous gradient value $\nabla p^n$ on boundaries, but this approximation is not valid when there is a gravitational field, low density ratio, and the fluid is not at rest.
 
-On the other limit $\sigma \ll 1$, the case when $\sigma=0.0013$ is presented in Figure \ref{fg:ansari-1b}. The graphic shows that both the continuous and the discontinuous enrichment solutions present very similar behavior. As before, when no enrichment is used results become noisy, showing that a spurious velocity field appears close to the free surface when no improvements are introduced in this region.
+On the other limit $\sigma \ll 1$, the case when $\sigma=0.0013$ is presented in Figure \ref{fg:ansari-1b}. The graphic shows that both the continuous and the discontinuous enrichment solutions present very similar behavior. As before, when no enrichment is used results become noisy, showing that a spurious velocity field appears close to the free surface when no improvements are introduced in this region. Discontinuous enrichment with strong form of divergence of the velocity is not possible to use in this case because the wrong prediction of pressure gradients on boundaries turns the simulation unstable.
 
   \begin{figure}[h]
   \centering
