@@ -92,23 +92,20 @@
  \href{http://www.ctan.org/tex-archive/macros/latex/contrib/elsarticle}{CTAN}.}
 
 %% Group authors per affiliation:
-\author{Juan M. Gimenez\fnref{myfootnote}}
-\address{CIMEC, Santa Fe, Argentina}
-\author{Leo M. Gonz\'{a}lez\fnref{myfootnote}}
-\address{UPM, Madrid, Spain}
+% \author{Juan M. Gimenez\fnref{myfootnote}}
+% \address{CIMEC, Santa Fe, Argentina}
+% \author{Leo M. Gonz\'{a}lez\fnref{myfootnote}}
+% \address{UPM, Madrid, Spain}
 %\fntext[myfootnote]{Since 1880.}
 
-%% or include affiliations in footnotes:
-%\author[mymainaddress,mysecondaryaddress]{Juan M. Gimenez}
-%\cortext[mycorrespondingauthor]{Corresponding author}
-%\ead{jmarcelogimenez@gmail.com}
-%%\ead[url]{www.elsevier.com}
-%
-%\author[mysecondaryaddress]{Leo M. Gonz\'{a}lez\corref{mycorrespondingauthor}}
-%
-%
-%\address[mymainaddress]{CIMEC, Santa Fe Argentina}
-%\address[mysecondaryaddress]{UPM, Madrid, Spain}
+% or include affiliations in footnotes:
+\author[mymainaddress]{Juan M. Gimenez\corref{mycorrespondingauthor}}
+\cortext[mycorrespondingauthor]{Corresponding author}
+\ead{jmarcelogimenez@gmail.com}
+%\ead[url]{www.elsevier.com}
+\author[mysecondaryaddress]{Leo M. Gonz\'{a}lez}
+\address[mymainaddress]{Centro de Investigaci\'on de M\'etodos Computacionales (CIMEC-CONICET), Santa Fe, Argentina}
+\address[mysecondaryaddress]{Escuela T\'{e}cnica Superior de Ingenieros Navales, Universidad Polit\'{e}cnica de Madrid (ETSIN-UPM), Madrid, Spain}
 
 \begin{abstract}
 In this paper a new generation of the particle method known as Particle Finite Element Method (PFEM), which combines convective particle movement and fixed mesh resolution, is applied to free surface flows. This methodology, named PFEM-2, presents basically two novel steps: first, the possibility of using larger time steps compared to other similar numerical tools, showing in a wide variety of problems that shorter computational times can be achieved while the solution accuracy is maintained. Second, as surface flows is the searched topic of the paper, different improved versions of discontinuous and continuous enriched basis functions for the pressure field have been also developed in order to reconstruct the free surface without artificial diffusion or undesired numerical effects. Combining these two improvements, a variety of free surface flows have been solved in 2D and 3D cases, where the evident advantages of the improvements are remarked. The collection of problems has been carefully selected such that a wide variety of Froude numbers, density ratios and dominant dissipative cases are presented with the intention of presenting a general methodology that is not restricted to particular ranges of application.
@@ -116,8 +113,8 @@ The results of the different free-surface problems solved which include: Rayleig
 \end{abstract}
 
 \begin{keyword}
-PFEM, PFEM-2, free surface flows, finite elements
-\MSC[2010] 00-01\sep  99-00
+PFEM, PFEM-2, free surface flows, finite elements, large time-steps, enrichment
+% \MSC[2010] 00-01\sep  99-00
 \end{keyword}
 
 \end{frontmatter}
