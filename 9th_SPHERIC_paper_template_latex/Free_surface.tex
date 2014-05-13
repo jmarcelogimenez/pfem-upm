@@ -2,9 +2,13 @@ An accurate and efficient simulation of the interface evolution is crucial in th
 
 Methods used to describe the evolution of interfaces can be clustered in two classes, namely: interface capturing and interface tracking methods. While in the former the interface is determined by an implicit function that is advected in a Eulerian frame (see Volume of Fluid \cite{VoF} and Level Set\cite{Osher01}), in the latter the interface evolution equation is solved in a Lagrangian fashion, for example, by evolving marker particles. The spatial domain discretization using mesh and particles allows PFEM-2 to select an appropriate combination of those approaches where the free-surface position information is shared and interchanged by the particles and the fixed mesh.
 
+<<<<<<< .mine
+There are several, albeit small, differences between the PFEM-2 algorithm for homogeneous flows and the two fluid version. Those differences stem from the density and viscosity discontinuities that appear in the fluid, consequently most of the implemented changes are related to the strategies followed to correctly capture the interface between both fluids. Although some details presented in this section have already been reported in \cite{Idelsohn13c}, important strategies that significantly improve the accuracy and efficiency of the computation were added in this work.
+=======
 There are several, albeit small, differences between the PFEM-2 algorithm for homogeneous flows and the two fluid version. Those differences {\color{red}stem from} the density and viscosity discontinuities that appear in the fluid, consequently most of the implemented changes are related to the strategies followed to correctly capture the interface between both fluids. Although some details presented in this section have already been reported in \cite{Idelsohn13c}, important strategies that significantly improve the accuracy and efficiency of the computation were added in this work.
+>>>>>>> .r66
 
-Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, important considerations to manage and improve each one of the stages for the particular case of multiphases problems are presented hereafter. The following part is related with three aspects of the simulation, namely the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free-surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and, consequently, will be treated together in the next section.
+Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, important considerations to manage and improve each one of the stages for the particular case of multiphases problems are presented hereafter. The following part is related with three aspects of the simulation, namely: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free-surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and, consequently, will be treated together in the next section.
 
 \subsection{Internal interfaces tracking}
 
@@ -29,7 +33,7 @@ where the nodes included in the interpolation are the nodes of the hosting eleme
 
  $\beta$ being a second numerical parameter that has to be defined. For those cases where the density ratio $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
 
-This means that if a water particle is momentarily in an air regime, it will remain as a water particle for further determination of the interface position. However, as the best approximation to the real particle trajectory defined by the acting forces is searched, the parabolic motion is used as the simplest trajectory when only gravity forces are acting, an interesting alternative for the particle motion (not used in this work) could be using a water droplet drag model.
+This means that if a water particle is momentarily in an air regime, it will remain as a water particle for further determination of the interface position. While a better approximation to the real particle trajectory defined by the acting forces is searched, the parabolic motion is used herein as the simplest trajectory when only gravity forces are acting, an interesting alternative for the particle motion (not used in this work) could be using a water droplet drag model.
 
 Once the particles have been advected and the intermediate velocities have been determined, this updated velocity and density information has to be incorporated into the mesh nodes. During this \textit{Projection Stage}, each mesh node $j$ updates its intermediate velocity according to equation (\ref{Step3a}), analogously a similar equation is used to update the values of $\lambda_j$. Depending on the value of $\lambda_j$ the instantaneous local interface inside each element is determined as the iso-line (an iso-plane in 3D) where $\lambda(\xx)=0$.
 
@@ -46,7 +50,7 @@ For the case of interest presented in this work where two different density flui
 
 Enrichment methods add degrees of freedom to elements that are cut by the interface in order to reduce interpolation errors. In this work, two space enrichment methodologies are proposed in order to treat pressure gradient discontinuities.
 
-The first enriched space is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The unique new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. Briefly, the construction of the enrichment function $\phi^*$ inside an element that has been divided by the free surface into two regions $\Omega_1$ and $\Omega_2$ is ensuring that
+The first enriched space is based on the one presented by Coppola\cite{Coppola05}, which is illustrated in Figure \ref{fg:enrichment1}. The unique new degree of freedom could be statically condensed within each element in the pressure equation and then recovered in the correction step. The construction of the enrichment function $\phi^*$ inside an element that has been divided by the free surface into two regions $\Omega_1$ and $\Omega_2$ must satisfy
 
 \begin{equation}
    \left\{\;
@@ -68,11 +72,15 @@ where $k_1 = \dfrac{\lambda_2-\lambda_1}{\lambda_2}$, $k_2 = \dfrac{\lambda_1-\l
 \begin{figure}[H]
   \centering
   \includegraphics[width=.9\columnwidth]{images/enrichment1.pdf}
+<<<<<<< .mine
+   \caption{2D interface element. The interface is calculated cutting the element at the segment $A-B$. The enrichment proposed by Coppola (left) and the partition of the triangle into three sub-triangles with its own Gauss points (right).}
+=======
    \caption{2D interface element. The interface is calculated cutting the element at the segment $A-B$. {\color{red}The enrichment proposed by Coppola (left) and the partition of the triangle into three sub-triangles with its own Gauss points to allowing to calculate an enhanced integration (right) are shown.}}
+>>>>>>> .r66
    \label{fg:enrichment1}                %% Etiqueta para la figura entera
 \end{figure}
 
-The second set of enrichment functions used in this work is described in Figure \ref{fg:enrichment2}. As in the previous case, the two new degrees of freedom can also be statically condensed. However, using this space, it is possible to ensure continuity between elements at the cost of having to rebuild the system matrix at each time step, which could be an expensive task due to memory allocation.
+The second set of enrichment functions used in this work is described in Figure \ref{fg:enrichment2}. As in the previous case, the two new degrees of freedom can also be statically condensed. However, using this new space, it is possible to ensure continuity between elements at the cost of having to rebuild the system matrix at each time step, which could be an expensive task due to memory allocation.
 This enrichment space is constructed following
 \begin{equation}
    \left\{\;
@@ -114,7 +122,7 @@ Therefore, using any of the enriched spaces, the pressure is now interpolated in
 where $\phi_i$ are traditional linear shape functions (a total of $N_n$), and $\phi_i^*$ are the enrichment shape functions (a total of $N_e$).
 
 In order to capture the discontinuities and taking advantage of the enrichment functions used, the integration rules need to be modified in elements cut by the free surface. The method used is to divide each tetrahedra (triangles when represented in 2D) element into up to six tetrahedral
-(three triangular in 2D) sub elements. For each sub element, the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment1} shows the partition where the small circles represent the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
+(three triangular in 2D) sub elements. For each sub element, the same integration rule as for the non-cut elements is used. Figure \ref{fg:enrichment1} shows such a partition where the small circles represent the Gauss points for the integration. When using enrichment functions for the pressure, the material properties $\rho$,$\mu$ are taken as $\rho_1$,$\mu_1$ or $\rho_2$,$\mu_2$, depending on which part of the domain ($\Omega_1$ or $\Omega_2$) the integration point is found.
 
    \subsection{Pressure Calculation}
 
@@ -132,7 +140,7 @@ where the term resulting from weakening
 \end{equation}
  is zeroed to ensure the impenetrability of walls.
 
-Then, in the case of slipt elements where enrichment shape functions are used as trial functions, the resulting local system becomes:
+Then, in the case of split elements where enrichment shape functions are used as trial functions, the resulting local system becomes:
 
   \begin{equation}
   \label{eqsys-poisson}
@@ -173,7 +181,11 @@ In the case of an enriched space, see equation (\ref{eq:enrich-1a}), when conden
 
 A way to solve this problem is to not integrate by parts the divergence term. Nevertheless, this requires imposing a pressure gradient on boundaries, whose value can not be easily predicted when there is a gravitational field, low density ratio, and the fluid is not at rest.
 
+<<<<<<< .mine
+Finally, if condensation is used, the weakening of the velocity divergence in the Poisson step is only chosen when a low density ratio is considered. Continuous enrichment does not suffer from the above mentioned problems and the same formulation can be used for every
+=======
 Finally, if condensation is used, the weakening of the velocity divergence in the Poisson step is only chosen when a large density ratio is considered. Continuous enrichment does not suffer from the above mentioned problems and the same formulation can be used for every
+>>>>>>> .r66
 Froude number. However, a loss of computational performance appears due to the necessity of memory management to assemble the variable-size pressure equation system.
 
 % --- FIN PARRAFO IMPORTANTE A CORREGIR
