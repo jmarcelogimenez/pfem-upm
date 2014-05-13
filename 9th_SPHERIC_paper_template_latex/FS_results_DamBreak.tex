@@ -11,7 +11,7 @@ A computational configuration of the tank used in experimental cases is presente
   \caption{\label{fg:dambreak-config} Configuration scheme of the dam-break case. $H_1$, $H_2$, $H_3$, $H_4$ present the locations of water level measuring positions. Also, $P_1$, $P_2$, $P_3$, $P_4$ show the locations of pressure sensors at the impact wall downstream from the dam. The grey zone represents the initial water condition. Dimensions are in millimeters.}
 \end{figure}
 
-Figure \ref{fg:dambreak-h} shows the comparison between experimental and numerical results for each water-level measurement. A good agreement can be observed, \textcolor[rgb]{1.00,0.00,0.00}{moreover taken into account} the capture of the back wave and splashing start events.
+Figure \ref{fg:dambreak-h} shows the comparison between experimental and numerical results for each water-level measurement. A good agreement can be observed, moreover when taking into account the capture of the back wave and splashing start events.
   \begin{figure}[h]
   \centering
     \subfloat[]{
@@ -61,7 +61,7 @@ In the reference work, the analysis is focused on peak events. It can be noticed
 	  \label{fg:dambreak-p4}         %% Etiqueta para la segunda subfigura
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_p1.pdf}
     }
-   \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 (continuous lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1},\ref{fg:dambreak-p2},\ref{fg:dambreak-p3},\ref{fg:dambreak-p4} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
+   \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 (continuous lines). Values at locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1},\ref{fg:dambreak-p2},\ref{fg:dambreak-p3},\ref{fg:dambreak-p4} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
    \label{fg:dambreak-p}                %% Etiqueta para la figura entera
 \end{figure}
 
@@ -111,7 +111,7 @@ Finally, Figure \ref{fg:dambreak-screenshots} presents snapshots for the evoluti
 
 \subsubsection{Three-dimensional Simulation}\label{sec:ETSIN-3d}
 
-Despite being a problem that can accurately be simulated in 2D, the same example was run in 3D to test the ability of the PFEM-2 solver to deal with larger geometries and 3D problems. The 3D mesh, which adds a third dimension of a thickness of $0.15[m]$ with slip walls, has six million elements. These have an average $h=0.07$, demanding more than $25$ million particles for the fixed mesh approximation that move \textcolor[rgb]{1.00,0.00,0.00}{across} the air and water domains. The same physical and numerical parameters of the 2D simulation were used. Sensors are placed in the same position on the left wall and in the middle position of the third dimension, see Figure \ref{fg:dambreak-config}.
+Despite being a problem that can accurately be simulated in 2D, the same example was run in 3D to test the ability of the PFEM-2 solver to deal with larger geometries and 3D problems. The 3D mesh, which adds a third dimension of a thickness of $0.15[m]$ with slip walls, has six million elements. These have an average $h=0.07$, demanding more than $25$ million particles for the fixed mesh approximation that fill the air and water domains. The same physical and numerical parameters of the 2D simulation were used. Sensors are placed in the same position on the left wall and in the middle position of the third dimension, see Figure \ref{fg:dambreak-config}.
 
 In this example, the time step used, the element sizes and the velocity of the fluid lead to a simulation with some time-steps having a Courant number larger than 12, mainly when waves impact with walls. This shows once more, the capability of the method to manage 3D geometries with large time-steps. In Figure \ref{fg:dambreak-p-3d}, the pressure history for each sensor is presented, showing a similar appearance to the two dimensional simulation.
 
@@ -135,7 +135,7 @@ In this example, the time step used, the element sizes and the velocity of the f
 	  \label{fg:dambreak-p4-3d}         %% Etiqueta para la segunda subfigura
 	  \includegraphics[width=.48\columnwidth]{images/dambreak_p1_3d.pdf}
     }
-   \caption{A pressure time history comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 in three dimensions (continuous lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1-3d},\ref{fg:dambreak-p2-3d},\ref{fg:dambreak-p3-3d},\ref{fg:dambreak-p4-3d} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
+   \caption{A pressure time history comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 in three dimensions (continuous lines). Values at locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1-3d},\ref{fg:dambreak-p2-3d},\ref{fg:dambreak-p3-3d},\ref{fg:dambreak-p4-3d} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
    \label{fg:dambreak-p-3d}                %% Etiqueta para la figura entera
 \end{figure}
 \clearpage
