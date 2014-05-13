@@ -2,11 +2,7 @@ An accurate and efficient simulation of the interface evolution is crucial in th
 
 Methods used to describe the evolution of interfaces can be clustered in two classes, namely: interface capturing and interface tracking methods. While in the former the interface is determined by an implicit function that is advected in a Eulerian frame (see Volume of Fluid \cite{VoF} and Level Set\cite{Osher01}), in the latter the interface evolution equation is solved in a Lagrangian fashion, for example, by evolving marker particles. The spatial domain discretization using mesh and particles allows PFEM-2 to select an appropriate combination of those approaches where the free-surface position information is shared and interchanged by the particles and the fixed mesh.
 
-<<<<<<< .mine
 There are several, albeit small, differences between the PFEM-2 algorithm for homogeneous flows and the two fluid version. Those differences stem from the density and viscosity discontinuities that appear in the fluid, consequently most of the implemented changes are related to the strategies followed to correctly capture the interface between both fluids. Although some details presented in this section have already been reported in \cite{Idelsohn13c}, important strategies that significantly improve the accuracy and efficiency of the computation were added in this work.
-=======
-There are several, albeit small, differences between the PFEM-2 algorithm for homogeneous flows and the two fluid version. Those differences {\color{red}stem from} the density and viscosity discontinuities that appear in the fluid, consequently most of the implemented changes are related to the strategies followed to correctly capture the interface between both fluids. Although some details presented in this section have already been reported in \cite{Idelsohn13c}, important strategies that significantly improve the accuracy and efficiency of the computation were added in this work.
->>>>>>> .r66
 
 Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, important considerations to manage and improve each one of the stages for the particular case of multiphases problems are presented hereafter. The following part is related with three aspects of the simulation, namely: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free-surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and, consequently, will be treated together in the next section.
 
@@ -72,11 +68,7 @@ where $k_1 = \dfrac{\lambda_2-\lambda_1}{\lambda_2}$, $k_2 = \dfrac{\lambda_1-\l
 \begin{figure}[H]
   \centering
   \includegraphics[width=.9\columnwidth]{images/enrichment1.pdf}
-<<<<<<< .mine
    \caption{2D interface element. The interface is calculated cutting the element at the segment $A-B$. The enrichment proposed by Coppola (left) and the partition of the triangle into three sub-triangles with its own Gauss points (right).}
-=======
-   \caption{2D interface element. The interface is calculated cutting the element at the segment $A-B$. {\color{red}The enrichment proposed by Coppola (left) and the partition of the triangle into three sub-triangles with its own Gauss points to allowing to calculate an enhanced integration (right) are shown.}}
->>>>>>> .r66
    \label{fg:enrichment1}                %% Etiqueta para la figura entera
 \end{figure}
 
@@ -181,12 +173,7 @@ In the case of an enriched space, see equation (\ref{eq:enrich-1a}), when conden
 
 A way to solve this problem is to not integrate by parts the divergence term. Nevertheless, this requires imposing a pressure gradient on boundaries, whose value can not be easily predicted when there is a gravitational field, low density ratio, and the fluid is not at rest.
 
-<<<<<<< .mine
-Finally, if condensation is used, the weakening of the velocity divergence in the Poisson step is only chosen when a low density ratio is considered. Continuous enrichment does not suffer from the above mentioned problems and the same formulation can be used for every
-=======
-Finally, if condensation is used, the weakening of the velocity divergence in the Poisson step is only chosen when a large density ratio is considered. Continuous enrichment does not suffer from the above mentioned problems and the same formulation can be used for every
->>>>>>> .r66
-Froude number. However, a loss of computational performance appears due to the necessity of memory management to assemble the variable-size pressure equation system.
+Finally, if condensation is used, the weakening of the velocity divergence in the Poisson step is only chosen when a large density ratio is considered. Continuous enrichment does not suffer from the above mentioned problems and the same formulation can be used for every Froude number. However, a loss of computational performance appears due to the necessity of memory management to assemble the variable-size pressure equation system.
 
 % --- FIN PARRAFO IMPORTANTE A CORREGIR
 
