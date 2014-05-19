@@ -37,8 +37,8 @@ Once the particles have been advected and the intermediate velocities have been 
 
 In typical finite element methods, gradient of the shape functions $\nabla\phi_j$ are continuous within each element, and therefore any interpolated unknown is also continuous. When the interface crosses an element, the discontinuity in the material properties leads to discontinuities in the unknows and/or its gradients that classical interpolations do not capture. These are:
 \begin{itemize}
-\item pressure gradient gaps where density discontinuities are present
-\item pressure gaps where viscosity discontinuities are present
+\item pressure gradient gaps where density discontinuities are present\cite{Coppola05}
+\item pressure gaps where viscosity discontinuities are present\cite{Idelsohn10}
 \item gradient velocity gaps where viscosity discontinuities are present
 \item pressure gaps where surface tension is present
 \end{itemize}
@@ -130,7 +130,7 @@ where the term resulting from weakening
 \begin{equation}
 \displaystyle \int_{\Gamma} \phi \left[ \hat \vv_j^{n+1} + \Delta t \frac{1}{\rho} \nabla  \delta p^{n+1} \right] \cdot \mathbf{n} \ d\Gamma = \int_{\Gamma} \phi \ \vv_j^{n+1} \cdot \mathbf{n} \ d\Gamma
 \end{equation}
- is zeroed to ensure the impenetrability of walls.
+ is zeroed to ensure the impenetrability on walls, or is added to the l.h.s in the case of outflow, or, finally, $\vv_j^{n+1}$ is imposed on inflow boundaries.
 
 Then, in the case of split elements where enrichment shape functions are used as trial functions, the resulting local system becomes:
 
@@ -157,7 +157,7 @@ where
  \item ${(L_{\phi,*})}_{N_n\times N_e} = \Delta t \displaystyle \int_{\Omega^e} \dfrac{1}{\rho} \nabla \phi_i^T \nabla \phi_j^* \ d\Omega$
  \item ${(L_{*,*})}_{N_e\times N_e} = \Delta t \displaystyle \int_{\Omega^e} \dfrac{1}{\rho} \nabla {\phi_i^*}^T \nabla \phi_j^* \ d\Omega$
  \item ${(D_{\phi})}_{N_n\times N_n} = \displaystyle \int_{\Omega^e} \nabla \phi_i^T \psi_j \ d\Omega$
- \item ${(D_*)}_{N_n\times N_e} = \displaystyle \int_{\Omega^e}  \nabla {\phi_i^*}^T \psi_j \ d\Omega$
+ \item ${(D_*)}_{N_e\times N_n} = \displaystyle \int_{\Omega^e}  \nabla {\phi_i^*}^T \psi_j \ d\Omega$
 \end{itemize}
 
 At this point, is possible to choose between two options. First, if the enriched space expressed by equation (\ref{eq:enrich-2a}) is used, the new degrees of freedom can be included in the global system, guaranteeing continuity between elements. The second option is to follow the classical procedure of static condensation of the system through Gaussian elimination\cite{Felippa04}, where the following reduced system is obtained:
