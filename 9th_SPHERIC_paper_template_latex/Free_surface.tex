@@ -6,7 +6,7 @@ There are several, albeit small, differences between the PFEM-2 algorithm for ho
 
 Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, important considerations to manage and improve each one of the stages for the particular case of multiphases problems are presented hereafter. The following part is related with three aspects of the simulation, namely: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free-surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and, consequently, will be treated together in the next section.
 
-\subsection{Internal interfaces tracking}
+\subsection{Internal interfaces tracking}\label{sec:tracking}
 
 When two different fluids separated by an interface are considered, each particle $p$ carries the information of the fluid to which it was initially assigned. This quantity, represented by a scalar function $\lambda_p$, has integer values $-1$ or $1$ depending if it belongs to the first or second fluid. This value is advected, adding one equation to the \textit{Streamline Integration Stage}: $\frac{D\lambda}{Dt}=0$, i.e. each particle keeps its marker value during the entire simulation. This function is projected to the mesh nodes to determine the free-surface position. Mesh nodes thus obtain real values after the projection which are different to the integer values $\pm1$ that the particles transport. The free-surface interface is defined as the set of points that satisfy the equation $\lambda=0$.
 
@@ -19,15 +19,14 @@ In general, the movement of a particle is done by sub-steps according to equatio
 where the nodes included in the interpolation are the nodes of the hosting element. Two situations could happen to any particle when its position changes: all the nodes of the hosting element have the same density as the fluid particle or one or more nodes have a different density than the fluid particle. Whilst in the first case a typical finite element interpolation is performed, the second situation clearly represents a case where the fluid particle is close to the interface. In the particular case that the density ratio $\rho_1/\rho_2$ is larger than a first numerical parameter $\alpha$, that is $\rho_1/\rho_2>\alpha$, two situations can appear:
 
  \begin{itemize}
- \item $\rho_p=\rho_2$ (light particle in a heavy fluid). The velocity will be computed using Equation (\ref{Interpolation}).
-   \item $\rho_p=\rho_1$ (heavy particle in a light fluid). Depending on the value of $A=\sum_{i(\rho_i=\rho_p)}\psi_i$ where the sum is limited to the hosting nodes that have the same density as the particle, we can have 2 possibilities:
-       \begin{itemize}
- \item $A<\beta$ the gravity force will be included in the computation of the particle trajectory, which will finally be computed as a parabolic motion.
-   \item $A>\beta$, the sums that appear in Equation (\ref{Interpolation}) are both restricted to the hosting nodes $i$ that have the same density as the particle $\rho_i=\rho_p$.
+    \item $\rho_p=\rho_2$ (light particle tracking). The velocity will be computed using Equation (\ref{Interpolation}).
+    \item $\rho_p=\rho_1$ (heavy particle tracking). Depending on the value of $A=\sum_{i(\rho_i=\rho_p)}\psi_i$ where the sum is limited to the hosting nodes that have the same density as the particle, we can have 2 possibilities:
+    \begin{itemize}
+      \item $A<\beta$  the gravity force will be included in the computation of the particle trajectory, which will finally be computed as a parabolic motion.
+      \item $A>\beta$, the sums that appear in Equation (\ref{Interpolation}) are both restricted to the hosting nodes $i$ that have the same density as the particle $\rho_i=\rho_p$.
+    \end{itemize}
+    being $\beta$ a second numerical parameter which indicates the minimum amount of information needed to move a heavy particle following the streamlines of its own phase. For those cases where the density ratio $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
  \end{itemize}
- \end{itemize}
-
- $\beta$ being a second numerical parameter that has to be defined. For those cases where the density ratio $\rho_1/\rho_2<\alpha$, equation (\ref{Interpolation}) is always used.
 
 This means that if a water particle is momentarily in an air regime, it will remain as a water particle for further determination of the interface position. While a better approximation to the real particle trajectory defined by the acting forces is searched, the parabolic motion is used herein as the simplest trajectory when only gravity forces are acting, an interesting alternative for the particle motion (not used in this work) could be using a water droplet drag model.
 
@@ -57,13 +56,16 @@ The first enriched space is based on the one presented by Coppola\cite{Coppola05
    \right.
    \label{eq:enrich-1a}
 \end{equation}
+where $\xx_1$, $\xx_2$ and $\xx_3$ are the positions of the nodes of the element, and $\xx_A$ is a point over the edge $\xx_1-\xx_2$ such as $\lambda(\xx_A)=0$.
 
 It can be demonstrated\cite{Coppola05} that the enrichment function, which accomplishes the previously presented restrictions, can be expressed as a linear combination of the traditional shape functions, being:
  \begin{align}
     \phi^*|_{\Omega_2} = & \ k_1 \phi_1 \label{phi_enrichment-2}\\
     \phi^*|_{\Omega_1} = & \ k_2 \phi_2 + k_3 \phi_3 \label{phi_enrichment-1}
   \end{align}
-where $k_1 = \dfrac{\lambda_2-\lambda_1}{\lambda_2}$, $k_2 = \dfrac{\lambda_1-\lambda_2}{\lambda_1}$, $k_3 = -k_1\dfrac{\lambda_3\lambda_1}{\lambda_3-\lambda_1}$.
+where $k_1 = \dfrac{\lambda_2-\lambda_1}{\lambda_2}$, $k_2 = \dfrac{\lambda_1-\lambda_2}{\lambda_1}$, 
+%$k_3 = -k_1\dfrac{\lambda_3\lambda_1}{\lambda_3-\lambda_1}$.
+$k_3 = -k_1\dfrac{\lambda_3}{\lambda_1}$.
 
 \begin{figure}[H]
   \centering

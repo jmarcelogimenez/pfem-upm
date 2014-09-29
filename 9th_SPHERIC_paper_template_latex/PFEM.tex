@@ -27,7 +27,7 @@ The predictor step ends with a predicted velocity $\widehat\vv^{n+1}$ on the mes
 
 \subsection{Generic formulation}\label{GeneralFor}
 
-It is assumed that all fluid variables are known at time $t_n$ for both the particles and the mesh nodes representing the two fluids. Subindexes $()_j$ y $()_p$ represent a generic mesh node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ be the pressure and velocity finite element linear basis functions respectively. According to this notation, the stages are:
+It is assumed that all fluid variables are known at time $t^n$ for both the particles and the mesh nodes representing the two fluids. Subindexes $()_j$ y $()_p$ represent a generic mesh node $j$ and a generic particle $p$ respectively. Let $\phi$ and $\psi$ be the pressure and velocity finite element linear basis functions respectively. According to this notation, the stages are:
 
 \begin{enumerate}
   \item Acceleration Stage: Calculates acceleration components: $\mathbf{a}_{\tau}$ (viscous component) and $\mathbf{a}_{p}$ (pressure component) on the mesh nodes.
@@ -46,19 +46,22 @@ It is assumed that all fluid variables are known at time $t_n$ for both the part
 
 Where $\theta$ is a numerical parameter that rules the explicitness of the viscous term in the algorithm and $\mathbf{n}$ is the unitary vector normal to the surface.
 
-  \item X-IVAS Stage: Evaluates the new particle position $\mathbf{x}^{n+1}_{p}$ and intermediate velocity $\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}$ following the velocity streamlines at time $t_n$
+  \item X-IVAS Stage: Evaluates the new particle position $\mathbf{x}^{n+1}_{p}$ and intermediate velocity $\widehat{\widehat{\mathbf{v}}}^{n+1}_{p}$ following the velocity streamlines at time $t^n$
 
   \begin{equation}\label{Step2a}
-\mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{t_n}^{t_{n+1}} \mathbf{v}^{n}(\mathbf{x}_p^{\alpha}) \ d\alpha
+% \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{t_n}^{t_{n+1}} \mathbf{v}^{n}(\mathbf{x}_p^{\alpha}) \ d\alpha
+ \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \int_{n}^{n+1} \mathbf{v}^{n}(\mathbf{x}_p^{t}) \ dt
 \end{equation}
 
 \begin{equation}\label{Step2b}
+% \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} +
+% \int_{t_n}^{t_{n+1}} \left[ \mathbf{a}^{n}(\mathbf{x}_p^{\alpha}) + \mathbf{f}^{\alpha} (\mathbf{x}_p^{\alpha}) \right]
+%  \ d\alpha
 \displaystyle \widehat{\widehat{\mathbf{v}}}^{n+1}_{p}=\mathbf{v}^{n}_{p} +
-\int_{t_n}^{t_{n+1}} \left[ \mathbf{a}^{n}(\mathbf{x}_p^{\alpha}) + \mathbf{f}^{\alpha} (\mathbf{x}_p^{\alpha}) \right]
- \ d\alpha
+\int_{n}^{n+1} \left[ \mathbf{a}^{n}(\mathbf{x}_p^{t}) + \mathbf{f}^{t} (\mathbf{x}_p^{t}) \right]
+ \ dt
 \end{equation}
-
-Here, a detailed explanation is required. X-IVAS is a novel strategy which significantly improves the particle trajectory integration by following streamlines. This method is able to resolve difficult details of the flow with high accuracy without a drastic time-step reduction, specially when compared to standard Lagrangian integration schemes. The temporal integration along the streamlines can be solved using analytical expressions\cite{Idelsohn12} or high-order integrators\cite{Nair2003275}. However, in this work, a sub-stepping integrator inherited from STS\cite{Alexiades96} is used, which can adapt its sub-step $\delta t=\frac{\Delta t}{K\cdot CFL_h}$ depending on the local CFL number defined as $CFL_h=\frac{|\mathbf{v}|\Delta t}{h}$ and a parameter $K$ that adjusts the minimal number of sub-steps required to cross an element. A more exhaustive explanation of the X-IVAS can be found in \cite{Idelsohn12} and \cite{Idelsohn12b}. According to this $N$ sub-stepping integration, where $N\delta t=\Delta t$, equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
+where $\mathbf{f}$ are the external body forces. X-IVAS is presented in \cite{Idelsohn12} and \cite{Idelsohn12b} as a strategy which significantly improves the particle trajectory integration by following streamlines. This method is able to resolve difficult details of the flow with high accuracy without a drastic time-step reduction, specially when compared to standard Lagrangian integration schemes. The temporal integration along the streamlines can be solved using analytical expressions \cite{Idelsohn12} or high-order integrators \cite{Nair2003275}. However, in this work, a sub-stepping integrator inherited from STS \cite{Alexiades96} is used, which can adapt its sub-step $\delta t=\frac{\Delta t}{K\cdot CFL_h}$ depending on the local CFL number defined as $CFL_h=\frac{|\mathbf{v}|\Delta t}{h}$ and a parameter $K$ that adjusts the minimal number of sub-steps required to cross an element. According to this $N$ sub-stepping integration, where $N\delta t=\Delta t$, equations (\ref{Step2a}) and (\ref{Step2b}) can be written as:
 
 \begin{equation}\label{Step2astep}
 \mathbf{x}^{n+1}_{p}=\mathbf{x}^{n}_{p} + \sum_{i=1}^{N} \mathbf{v}^{n}(\mathbf{x}^{n+\frac{i}{N}}_{p}) \delta t
@@ -75,12 +78,11 @@ Here, a detailed explanation is required. X-IVAS is a novel strategy which signi
 
 Where the functions $W$ are the typical kernel functions used in particle methods such as SPH\cite{Mon77}. Summations are extended to the particles $p$ within a critical distance that depends on the election of the kernel function. For the computations presented in this paper, the Wendland kernel function\cite{Wendland} was used for the projections.
 
-  \item Implicit Viscosity Stage: Implicitly corrects of the viscous diffusion.
+  \item Implicit Viscosity Stage: Implicit correction of the viscous diffusion. The fractional velocity $\widehat{\mathbf{v}}^{n+1}_{j}$ is found on the mesh nodes.
 
  \begin{eqnarray}\label{Step4a}
 \displaystyle \int_{\Omega} \widehat{\mathbf{v}}^{n+1}_{j}\psi_j\ d\Omega =\int_{\Omega} \widehat{\widehat{\mathbf{v}}}^{n+1}_{j}\psi_j\  d\Omega + \theta \Delta t \int_{\Omega} \mu \nabla^{2}\widehat{\mathbf{v}}^{n+1}_{j} \psi_j\ d\Omega
 \end{eqnarray}
-
 
 
  \item Poisson Stage: Computes the pressure correction $\delta p^{n+1}$ on the mesh nodes by solving the Poisson equation.
@@ -108,3 +110,4 @@ Where the functions $W$ are the typical kernel functions used in particle method
 
 \end{enumerate}
 
+Summarizing, steps 1, 4, 5 and 6 take place on the mesh, only step 2 is entirely done over the particles, while steps 3 and 6 involve transference of information between nodal and particle data.
