@@ -15,8 +15,10 @@ For the studied cases in this section, the sloshing phenomenon is produced by a 
 For the different cases in this report, a 2D rectangular tank $a=1.0[m]$ width by $b=1.0[m]$ height is used. The initial height of the interface is $h=0.5[m]$ and the lateral excitation applied is $x=0.05\sin(3t)$. The simulations were performed considering the flow as laminar and non-viscous, hence, no turbulence model was included and slip boundary conditions were used. The density ratio $\sigma=\frac{\rho{II}}{\rho{I}}$ was modified to study its influence on the free surface evolution. A two dimensional Cartesian mesh of $450\times225$, splitted into triangles, has been used in all cases.
 
 Reference results for this case are taken from \cite{Goni13} which uses the codes STARCCM+ and \OF to obtain numerical solutions and reports the free surface displacement on the left wall of the container. Those simulations use the same grid as presented above, but, in order to avoid numerical instabilities, the $CFL$ number was limited to $CFL_{max}=0.5$ which implies $\Delta t \approx 0.001$. In PFEM-2 such restrictions do not exist, $\Delta t$ is therefore fixed to $0.01$, reaching a $CFL_{max}\approx5$.
-Figure \ref{fg:ansari-results} presents the free surface displacement reported on the left wall of the container for different values of $\sigma$. For each one of them, PFEM-2 simulations show a good agreement with reference solutions. It is worth mentioning that the time step used is around ten times bigger than the one used in \cite{Goni13}.
 
+Regarding to the numerical parameters $\alpha$ and $\beta$ presented in Section \ref{sec:tracking}, the simulations were done using a value of $\alpha=10$ and $\beta=0.1$. In this way, two cases where heavy particles on lighter media are moved with parabolic motion ($\sigma=0.0013$ and $\sigma=0.05$), and two cases where the trajectory prediction of those particles is done following streamlines ($\sigma=0.02$ and $\sigma=0.8$), are analyzed.
+
+Figure \ref{fg:ansari-results} presents the free surface displacement reported on the left wall of the container for different values of $\sigma$. For each one of them, PFEM-2 simulations show a good agreement with reference solutions. It is worth mentioning that the time step used is around ten times bigger than the one used in \cite{Goni13}. 
 
   \begin{figure}[h]
   \centering
