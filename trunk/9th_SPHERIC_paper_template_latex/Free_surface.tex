@@ -4,7 +4,7 @@ Methods used to describe the evolution of interfaces can be clustered in two cla
 
 There are several, albeit small, differences between the PFEM-2 algorithm for homogeneous flows and the two fluid version. Those differences stem from the density and viscosity discontinuities that appear in the fluid, consequently most of the implemented changes are related to the strategies followed to correctly capture the interface between both fluids. Although some details presented in this section have already been reported in \cite{Idelsohn13c}, important strategies that significantly improve the accuracy and efficiency of the computation were added in this work.
 
-Taking into account the Algorithm presented in section \ref{PFEM_Algorithm}, important considerations to manage and improve each one of the stages for the particular case of multiphases problems are presented hereafter. The following part is related with three aspects of the simulation, namely: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free-surface definition and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and, consequently, will be treated together in the next section.
+Taking into account the methodology presented in section \ref{PFEM_Algorithm}, important considerations to manage and improve each one of the stages for the particular case of multiphases problems are presented hereafter. The following part is related with three aspects of the simulation, namely: the kinematic treatment of the fluid particles during the X-IVAS stage, the enrichment technique for the free-surface definition, and the pressure computation step. Although these three topics are listed independently, the are closely related to each other during the computation and, consequently, will be treated together in the next section.
 
 \subsection{Internal interfaces tracking}\label{sec:tracking}
 
@@ -19,7 +19,7 @@ In general, the movement of a particle is done by sub-steps according to equatio
 where the nodes included in the interpolation are the nodes of the hosting element. Two situations could happen to any particle when its position changes: all the nodes of the hosting element have the same density as the fluid particle or one or more nodes have a different density than the fluid particle. Whilst in the first case a typical finite element interpolation is performed, the second situation clearly represents a case where the fluid particle is close to the interface. In the particular case that the density ratio $\rho_1/\rho_2$ is larger than a first numerical parameter $\alpha$, that is $\rho_1/\rho_2>\alpha$, two situations can appear:
 
  \begin{itemize}
-    \item $\rho_p=\rho_2$ (light particle tracking). The velocity will be computed using Equation (\ref{Interpolation}).
+    \item $\rho_p=\rho_2$ (light particle tracking). The velocity used in the particle movement will be computed using Equation (\ref{Interpolation}).
     \item $\rho_p=\rho_1$ (heavy particle tracking). Depending on the value of $A=\sum_{i(\rho_i=\rho_p)}\psi_i$ where the sum is limited to the hosting nodes that have the same density as the particle, we can have 2 possibilities:
     \begin{itemize}
       \item $A<\beta$  the gravity force will be included in the computation of the particle trajectory, which will finally be computed as a parabolic motion.
