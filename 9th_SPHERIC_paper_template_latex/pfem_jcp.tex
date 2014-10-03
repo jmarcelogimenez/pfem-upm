@@ -140,7 +140,8 @@ PFEM; PFEM-2; free surface flows; finite elements; large time-steps; enrichment
 \input{PFEM_r1}
 
 \section[Free-Surface treatment]{Free-Surface flows treatment}\label{Free_surface}
-\input{Free_surface}
+% \input{Free_surface}
+\input{Free_surface_r1}
 \input{PFEM_multifluids}
 
 % \section{Second order improvements.}\label{Second_order}
@@ -173,8 +174,7 @@ The second generation of the Particle Finite Element Method (PFEM-2) is a contem
 
 % In the current work, a general formulation to solve free-surface flows with pressure gradient discontinuities was presented and exhaustively tested. That algorithm, which is based on a continuous enriched space for pressure, has shown good accuracy when solving a wide range of multiphase problems and keeping the advantage of the possibility to use large time-steps. Several cases with a large variety of Froude numbers, density ratios and dominant dissipative cases have also been analyzed. These results were compared with other reference softwares, semi-analytical expressions and also experimental data. In each of them, PFEM-2 has proven to be accurately competitive and computationally efficient. Regarding CPU times, they can be decreased without accuracy loss if the condensing strategy for enriched pressure degrees of freedom is used. Although that approach loses the generality of the formulation for any range of application, the computational cost enforcing the asseveration is reduced, which, to our knowledge, currently makes PFEM-2 the faster algorithm for solving multiphase flows.
 
-In the current work, a formulation to solve free-surface flows with pressure gradient discontinuities, presented in \cite{Idelsohn13c}, was generalized and exhaustively tested. That algorithm, which is based on a continuous enriched space for pressure, has shown good accuracy when solving a wide range of multiphase problems and keeping the advantage of the possibility to use large time-steps. Several cases with a large variety of Froude numbers, density ratios and dominant dissipative cases have also been analyzed. These results were compared with other reference softwares, semi-analytical expressions and also experimental data. In each of them, PFEM-2 has proven to be accurately competitive and computationally efficient. Regarding CPU times, they can be decreased without accuracy loss if the original condensing strategy for enriched pressure degrees of freedom is used. Although that approach loses the generality of the formulation for any range of application, the computational cost enforcing the asseveration is reduced, which, to our knowledge, currently makes PFEM-2 the faster algorithm for solving multiphase flows.
-
+In the current work, a formulation to solve free-surface flows with pressure gradient discontinuities, presented in \cite{Idelsohn13c}, was generalized and exhaustively tested. That algorithm, which is based on a continuous enriched space for pressure, has shown good accuracy when solving a wide range of multiphase problems and keeping the advantage of the possibility to use large time-steps. Several cases with a large variety of Froude numbers, density ratios and dominant dissipative cases have also been analyzed. These results were compared with other reference softwares, semi-analytical expressions and also experimental data. In each of them, PFEM-2 has proven to be accurately competitive and computationally efficient. Regarding CPU times, they can be decreased without accuracy loss if the original condensing strategy for enriched pressure degrees of freedom is used. Although that approach loses the generality of the formulation for any range of application, the computational cost is reduced, which, to our knowledge, currently makes PFEM-2 the faster algorithm for solving two phase flows. 
 % use section* for acknowledgement
 \section*{Acknowledgment}
 
