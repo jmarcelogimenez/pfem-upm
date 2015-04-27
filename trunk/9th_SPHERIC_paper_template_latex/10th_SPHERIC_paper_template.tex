@@ -276,11 +276,13 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Leo M. Gonz\'{a}lez}
+\author{\IEEEauthorblockN{Leo M. Gonz\'{a}lez\\
+                        Esteban Ferrer}
 \IEEEauthorblockA{ETSIN\\
 Universidad Polit\'{e}cnica de Madrid (UPM)\\
 Madrid, Spain\\
-leo.gonzalez@upm.es}
+leo.gonzalez@upm.es\\
+esteban.ferrer@upm.es}
 \and
 \IEEEauthorblockN{Juan M. Gimenez}
 \IEEEauthorblockA{CIMEC - CONICET\\
@@ -296,22 +298,113 @@ jmarcelogimenez@gmail.com}
 \maketitle
 
 \begin{abstract}
-In this paper, a new generation of the particle method known as Particle Finite Element Method (PFEM-2) \cite{Idelsohn04}, which combines convective particle movement and a fixed mesh resolution, is applied to a 2D monophasic flow past a circular cylinder intersecting or close to a free surface at Reynolds 180 \cite{Bouscasse14}. To accomplish this task, different improved versions of discontinuous and continuous enriched basis functions for the pressure field have been developed \cite{Gimenez2015186} to capture the free surface dynamics without artificial diffusion or undesired numerical effects. The well-known numerical properties of PFEM-2 such as using larger time steps when compared to other similar numerical tools which implies shorter computational times while maintaining the accuracy of the computation will be checked in this case. In particular, for this free surface cylinder, the wake behavior for Froude numbers between 0.3 and 2.0 and for gap ratios between -0.5 and 2.5 are examined, see figure 1. 
-The PFEM-2 technique allows for a very little diffusive computation of the free surface evolution, even while breaking and fragmentation may occur. Vorticity shed by the cylinder, vortex generation due to free surface breaking, mixing processes, and drag and lift coefficients behavior are quantified. It has been found that, for small gap ratios, the classical von Karman vortex shedding from the cylinder does not take place for most of the Froude numbers considered. In turn, moderate vortex shedding occurs, departing not from the cylinder but originating from wave breaking at the free surface. This shedding takes places simultaneously with the transport of free surface fluid elements into the bulk of the fluid. In some combinations of Froude number and submergence ratio, a vorticity layer remains spatially localized between the cylinder and the free surface and a large recirculating wake area develops, which eventually gets detached after several shedding cycles, being advected downstream. A secondary stability analysis study is performed using the Froude number as the principal parameter. We are studying if there is any dependance between the Froude number and the transition from a convective to an absolute instability in the cylinder flow. Similarly to the results presented by Dimas \cite{Dimas89} the presence of the free surface has a stabilizing effect at low Froude numbers, suppressing the unsteadiness of the wake. This study is performed using an averaged wake velocity profile obtained with the described PFEM methodology and analyzing the stability of the profile solving a Rayleigh eigenvalue problem and selecting the dominant modes from the computed spectrum.
+In this paper, a new generation of the particle method known as Particle Finite Element Method (PFEM-2) \cite{Idelsohn04}, which combines convective particle movement and a fixed mesh resolution, is applied to a 2D monophasic flow past a circular cylinder intersecting or close to a free surface at Reynolds 180 \cite{Bouscasse14}. To accomplish this task, different improved versions of discontinuous and continuous enriched basis functions for the pressure field have been developed \cite{Gimenez2015186} to capture the free surface dynamics without artificial diffusion or undesired numerical effects. The well-known numerical properties of PFEM-2 such as using larger time steps when compared to other similar numerical tools which implies shorter computational times while maintaining the accuracy of the computation will be checked in this case. In particular, for this free surface cylinder, the wake behavior for Froude numbers between 0.3 and 2.0 and for gap ratios between -0.5 and 2.5 are examined.
+The PFEM-2 technique allows for a very little diffusive computation of the free surface evolution, even while breaking and fragmentation may occur. Vorticity shed by the cylinder, vortex generation due to free surface breaking, mixing processes, and drag and lift coefficients behavior are quantified. It has been found that, for small gap ratios, the classical von Karman vortex shedding from the cylinder does not take place for most of the Froude numbers considered. In turn, moderate vortex shedding occurs, departing not from the cylinder but originating from wave breaking at the free surface. This shedding takes places simultaneously with the transport of free surface fluid elements into the bulk of the fluid. In some combinations of Froude number and submergence ratio, a vorticity layer remains spatially localized between the cylinder and the free surface and a large recirculating wake area develops, which eventually gets detached after several shedding cycles, being advected downstream. A secondary stability analysis study is performed using the Froude number as the principal parameter. We are studying if there is any dependance between the Froude number and the transition from a convective to an absolute instability in the cylinder flow. Similarly to the results presented by Dimas \cite{Dimas89} the presence of the free surface has a stabilizing effect at low Froude numbers, suppressing the unsteadiness of the wake. This study is performed using a number of snapshots obtained with the described PFEM methodology and analyzing the stability performing a Dynamic Mode Decomposition (DMD) stability analysis, where the dominant modes are selected from the computed spectrum.
 \end{abstract}
 
 
 \section{Introduction}
+
+The goal of this work is to extend the possibilities of PFEM to complex problems where free surface is present. In order to do that, the flow around a circular cylinder in the presence of free surface has been investigated at low Reynolds numbers with this numerical method. Although the Reynolds number in our case is limited to 180, and consequently the number of industrial applications is very scarce. However, problems like the containment of oil spills by mechanical barriers \cite{Amini} or the variety of power generator designs that operate close to the free surface and are driven by VIV (Vortex Induced Vibrations), constitute a framework where the concepts that are numerically simulated in this work could be potentially applied. Assuming a vast literature concerning the study of 2D laminar flows around circular cylinders without free surface, the presence of this free surface boundary limits the number of publications. An interesting comparison performed by Reichl et al. \cite{Reichl} between the flow around submerged cylinders at $Re=180$ computed by FLUENT and the experimental results obtained by Sheridan and Rockwell \cite{Sheridan95,Sheridan97} at large Reynolds numbers. The difference in the Reynolds numbers could be justified by the fact that is the Froude number the non-dimensional number that really affects these kind of flows. An important contribution to these kind of problems is the possibility of performing a stability analysis of the flow and the comparison with the case where no free surface is affecting. A typical case where the cylinder is partially submerged is studied by Triantafyllou and Dimas \cite{TriantafyllouDimas}, where the concluded that the presence of the free surface has a stabilizing effect in the global flow. The PFEM treatment of the free surface described by Gimenez in \cite{GimenezGonzalez}, permits an adequate study of the free surface evolution, even in these cases where proximity of the cylinder to the free surface may induce fragmentation. Another important numerical study was performed by Bouscasse \cite{Bouscasse}, where a suitable method for highly nonlinear free surface flows such as the SPH numerical method \cite{Monaghan} is used to compute a vast combination of Reynolds and Froude numbers.
+Regarding the stability analysis performed by Dimas in \cite{Dimas}, it is clearly shown that flow instability analysis has arisen as a powerful method to understand the onset of flow bifurcations leading to unstable (e.g. unsteady, periodic or chaotic) flow regimes. The stability analysis of laminar flows based on biglobal stability analysis has been generally restricted to 2D stationary or periodic flows, alternatively the modern Dynamic Mode Decomposition Technique, based on the construction of a Krylov subspace using snapshots issued from numerical simulations, permits an adequate methodology to analyze non-stationary flows as the ones studied here.
+
+\section{PFEM formulation}\label{GeneralFor}
+
+In this section a brief review of the PFEM-2 methodology used to numerically simulate the dynamics of two incompressible immiscible fluids. The governing equations are the incompressible Navier-Stokes equations for both fluids, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one, denoted by subscript 1, and the second one with its corresponding variables denoted by the subscript 2 with densities and viscosities $\rho_i$ and $\mu_i$ $(i=1,2)$, respectively. The governing equations, written in a Lagrangian framework, are:
+
+\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \nabla \cdot \mathbf{v} &=& 0 \label{eq:continuity} \\
+  \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \mathbf{f}\label{eq:momentum}
+\end{eqnarray}
+
+As expected, a kinematic problem based on the particle formulation has to be solved at each time step. Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{f}$ is an external body force (normally gravity $\rho \mathbf{g}$ and/or inertial force).
+
+In order to decouple the unknown fields: velocity and pressure, segregated or projection methods like fractional step were implemented in PFEM-2. Following a fractional step, the momentum equation is discretized in time in such a way that it firstly predicts a velocity using the old value of the pressure (the pressure at the old time step) and, after correcting this predicted velocity with the updated pressure that arises from applying the divergence operator to the correction equation, getting a Poisson like equation for the pressure.
+Similarly to other Navier-Stokes algorithms, there are three main steps: predictor, Poisson equation and correction. Predictor step is done by four sub-steps:
+
+\begin{enumerate}
+  \item An acceleration calculation stage over the mesh.
+  \item The X-IVAS stage to convect the fluid properties using the particles.
+  \item The projection of the particle data to the mesh nodes.
+  \item The implicit calculation of the diffusion term.
+\end{enumerate}
+
+The predictor step ends with a predicted velocity $\widehat\vv^{n+1}$ on the mesh. After that, a Poisson equation to find the current pressure $p^{n+1}$ is solved. Finally, the velocity prediction is corrected to find the zero divergence field $\vv^{n+1}$. In \cite{GimenezGonzalezSperic2014}, a complete description of the general algorithm that PFEM follows in order to compute a complete time step, can be found.
+
+\section{Dynamic Mode Decomposition Analysis}
+
+In recent years, the snapshot based technique Dynamic Mode Decomposition (DMD), has seen an increased popularity \cite{DMDSchmid,princeton} and has been applied to a variety of flows including numerical and experimental data, e.g. \cite{Bagheri_Cyl,Mezic_koopman,Rowley_JFM,Soria_DMD}. The formulation retained here can be found in \cite{DMDSchmid}, but other algorithms have also been proposed \cite{princeton,SparsityDMD}. In addition, we note that the temporal framework for the study of flow instability is retained, but that the DMD with spatial snapshots is also possible \cite{DMDSchmid}.
+
+It was shown by Mezic \cite{Mezic_koopman}, Rowley \textit{et al.} \cite{Rowley_JFM} and more recently by Bagheri \cite{Bagheri_Cyl} that the modes resulting from the DMD algorithm are approximations of Koopman modes. Koopman operators are infinite dimensional linear operators capable of describing nonlinear processes. Some of the associated infinite number of modes related to this operator may be approximated through the DMD decomposition \cite{Mezic_koopman}. In the case of the approximated operator being linear (exponential growth region), we will show that the DMD results are very similar to classical matrix forming global approaches for stability analysis.
+
+%Namely, DMD modes approximate Koopman modes \cite{Mezic_koopman}, which are structures resulting from the spectral analysis of a Koopman operator. The latter is defined as an infinite dimensional linear operator capable of approximating a nonlinear operator \cite{Rowley_JFM}, further details are provided in
+%section \ref{sec:dmd_theory}.
+
+Schmid \cite{DMDSchmid} described in detail the DMD technique and hence only a summary of the algorithm is described here. Given a sequence of 1 to $N$ flowfield snapshots (e.g. taking one or all variables of the flow field), one can construct the following matrix:
+\begin{equation}\label{eq:dmd_1}
+ {\mathbf{V}_1}^N=\{\mathbf{v(t_1)},\mathbf{v(t_2)},..,\mathbf{v(t_N)}\},
+ \end{equation}
+ where subindex and superindex denote the first and last values of the sequence, respectively.
+  Let us note that this data needs to be ordered, and that the snapshots require a constant sampling time $\Delta\tau$ such that: $t_{j+1}=t_j+\Delta\tau$ for all $j=1,..,N$. In the case of linear stability analysis and within the exponential growth region, one can define a linear operator $\mathbf{A}$ (i.e. a numerical approximation of the linearised NS operator)  between snapshots such that $v(t_{j+1})=\mathbf{A}v(t_j)$, one can rewrite Eq. \ref{eq:dmd_1} as a Krylov sequence \cite{Saad:92}:
+ \begin{equation}\label{eq:dmd_2}
+ {\mathbf{V}_1}^N=\{\mathbf{v(t_1)},\mathbf{A}\mathbf{v(t_1)},..,\mathbf{A}^{N-1}\mathbf{v(t_1)}\}.%=\{\mathbf{v(t_1)},\mathbf{A}\mathbf{v(t_1)},..,\mathbf{A}\mathbf{v(t_{N-1})}\}.
+ \end{equation}
+   It is easy to see that for an ordered sequence, Eq. \ref{eq:dmd_2} can be equated to Eq. \ref{eq:dmd_1}, to lead:
+  \begin{equation}\label{eq:dmd_2bis}
+  \mathbf{A}\{\mathbf{v(t_1)},\mathbf{v(t_2)},..,\mathbf{v(t_{N-1})}\}=\{\mathbf{v(t_2)},\mathbf{v(t_3)},..,\mathbf{v(t_N)}\},
+ \end{equation}
+ which can be written in matrix form as:
+  \begin{equation}\label{eq:dmd_3}
+   \mathbf{A}{\mathbf{V}_1}^{N-1}={\mathbf{V}_2}^{N}.
+  \end{equation}
+%
+%The matrix $\mathbf{A}$ represents the matrix exponential of the nonlinear operator describing the Navier-Stokes equations; i.e. $\mathbf{{v}}(t_{j+1})=e^{\mathbf{B}\Delta t}\mathbf{{v}}(t_j)$, where $\mathbf{A}= e^{\mathbf{B}\Delta t}$ and $\mathbf{B}$ represents the numerically discretised nonlinear Navier-Stokes operator.
+%\textcolor[rgb]{1.00,0.00,0.00}{This approximation is only exact for linear systems (i.e. as the ones considered in this paper for the exponential growth regime). However,}
+%for non-linear systems (i.e. Navier-Stokes equations in the saturated regime) described by $\mathbf{A}$,
+
+The algorithm continues by obtaining the Singular Value Decomposition (SVD) of the matrix ${\mathbf{V}_1}^{N-1}=\mathbf{U}\mathbf{\Sigma}\mathbf{W}^H$, where the superscript $H$ denotes the conjugate transpose. Replacing the SVD definition into Eq. \ref{eq:dmd_3}, leads to $\mathbf{A}\mathbf{U}\Sigma\mathbf{W}^H={\mathbf{V}_2}^{N}$. To find the reduced matrix $\mathbf{\widetilde{S}}$ associated to the initial system described by $\mathbf{A}$, it suffices to rewrite the previous equality as:
+  \begin{equation}\label{eq:dmd_4}
+   \mathbf{\widetilde{S}}=\mathbf{U}^H\mathbf{A}{\mathbf{U}}=\mathbf{U}^H{\mathbf{V}_2}^{N}\mathbf{W}\mathbf{\Sigma}^{-1}.
+  \end{equation}
+  Inspection of Eq. \ref{eq:dmd_4} reveals that the reduced matrix $\mathbf{\widetilde{S}}$ is the projection of the matrix $\mathbf{{A}}$ onto the Proper Orthogonal Decomposition space contained in $\mathbf{U}$, and obtained through the singular value decomposition \cite{DMDSchmid}.
+
+ Having found the reduced matrix $\mathbf{\widetilde{S}}$, one can obtain the reduced DMD modes $\mathbf{y}_i$ and associated eigenvalues $\mu_i$ (i.e. growth rates $Re(\mu_i)$ and frequencies $Im(\mu_i)$ mapped to the unit circle) of the reduced system by solving for the eigenvalues of $\mathbf{{\widetilde{S}}}\mathbf{y}_i=\mu\mathbf{y}_i$. One can then recover the approximated eigenmodes of the matrix
+   $\mathbf{A}$ by projecting into the original space using $\mathbf{\phi}_i=\mathbf{U}\mathbf{y}_i$. To retrieve the growth rates and frequencies in the complex half-plane, one can map the eigenvalues using: $\lambda_i=log(\mu_i)/\Delta \tau$.
+  Having found the reduced matrix $\mathbf{\widetilde{S}}$, one can obtain the spectral information by solving for the eigenvalues of $\mathbf{\widetilde{S}}\mathbf{y}_i=\mu\mathbf{y}_i$.
+
+%  Finally, one can obtain the DMD modes $\phi_i$ and associated dynamical information $\mu_i$ (i.e.  growth rates $Re(\mu_i)$ and frequencies $Im(\mu_i)$ mapped to the unit circle) of the original system by solving for the eigenvalues of $\mathbf{\widetilde{S}}\mathbf{y}_i=\mu\mathbf{y}_i$ and projecting into the original space using $\phi_i=\mathbf{U}\mathbf{y}_i$. To retrieve the growth rates and frequencies in the complex half-plane one can map the eigenvalues using: $\lambda_i=log(\mu_i)/\Delta\tau$.
+%We can also define a shifted matrix of the same snapshots as:
+% \begin{equation}\label{dmd_1}
+% {\mathbf{V}_2}^N=\{\mathbf{v(t_2)},\mathbf{v(t_3)},..,\mathbf{v(t_N)}\}.
+% \end{equation}
+%Defining a new matrix Eq. \ref{dmd_2}
+%Since these snapshots are the result of solving the Navier-Stokes equations,
+%
+
+The numerical convergence of the DMD technique is dictated by the sampling frequency $f_{DMD}=1/\Delta\tau$, where $\Delta\tau$ represents the sampling time between snapshots extracted from the DNS computation. On the one hand, to capture the highest frequency within the analysed flow, it is required that $f_{DMD}\geq2f_{flow}$, where $f_{flow}$ is the frequency of the flow feature to be captured and the factor of two is dictated by Nyquist criterion. In addition, note that if the flow frequency is not known a-priori, then we select a small sampling time (high frequency) to cover most of the flow spectrum and avoid aliasing. On the other hand, the number of necessary snapshots (to obtain unchanged eigenvalues) is a-priori unknown and hence for each case we perform tests increasing the number of snapshots until convergence is reached in terms of the most unstable eigenvalues.
+Let us note that the DMD technique provides valuable information whenever the flow exhibits distinct frequencies, but its applicability is limited when analysing flows that show broadband spectrums.
+
+%\textcolor[rgb]{1.00,0.00,0.00}{TALK Convergence of DMD}\\
+
+We finalise by noting some of the advantages of the DMD algorithm detailed in this section.
+This algorithm enables the post-process of only a limited flow region, which reduces drastically the computational cost for the extraction of the eigenmodes and related dynamical information \cite{DMDSchmid}. In addition, the algorithm does not require all flow variables to be considered for the analysis, indeed, most of the results presented in this work use only one variable ($w$-velocity component for the L-shaped cavity). The latter enables the reduction of the computational cost by a factor the three of the original 3D vector field. Finally, no shift and inverse type of strategy has been required in this work to obtain accurate eigenmodes, which has been shown to be necessary when using other matrix free Arnoldi type algorithms \cite{Vassilios_annual,Bagheri117430}. The shift and invert technique is sometimes necessary to extract modes whose eigenvalues are close to the unit circle (e.g. most unstable eigenvalues associated to flows near bifurcations).
+It may therefore be concluded that enhanced robustness can be achieved when compared to more traditional matrix free Arnoldi methods.
+
+To summarise, the DMD method is a robust technique that provides accurate modes and dynamical information at a reduced computational cost, by reducing both the spatial region of analysis and the number of variables required to obtain qualitative and quantitative information. In addition, it can be applied to numerical or experimental data providing dynamical information for linear and nonlinear flows.
 
 
 \input{10th_spheric_num_results}
 
 
 \section{Conclusion}
+This results confirm the prediction formulated by Dimas \cite{Dimas} where an important change related to the stability of the flow around a submerged cylinder can be found at Froude number above 2.5. 
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
-Authors thank the program ERASMUS MUNDUS action 2 ARCOIRIS project for financial support throught a six-month doctoral scholarship.
+Authors thank the program ERASMUS MUNDUS action 2 ARCOIRIS project for financial support through a six-month doctoral scholarship. The research leading to these results has received funding from the Spanish Ministry for Science and Innovation under grant TRA2013-41096-P
+"Optimization of liquid gas transport for LNG vessels by fluid structure interaction studies"
+
 \bibliographystyle{plain}
 \bibliography{mybib}
 
