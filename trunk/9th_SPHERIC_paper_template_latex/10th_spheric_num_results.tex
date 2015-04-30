@@ -31,9 +31,9 @@ As it was explained in the introduction, one of the advantages of using SPH as n
 
 \subsection{Simulation Results}
 
-Figure \ref{fg:vort_Re180} shows the influence of the Froude number in the flow characteristics, represented by the dimensionless vorticity. When the lowest Froude number is imposed $Fr=0.3$, the free-surface deforms very little being similar to a no-slip wall where the vortex production presents similar distribution to the only one-phase tests \cite{PRICE2002175}. As the Froude number increases $Fr=0.6$, the physics changes drastically. Although the free-surface just deforms in the proximities of the cylinder, the vortex advection is completely blocked. Another important observation is that, a recirculation area appears just behind the cylinder and close to the free-surface, the positive vorticity generated at the free surface by the spilling breaker builds up a large positive meta-vortex behind the cylinder which is then advected downstream. Reaching intermediate-high Froude numbers (1.2 and 1.6) structures developed are not periodic, while as the vortex production remains blocked due to the continuous breakups occurring at free-surface. Although the non-stationary behavior of the flow at free-surface, this phenomena allows to obtain constant forces acting over the cylinder. Analysis and discussions presented in this paragraph are in agreement with the work of Bouscasse et. al \cite{Bouscasse14}.
+Figure \ref{fg:vort_Re180} shows the influence of the Froude number in the flow characteristics, represented by the dimensionless vorticity. When the lowest Froude number is imposed $Fr=0.3$, the free-surface deforms very little behaving as a no-slip wall where the vorticity presents a distribution similar to the cases where only one-phase is used \cite{PRICE2002175}. As the Froude number increases $Fr=0.6$, the velocity and vorticity fields change substantially. Although the free-surface just deforms in the proximities of the cylinder, the vortex shedding process has been substantially reduced. Another important observation is that, a recirculation area appears just behind the cylinder and close to the free-surface, the positive vorticity generated at the free surface by the spilling breaker builds up a large positive meta-vortex behind the cylinder which is then advected downstream. Reaching intermediate-high Froude numbers (1.2 and 1.6) structures developed are not periodic, while as the vortex production remains blocked due to the continuous breakups occurring at free-surface. Although the non-stationary behavior of the flow at free-surface, this phenomena allows to obtain constant forces acting over the cylinder. Analysis and discussions presented in this paragraph are in agreement with the work of Bouscasse et. al \cite{Bouscasse14}.
 
-When the analysis for $Fr=2.0$ is done, differences between the flow characteristics of Bouscasse et. al \cite{Bouscasse14} and the present work are found. Bouscasse shows that at this Froude number the vortex shedding is recovered while the current results find instabilities but not shedding. In order to present a regime where a structure similar to a Von Karman street appears, a case with $Fr=3.5$ was also run finding vortex shedding behind the cylinder and large distortions of the free-surface but without the characteristic chaos of the intermediate Froude numbers. In order to confirm if there is any dependence between the Froude number and the transition from a convective to an absolute instability in the cylinder flow, next section will present a stability analysis study using the Froude number as the principal parameter.
+When the analysis for $Fr=2.0$ is done, differences between the flow characteristics of Bouscasse et. al \cite{Bouscasse14} and the present work are found. Bouscasse shows that at this Froude number the vortex shedding is recovered while the current results find free surface instabilities but not an appreciable cylinder vortex shedding. In order to present a regime where a structure similar to a Von Karman street appears, a case with $Fr=3.5$ was also run finding vortex shedding behind the cylinder and large distortions of the free-surface but without the characteristic chaos of the intermediate Froude numbers. In order to confirm if there is any dependence between the Froude number and the transition from a convective to an absolute instability in the cylinder flow, next section presents a stability analysis study using the Froude number as principal parameter.
 
 
 \begin{figure}[htbp]
@@ -69,11 +69,11 @@ When the analysis for $Fr=2.0$ is done, differences between the flow characteris
   \end{center}
   \caption{Influence of Froude number on dimensionless vorticity $\hat\omega = curl(\vv) \sqrt{d/g}$ (scales from -3 (blue) to 3 (red)) with $h/d = 0.55$ and $Re=180$. Captures at $t^*=80$.
 }
-\label{fg:vort_Re180} 
+\label{fg:vort_Re180}
 \end{figure}
 
 
-A summary of computed force coefficients can be seen in Fig. \ref{fg:CdCl}. The drag coefficient, calculated as $Cd=2 F_x/(\rho_l U^2 d)$ where $F_x=\mathbf{F} \cdot \mathbf{i}$ being $\mathbf{F}$ the force over the cylinder, decreases as the Froude number increases. A maximum lift $Cl=2 F_y/(\rho_l U^2 d)$ (in absolute value) is found at $Fr = 0.8$, and then a gentle monotonic reduction for the largest Froude number cases occurs. At each case, the drag and lift coefficients represent the temporal average for the computed case, and the bars shows the periodic variability of the amplitude. Only in the cases where the vortex shedding is not blocked, appreciable amplitude variation can be observed. Mean values and the majority of the amplitude variations present good agreement with the referenced work.
+A summary of computed force coefficients can be seen in Fig. \ref{fg:CdCl}. The drag and lift coefficients, calculated as $Cd=2 F_x/(\rho_l U^2 d)$ and $Cl=2 F_y/(\rho_l U^2 d)$ where $F_x$ and $F_y$ are the projection on the inflow and normal inflow directions respectively of the global $\mathbf{F}$ force over the cylinder due to pressure and viscous effects. At each case, the drag and lift coefficients represent the temporal average for the computed case, and the bars shows the periodic variability of the amplitude. The lift coefficient, calculated as where  is the projection on the inflow direction of the global $\mathbf{F}$ force over the cylinder due to pressure and viscous effects. We can observe that $Cd$ decreases when the Froude number is increased. The maximum value of the lift coefficient (in absolute value) is found at $Fr = 0.8$, and then a gentle monotonic reduction for the largest Froude number cases occurs. Only in the cases where the vortex shedding is not blocked, appreciable amplitude variation can be observed. Mean values and the majority of the amplitude variations present good agreement with the referenced work \cite{Bouscasse14}.
 
 \begin{figure}[ht]
   \centering
@@ -81,34 +81,57 @@ A summary of computed force coefficients can be seen in Fig. \ref{fg:CdCl}. The 
   \includegraphics[width=0.95\columnwidth]{images_10thspheric/CdCl_Re180_hd_0_55.pdf}
   \caption{Drag and Lift coefficients calculated with PFEM-2 compared with the reference work of Bouscasse \cite{Bouscasse14}. $Re=180$.} %, $t^*=tU/d$. }
   \label{fg:CdCl}
-\end{figure} 
+\end{figure}
 
 \subsection{DMD-Analysis Results}
 
-
+Different DMD analyses were done for the case $Re=180$ and $Fr=3.5$, in the first case 7 snapshots spaced $\Delta t=0.48$ in the time interval $[11.99,15.51]$ equivalent to $\sim0.7T$ were used, being $T\sim5s$ the dominant period of the flow. The most relevant part of the spectrum is shown in figure \ref{fg:DMD_spectrum}, where due to the fact that the the reduced matrix $\mathbf{\widetilde{S}}$ is real, all the eigenvalues are complex conjugate. It can be observed that a pair of eigenvalues have real positive part which means that a growing instability is present in the fluid. This growing stability is not conclusive and only comes from the fact that the set of snapshots do not complete a full period, capturing the slight increasing slope when the interval $[11.99,15.51]$ is observed in figure \ref{fg:Liftversustime}, which implies a positive real part. However the imaginary part associated with the most unstable eigenvalue is $1.25$ which corresponds to a period $2\pi/\lambda_i=5.02$, which fits very well with the one presented in the lift coefficient evolution $T\sim5s$, see figure \ref{fg:Liftversustime}. The perturbation components associated with this dominant eigenvalue $(\lambda_r,\lambda_i)=(0.05,1.5)$ are plot in figure \ref{fg:mode}, where the typical shape associated to a vortex shedding mode can be observed. To the authors knowledge this is the first time where a typical vortex shedding mode is observed in the presence of free surface. It can be observed how the mode is deformed due to the free surface shape when compared to the typical vortex shedding mode when no free surface has been introduced, see figure \ref{fg:mode Nofreesurface} from a typical biglobal computation at $Re=60$. A second DMD analysis was performed using 40 snapshots spaced $\Delta t=0.16$ in the time interval $[11.9,18.3]$ equivalent to $\sim 1.3T$, in this case the most dominant mode shifted its real part to the stable part of the spectrum, while the frequency is fixed to similar to the ones obtained in the first case. The decrease of the real part of the dominant mode can be explained from the fact that the snapshots have been taken from the pure periodic part of the spectrum where no growing or dumping tendency is observed. Finally, a third analysis 20 snapshots spaced $\Delta t=0.5$ in the time interval $[19.98,30.48]$ equivalent to $\sim2T$ were used. If the total simulation time is extended from 20s to 50s, the growing tendency of the lift coefficient is clearly observed, see figure \ref{fg:Liftlonger}. The result from the DMD analysis captures this growing tendency and shifts the dominant mode back to the unstable part of the plane $\lambda_r<0$, see figure \ref{fg:DMDglobal} keeping the frequency of the mode at similar values as the previous analyses. The complexity of the flow can be appreciated when a secondary mode is plot, see figure \ref{fg:DMDglobal}, where the higher temporal frequency implies a more complex structure in the mode.
 
 \begin{figure}[ht]
   \centering
   %%----primera subfigura----
   \includegraphics[width=0.95\columnwidth]{images_10thspheric/modos2.jpeg}
-  \caption{Spectrum obtained after the DMD analysis when (for example 40 snapshot of one oscillating period were analyzed)using at $Fr=3.5$ $Re=180$.} 
-  \label{fg:CdCl}
-\end{figure} 
+  \caption{Spectrum obtained after the DMD analysis when 7 snapshots spaced $\Delta t=0.48$ in the time interval $[11.99,15.51]$ equivalent to $\sim0.7T$ were used at $Fr=3.5$ and $Re=180$.}
+  \label{fg:DMD_spectrum}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  %%----primera subfigura----
+  \includegraphics[width=0.95\columnwidth]{images_10thspheric/ClvstimeFr035.png}
+  \caption{Evolution in time of the lift coefficient $C_l$ at $Fr=3.5$ and $Re=180$ when 20s are simulated.}
+  \label{fg:Liftversustime}
+\end{figure}
 
 \begin{figure}[ht]
   \centering
   %%----primera subfigura----
   \includegraphics[width=0.95\columnwidth]{images_10thspheric/modos3.jpeg}
-  \caption{Perturbation components of the most unstable mode obtained after the DMD analysis when (for example 40 snapshot of one oscillating period were analyzed)using at $Fr=3.5$ $Re=180$.}
-  \label{fg:CdCl}
-\end{figure} 
+  \caption{Perturbation velocity components of the most unstable mode obtained after the first DMD analysis when 7 snapshots spaced $\Delta t=0.48$ in the time interval $[11.99,15.51]$ equivalent to $\sim0.7T$ at $Fr=3.5$ and $Re=180$. Top: horizontal velocity, bottom: vertical velocity component.}
+  \label{fg:mode}
+\end{figure}
 
+\begin{figure}[ht]
+  \centering
+  %%----primera subfigura----
+  \includegraphics[width=0.95\columnwidth]{images_10thspheric/Typical_cilinder_mode.png}
+  \caption{Perturbation velocity components of the most unstable mode obtained by biglobal analysis when the $Re=60$ and no free surface has been considered. Top: horizontal velocity, bottom: vertical velocity component.}
+  \label{fg:mode Nofreesurface}
+\end{figure}
 
+\begin{figure}[ht]
+  \centering
+  %%----primera subfigura----
+  \includegraphics[width=0.95\columnwidth]{images_10thspheric/LongerCl.png}
+  \caption{Evolution in time of the lift coefficient $C_l$ at $Fr=3.5$ $Re=180$ when 50s are simulated.}
+  \label{fg:Liftlonger}
+\end{figure}
 
 \begin{figure}[ht]
   \centering
   %%----primera subfigura----
   \includegraphics[width=0.95\columnwidth]{images_10thspheric/7vs40vslongersnaps.jpg}
-  \caption{Drag and Lift coefficients calculated with PFEM-2 compared with the reference work of Bouscasse \cite{Bouscasse14}. $Re=180$.} %, $t^*=tU/d$. }
-  \label{fg:CdCl}
-\end{figure} 
+  \caption{Top: comparative spectrum obtained after the three DMD analysis at $Fr=3.5$ and $Re=180$. Bottom: Horizontal velocity components of some of the most unstable modes (rounded area in the top view).}
+  \label{fg:DMDglobal}
+\end{figure}
+
