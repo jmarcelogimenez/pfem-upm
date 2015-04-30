@@ -328,6 +328,13 @@ In order to decouple the unknown fields: velocity and pressure, segregated or pr
 
 i.e. each particle keeps its marker value during the entire simulation. This function is projected to the mesh nodes to determine the free-surface position. Mesh nodes thus obtain real values after the projection which are different to the integer values $\pm1$ that the particles transport. The free-surface interface is defined as the set of points that satisfy the equation $\lambda=0$, and a Heaviside function is used to determinate intensive properties (density and viscosity) on the nodes.
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{images_10thspheric/config.pdf}
+  \caption{Case configuration, initial and boundary conditions.}
+  \label{fg:config}
+\end{figure}
+
 
 %Following a fractional step, the momentum equation is discretized in time in such a way that it firstly predicts a velocity using the old value of the pressure (the pressure at the old time step) and, after correcting this predicted velocity with the updated pressure that arises from applying the divergence operator to the correction equation, getting a Poisson like equation for the pressure.
 %Similarly to other Navier-Stokes algorithms, there are three main steps: predictor, Poisson equation and correction. Predictor step is done by four sub-steps:
