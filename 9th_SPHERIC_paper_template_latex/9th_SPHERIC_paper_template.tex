@@ -85,7 +85,6 @@
 % Note that, when switching from latex to pdflatex and vice-versa, the new
 % compiler will have to be run twice to clear some warnings.
 
-\usepackage{wasysym}
 %\usepackage{psfrag}    % Written by Craig Barratt, Michael C. Grant,
                         % and David Carlisle
                         % This package allows you to substitute LaTeX
@@ -162,6 +161,7 @@
 
 
 % Other popular packages for formatting tables and equations include:
+\usepackage{wasysym}
 
 %\usepackage{array}
 % Frank Mittelbach's and David Carlisle's array.sty which improves the
@@ -446,7 +446,7 @@ For studied cases in this section, the sloshing phenomenon is produced by a hori
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=.2\textwidth]{images/ansari_config.pdf}
+      \includegraphics[width=.2\textwidth]{../images/ansari_config.pdf}
   \end{center}
   \caption{\label{fg:ansari-config} Configuration of the Non-linear sloshing in a rectangular container case. Initial condition is represented by dashed lines. Continuous line represents the position of the free-surface for a certain time.}
 \end{figure}
@@ -462,21 +462,21 @@ Figure \ref{fg:ansari-results} presents the free surface displacement reported o
   \centering
     \subfloat[]{
 	  \label{fg:ansari-1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.25\textwidth]{images/ansari_1.pdf}
+	  \includegraphics[width=.25\textwidth]{../images/ansari_1.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.25\textwidth]{images/ansari_2.pdf}
+	  \includegraphics[width=.25\textwidth]{../images/ansari_2.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:ansari-3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.25\textwidth]{images/ansari_3.pdf}
+	  \includegraphics[width=.25\textwidth]{../images/ansari_3.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:ansari-4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.25\textwidth]{images/ansari_4.pdf}
+	  \includegraphics[width=.25\textwidth]{../images/ansari_4.pdf}
     }
    \caption{Level of height on the left wall for a two phase flow for different density ratios. Figure \ref{fg:ansari-1}: $\sigma=0.0013$, Figure \ref{fg:ansari-2}: $\sigma=0.05$, Figure \ref{fg:ansari-3}: $\sigma=0.2$ and Figure \ref{fg:ansari-4}: $\sigma=0.8$. References:\ \Circle \ STARCCM, \Square \ OpenFOAM and filled line PFEM-2.}
    \label{fg:ansari-results}                %% Etiqueta para la figura entera
@@ -492,7 +492,7 @@ The chosen standing wave configuration consists in a rectangular tank with lengt
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=.45\textwidth]{images/standing_wave.pdf}
+      \includegraphics[width=.45\textwidth]{../images/standing_wave.pdf}
   \end{center}
   \caption{\label{fg:standing-wave-config} Configuration scheme of standing wave case. Initial condition is represented by dotted lines. In continuous line is presented an intermediate state where the maximum amplitude $A$ is reached.}
 \end{figure}
@@ -522,19 +522,19 @@ Several Reynolds number ($Re=25,50,250,2500$) have been selected to compare with
   \centering
     \subfloat[]{
 	  \label{fg:sw-energy-25}
-	  \includegraphics[width=.35\textwidth]{images/sw_25.pdf}
+	  \includegraphics[width=.35\textwidth]{../images/sw_25.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:sw-energy-50}
-	  \includegraphics[width=.35\textwidth]{images/sw_50.pdf}
+	  \includegraphics[width=.35\textwidth]{../images/sw_50.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:sw-energy-250}
-	  \includegraphics[width=.35\textwidth]{images/sw_250.pdf}
+	  \includegraphics[width=.35\textwidth]{../images/sw_250.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:sw-energy-2500}
-	  \includegraphics[width=.35\textwidth]{images/sw_2500.pdf}
+	  \includegraphics[width=.35\textwidth]{../images/sw_2500.pdf}
     }
    \caption{Kinetic Energy decay for standing wave problem with different Reynolds numbers. Dash lines are approximate analytical solutions for total energy and filled lines are numerical solutions with PFEM-2. Reynolds numbers analyzed: $Re=25,50,250,2500$ in Figures \ref{fg:sw-energy-25},\ref{fg:sw-energy-50},\ref{fg:sw-energy-250},\ref{fg:sw-energy-2500} respectively. Legend in each figure indicates the maximum Fourier number used in each numerical simulation.}
    \label{fg:sw-energy}
@@ -551,7 +551,7 @@ To compare with reference results, the time is made dimensionless by using $\wid
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=\columnwidth]{images/rayleigh_1.pdf}
+      \includegraphics[width=\columnwidth]{../images/rayleigh_1.pdf}
   \end{center}
   \caption{\label{fg:rayleigh-rf} Position of rising and falling bubbles versus time. Case with $Re=1000$.}
 \end{figure}
@@ -561,7 +561,7 @@ On the other hand, the evolution of the instability is shown in Figure \ref{fg:r
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=.45\textwidth]{images/rayleigh_2_better.jpg}
+      \includegraphics[width=.45\textwidth]{../images/rayleigh_2_better.jpg}
   \end{center}
   \caption{\label{fg:rayleigh-screenshots} Rayleigh-Taylor instability evolution. Case with $Re=1000$. From left to right $\widetilde{t} =0.0$, $1.0$, $1.5$, $2.0$.}
 \end{figure}
@@ -576,15 +576,15 @@ Figure \ref{fg:rayleigh-comparison-dts} presents the comparison of the solutions
 \begin{figure}
   \begin{center}
 
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_A.jpg}
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_B.jpg}
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_C.jpg}
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_foam_dts_D.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_foam_dts_A.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_foam_dts_B.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_foam_dts_C.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_foam_dts_D.jpg}
 
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_A.jpg}
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_B.jpg}
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_C.jpg}
-      \includegraphics[width=.24\columnwidth]{images/rayleigh_pfem_dts_D.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_pfem_dts_A.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_pfem_dts_B.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_pfem_dts_C.jpg}
+      \includegraphics[width=.24\columnwidth]{../images/rayleigh_pfem_dts_D.jpg}
 
   \end{center}
   \caption{\label{fg:rayleigh-comparison-dts} Rayleigh-Taylor instability capture for $\widetilde{t}=2.25$. Bottom: PFEM simulations, top: VoF+MULES simulation (InterFoam solver - OpenFoam suite). From left to right $\Delta t =0.001[s]$, $0.0025[s]$, $0.01[s]$, $0.025[s]$.}
@@ -611,27 +611,27 @@ As an additional result, it is important to underline that during the simulation
   \begin{center}
     \subfloat[]{
 	  \label{fg:RT-3d-a}
-	  \includegraphics[width=.18\columnwidth]{images/RT_3d/RT3d_a.jpg}
+	  \includegraphics[width=.18\columnwidth]{../images/RT_3d/RT3d_a.jpg}
     }
     \subfloat[]{
 	  \label{fg:RT-3d-b}
-	  \includegraphics[width=.18\columnwidth]{images/RT_3d/RT3d_b.jpg}
+	  \includegraphics[width=.18\columnwidth]{../images/RT_3d/RT3d_b.jpg}
     }
     \subfloat[]{
 	  \label{fg:RT-3d-c}
-	  \includegraphics[width=.18\columnwidth]{images/RT_3d/RT3d_c.jpg}
+	  \includegraphics[width=.18\columnwidth]{../images/RT_3d/RT3d_c.jpg}
     }
 %     \subfloat[]{
 % 	  \label{fg:RT-3d-d}
-% 	  \includegraphics[width=.15\columnwidth]{images/RT_3d/RT3d_d.jpg}
+% 	  \includegraphics[width=.15\columnwidth]{../images/RT_3d/RT3d_d.jpg}
 %     }
     \subfloat[]{
 	  \label{fg:RT-3d-e}
-	  \includegraphics[width=.18\columnwidth]{images/RT_3d/RT3d_e.jpg}
+	  \includegraphics[width=.18\columnwidth]{../images/RT_3d/RT3d_e.jpg}
     }
     \subfloat[]{
 	  \label{fg:RT-3d-g}
-	  \includegraphics[width=.18\columnwidth]{images/RT_3d/RT3d_g.jpg}
+	  \includegraphics[width=.18\columnwidth]{../images/RT_3d/RT3d_g.jpg}
     }
   \end{center}
   \caption{\label{fg:rayleigh-3d} Snapshots of the heavy-phase in the Rayleigh-Taylor instability solved in three-dimensions with PFEM-2. %From left to right $\widetilde{t} =2[s]$, $3.3[s]$, $4.4[s]$, $6.6[s]$, $8,8[s]$, and $27.5[s]$.}
@@ -646,7 +646,7 @@ Computational configuration of the tank used in experimental cases is presented 
 
 \begin{figure}
   \begin{center}
-      \includegraphics[width=\columnwidth]{images/dam_break_config.pdf}
+      \includegraphics[width=\columnwidth]{../images/dam_break_config.pdf}
   \end{center}
   \caption{\label{fg:dambreak-config} Configuration scheme of the dam-break case. $H_1$, $H_2$, $H_3$, $H_4$ present the locations of water level measuring positions. Also, $P_1$, $P_2$, $P_3$, $P_4$ show the locations of pressure sensors at the impact wall downstream the dam. Grey zone represents the initial condition. Dimensions in millimeters.}
 \end{figure}
@@ -657,21 +657,21 @@ Figure \ref{fg:dambreak-h} shows the comparison between experimental and numeric
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-h1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_h1.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_h1.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-h2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_h2.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_h2.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-h3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_h3.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_h3.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-h4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_h4.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_h4.pdf}
     }
    \caption{Water level elevations at locations $H_1$, $H_2$, $H_3$ and $H_4$ for tests with $H=300[mm]$ initial filling height compared to data from literature experimental results\cite{Lobovsky13} (dashed lines) and numerical results with PFEM-2 (filled lines). Time normalization is $t^*=t(g/h)^{1/2}$.}
    \label{fg:dambreak-h}                %% Etiqueta para la figura entera
@@ -681,21 +681,21 @@ Figure \ref{fg:dambreak-h} shows the comparison between experimental and numeric
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-p1}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p1.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p1.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-p2}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p2.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p2.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-p3}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p3.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p3.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-p4}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p4.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p4.pdf}
     }
    \caption{Pressure time histories comparison between experimental results\cite{Lobovsky13} (discontinuous lines) and numerical results with PFEM-2 (filled lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1},\ref{fg:dambreak-p2},\ref{fg:dambreak-p3},\ref{fg:dambreak-p4} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
    \label{fg:dambreak-p}                %% Etiqueta para la figura entera
@@ -713,39 +713,39 @@ Finally, the Figure \ref{fg:dambreak-screenshots} presents snapshots for the evo
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-1}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_1_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_1_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-2}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_2_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_2_w.jpg}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-3}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_3_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_3_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-4}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_4_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_4_w.jpg}
     }\\
         \subfloat[]{
 	  \label{fg:dambreak-5}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_5_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_5_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-6}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_6_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_6_w.jpg}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-7}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_7_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_7_w.jpg}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-8}
-	  \includegraphics[width=.2\textwidth]{images/dambreak_pfem_8_w.jpg}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_pfem_8_w.jpg}
     }
    \caption{Snapshots of the dam-break at times $t=0$, $0.25$, $0.5$, $0.75$, $1$, $1.25$, $1.5$, $1.75[s]$, in Figures \ref{fg:dambreak-1} to \ref{fg:dambreak-8} respectly.}
    \label{fg:dambreak-screenshots}
@@ -762,21 +762,21 @@ In this example, the time step used, the element sizes and the velocity of the f
   \centering
     \subfloat[]{
 	  \label{fg:dambreak-p1-3d}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p1_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p1_3d.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-p2-3d}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p2_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p2_3d.pdf}
     } \\
     \subfloat[]{
 	  \label{fg:dambreak-p3-3d}         %% Etiqueta para la primera subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p3_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p3_3d.pdf}
     }
     %%----segunda subfigura----
     \subfloat[]{
 	  \label{fg:dambreak-p4-3d}         %% Etiqueta para la segunda subfigura
-	  \includegraphics[width=.2\textwidth]{images/dambreak_p4_3d.pdf}
+	  \includegraphics[width=.2\textwidth]{../images/dambreak_p4_3d.pdf}
     }
    \caption{Pressure time histories comparison between experimental \cite{Lobovsky13} (discontinuous lines) and 3D PFEM-2 results (filled lines). Locations $P_1$, $P_2$, $P_3$, $P_4$ are presented in Figures \ref{fg:dambreak-p1-3d},\ref{fg:dambreak-p2-3d},\ref{fg:dambreak-p3-3d},\ref{fg:dambreak-p4-3d} respectively. Experimental results shows the median (dashed lines) and percentiles $2.5$ and $97.5$ (dotted lines).}
    \label{fg:dambreak-p-3d}                %% Etiqueta para la figura entera
