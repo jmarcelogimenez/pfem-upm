@@ -121,7 +121,7 @@ Paraje El Pozo, Santa Fe, Argentina\\
              %  but any date may be explicitly specified
              
 \begin{abstract}
-This Letter describes how the results of a global stability analysis of a classical circular cylinder are affected when the cylinder submerged and a two phase flow is present. The two phase flow has been transformed into a single phase fluid with variable density and viscosity using a volume of fluid (VOF) characterization. The Navier-Stokes equations which depend on both the Reynolds and Froude numbers, have been fixed to create a particular scenario for the stability analysis. Consequently, the baseflow obtained by the Navier-Stokes equations have been analyzed and the Hopf bifurcation has been obtained for a particular Froude number. The critical Reynolds number and the frequency of the unstable mode have been compared to the classical solution without free surface.
+This Letter describes how the results of a global stability analysis of a classical circular cylinder are affected when the cylinder submerged and a two phase flow is present. The two phase flow has been transformed into a single phase fluid with variable density and viscosity using a volume of fluid (VOF) characterization. The Navier-Stokes equations which depend on both the Reynolds and Froude numbers, have been fixed to create a particular scenario for the stability analysis. Consequently, the baseflow obtained by the Navier-Stokes equations have been analyzed and the Hopf bifurcation has been obtained for a particular Froude number. The critical Reynolds number and the frequency of the most unstable mode have been compared to the classical solution without free surface.
 \end{abstract}
 
 % insert suggested PACS numbers in braces on next line
@@ -147,21 +147,26 @@ Similarly with the work presented by \cite{Dimas89} here the propose is to analy
 %=====================================================================================
 
 
-The governing equations are the incompressible NavierStokes equations, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one, denoted by subscript 1, and the second one with its corresponding variables denoted by the subscript 2 with densities and viscosities $\rho_i$ and $\mu_i$(i=1,2), respectively. The governing equations, written in a Lagrangian framework, are:
+The governing equations are the incompressible Navier–Stokes equations in laminar regime, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one denoted by subscript 1 is placed at the top of the domain, and the second one placed at the bottom denoted by the subscript 2. Let us name their corresponding densities and viscosities as $\rho_i$ and $\mu_i$(i=1,2), respectively. The governing equations, written in a Lagrangian framework, are:
 
 \begin{eqnarray}
   \nabla \cdot \mathbf{v} &=& 0 \label{eq:continuity} \\
   \rho\frac{D\mathbf{v}}{Dt} &=& -\nabla p + \mu \nabla^2 \mathbf{v} + \rho \mathbf{g}  \label{eq:momentum}
 \end{eqnarray}
 
-Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\rho \mathbf{g}$ is the gravity force. Once the equations are written in non-dimensional form using the cylinder diameter $D$, the inflow velocity $U$ and the density and viscosity of the bottom fluid, as a consequence the Reynolds and Froude numbers appear explicitly in the momentum conservation part. An efficient and accurate methodology, called PFEM-2, has been used to numerically simulate the dynamics of an incompressible flow during the baseflow computation. An accurate and efficient simulation of the interface evolution is crucial in the simulation of free-surface flows. During the flow evolution, it is essential that the interface remains sharp. Large jumps of fluid density and viscosity across the interface should be correctly assumed by the numerical algorithm in order to satisfy the momentum balance at the vicinity of the interface. Readers interested in more details of the PFEM-2 method and the enrichment technique used for the free surface definition may see \cite{Gimenez2015186}.
+Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\rho \mathbf{g}$ is the gravity force. Once the equations are written in non-dimensional form using the cylinder diameter $D$, the inflow velocity $U$ and the density and viscosity of the bottom fluid, as a consequence the Reynolds and Froude numbers appear explicitly in the momentum conservation part. An efficient and accurate methodology, called PFEM-2, has been used to numerically simulate the dynamics of an incompressible flow during the baseflow computation.
 
-The complete analysis requires two steps: during the first one, the two-dimensional equations of motion are solved in the laminar regime at appropriate $Re$ and $Fr$ regions, in order to compute steady basic flows $(\overline{\mathbf{v}}, \overline{p},\overline{\phi})$ whose stability will subsequently be investigated. During the second step, the basic flow is perturbed by small-amplitude velocity $\widetilde{\mathbf{v}}$ and kinematic pressure $\widetilde{p}$ perturbations, as follows
+We choose a sufficiently large domain size to minimize the undesirable boundary effects. The inflow and exit boundaries are each located at 18D and 35D towards the fore and aft of the cylinder, respectively. The far field boundary is located at 15D on either side of the central axis. A uniform inflow boundary condition, together with a natural boundary condition for the far field and outflow, are applied for the velocity. The no-slip boundary condition is employed for the non-rotational part of the D cylinder. The Neumann boundary condition is also imposed for the pressure at the exit.
+
+An accurate and efficient simulation of the interface evolution is crucial in the simulation of free-surface flows. During the flow evolution, it is essential that the interface remains sharp. Large jumps of fluid density and viscosity across the interface should be correctly assumed by the numerical algorithm in order to satisfy the momentum balance at the vicinity of the interface. Readers interested in more details of the PFEM-2 method and the enrichment technique used for the free surface definition may see \cite{Gimenez2015186}.
+
+The complete analysis requires two steps: during the first one, the two-dimensional equations of motion are solved for those $Re$ and $Fr$ values that finally reach a final steady state. The stability of those steady basic flows $(\overline{\mathbf{v}}, \overline{p},\overline{\phi})$ will subsequently be investigated. For those cases where the Reynolds number is above the critical value and no steady state is obtained turning to a periodic case, a time averaged solution is analyzed assuming that the analysis is still valid according to \cite{SippLebedev}.  During the second step, the basic flow is perturbed by small-amplitude velocity $\widetilde{\mathbf{v}}$ and kinematic pressure $\widetilde{p}$ perturbations, as follows
 
 \begin{eqnarray}
   \mathbf{v} &=& \overline{\mathbf{v}} + \varepsilon \widetilde{\mathbf{v}} \\
   p &=& \overline{p} + \varepsilon \widetilde{p}
 \end{eqnarray}
+
 
 where $\varepsilon\ll 1$ and c.c: denotes conjugate of the complex quantities $(\widetilde{\mathbf{v}}; \widetilde{p})$. The stability analyses of the equations implies the linearization of the Navier-Stokes equations around a steady base flow. This process has been done following the same methods explained in \cite{Gonzalez07} which implies the resolution of a large generalized eigenvalue problem by an iterative Arnoldi method. However, two important considerations should be remarked when this analysis step is performed:
 
@@ -171,6 +176,7 @@ where $\varepsilon\ll 1$ and c.c: denotes conjugate of the complex quantities $(
 
 
 After a complete mesh converge process, a final mesh where the numerical results are confirmed has been selected. The mesh used for the simulations is a linear triangular mesh that contains 65834 triangles and 132542 nodes, the default mesh size is 0.655D while in the cylinder proximities and the free surface area the mesh size has been refined to 0.0016D. See figure \ref{f:geometryandmesh} to appreciate the mesh configuration.
+
 
 
 \begin{figure}[ht]
@@ -205,7 +211,7 @@ After a complete mesh converge process, a final mesh where the numerical results
 \label{S:Results}
 %=====================================================================================
 
-The first thing to do is to search a steady state solution of the Navier-Stokes equations, for the space of parameters of the problem $Re,Fr,h/D$. In this letter we have analyzed a range of Reynolds numbers close to the first Hopf bifurcation that appears in the absence of free surface. This range is $Re=(30,70)$ while the Froude number has been kept fixed to $Fr=3$ and the water depth was $h=?$. The horizontal and vertical velocity components of the baseflow and the free surface position corresponding to the case $Re=45$ and $Fr=3$ are shown in figures \ref{f:baseflow} and \ref{f:VOF}.
+The first thing to do is to search a steady state solution of the Navier-Stokes equations, for the space of parameters of the problem $Re,Fr,h/D$. In this letter we have analyzed a range of Reynolds numbers close to the first Hopf bifurcation that appears in the absence of free surface. This range is $Re=(30,70)$ while the Froude number has been kept fixed to $Fr=3$ and the water depth was $h=0.55$. The horizontal and vertical velocity components of the baseflow and the free surface position corresponding to the case $Re=45$ and $Fr=3$ are shown in figures \ref{f:baseflow} and \ref{f:VOF}.
 
 \begin{figure}[ht]
   \centering
