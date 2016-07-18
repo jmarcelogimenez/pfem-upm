@@ -85,7 +85,7 @@ prl
 %\preprint{}
 
 %Title of paper
-\title{Linear Stability Analysis of free surface gravitational flows.}
+\title{Linear Stability Analysis of a submerged cylinder.}
 
 % repeat the \author .. \affiliation  etc. as needed
 % \email, \thanks, \homepage, \altaffiliation all apply to the current
@@ -98,7 +98,6 @@ prl
 % other information
 % \affiliation can be followed by \email, \homepage, \thanks as well.
 \author{Leo M. Gonz\'alez, Esteban Ferrer}
- \email{leo.gonzalez@upm.es}
 \affiliation{%
   Technical University of Madrid (UPM)\\
   Arco de la Victoria 4, 28040 Madrid, Spain
@@ -119,7 +118,7 @@ Paraje El Pozo, Santa Fe, Argentina
              %  but any date may be explicitly specified
 
 \begin{abstract}
-This Letter describes how the results of a global stability analysis of a classical circular cylinder are affected when the cylinder is submerged in a two phase gravitational flow. The flow behaviour is governed by both the Reynolds and Froude numbers, while the depth of the cylinder has been varied to create different scenarios for the stability analysis. The baseflow obtained by the Navier-Stokes equations has been analyzed, and the Hopf bifurcation has been obtained for a fixed Froude number. The critical Reynolds number and the frequency of the most unstable mode have been compared to the classical solution without free surface and gravity effects. The most unstable mode is deformed and distorted according to the free surface location, \textcolor[rgb]{1.00,0.00,0.00}{while the critical frequency and the growth rate are clearly affected by the free surface presence.}
+This Letter describes how the results of a global stability analysis of a classical circular cylinder are affected when the cylinder is submerged in a two phase gravitational flow. The flow behavior is governed by both the Reynolds and Froude numbers, while the depth of the cylinder has been varied to create different scenarios for the stability analysis. The baseflow obtained by the Navier-Stokes equations has been analyzed, and the Hopf bifurcation has been obtained for a fixed Froude number. The critical Reynolds number and the frequency of the most unstable mode have been compared to the classical solution without free surface and gravity effects. The most unstable mode is deformed and distorted according to the free surface location, while the critical frequency and the critical Reynolds numbers are both affected by the gravity and the free surface presence.
 \end{abstract}
 
 % insert suggested PACS numbers in braces on next line
@@ -149,12 +148,13 @@ Similarly with the work presented by \cite{Dimas89}, the purpose is to analyze t
 
 The governing equations are the incompressible Navier–Stokes equations in laminar regime, which are supplemented with the conventional boundary conditions on solid and/or open boundaries. The computational domain $\Omega$ contains both fluids, the first one denoted by subscript 1 is placed at the top of the domain, and the second one placed at the bottom denoted by the subscript 2. Let us name their corresponding densities and kinematic viscosities as $\rho_i$ and $\nu_i$(i=1,2), respectively, where $\rho_2\gg\rho_1$. The non dimensional governing equations, written in a Lagrangian framework, are:
 
+
 \begin{eqnarray}
-  \nabla \cdot (\frac{1}{\beta} \mathbf{v}) &=& 0 \label{eq:continuity} \\
-  \frac{D\mathbf{v}}{Dt} &=& -\beta\nabla p +  \nabla\cdot(\alpha\nabla\mathbf{v}) + \frac{1}{Fr_D^2} \mathbf{u_g}  \label{eq:momentum}
+  \nabla \cdot (\frac{1}{\beta} \mathbf{v}) &=& 0 \label{eq:NS1}\\
+  \frac{D\mathbf{v}}{Dt} &=& -\beta\nabla p +  \nabla\cdot(\alpha\nabla\mathbf{v}) + \frac{1}{Fr_D^2} \mathbf{u_g}  \label{eq:NS2}
 \end{eqnarray}
 
-Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{u_g}$ is a unitary vector parallel to the gravity force. The equations are computed in non-dimensional form using the cylinder diameter $D$, the inflow velocity $U$ and the density and viscosity of the bottom fluid. The Reynolds $Re_D=\frac{UD}{\nu_{2}}$ and the Froude numbers $Fr_D=\frac{U}{\sqrt{gD}}$ will be defined using the fluid properties of the bottom fluid. It is important to remark that compared to the case where only one fluid is involved, two non dimensional coefficients $\alpha$ and $\beta$ (specially relevant when including the free surface interface) appear explicitly in the mass and momentum equations \ref{eq:continuity,eq:momentum}.
+Here $\mathbf{v}$, $p$ are the velocity and fluid pressure and $\mathbf{u_g}$ is a unitary vector parallel to the gravity force. The equations are computed in non-dimensional form using the cylinder diameter $D$, the inflow velocity $U$ and the density and viscosity of the bottom fluid. The Reynolds $Re_D=\frac{UD}{\nu_{2}}$ and the Froude numbers $Fr_D=\frac{U}{\sqrt{gD}}$ will be defined using the fluid properties of the bottom fluid. It is important to remark that compared to the case where only one fluid is involved, two non dimensional coefficients $\alpha$ and $\beta$ (specially relevant when including the free surface interface) appear explicitly in the mass and momentum equations \ref{eq:NS1} and \ref{eq:NS2}.
 
 \begin{equation}\label{eq:Viscous coeff}
     \alpha=\frac{(\phi+1)-(\frac{\nu_{1}}{\nu_{2}})(\phi-1)}{2 Re_D}
@@ -285,7 +285,7 @@ The mode corresponding to this oscillating unstable mode for the case $Re_D=45$ 
   %  \subfloat[Horizontal velocity perturbation component (real part) from -0.1 (blue) to 0.1 (red)]{
 %	  \label{pertuRe45}
 	  \includegraphics[width=.9\columnwidth]{Leo_Perturbation_cyl.jpg}
-%    } 
+%    }
     %\\
     %%----segunda subfigura----
    % \subfloat[Vertical velocity perturbation component (real part) from -0.008 (blue) to 0.007 (red)]{
